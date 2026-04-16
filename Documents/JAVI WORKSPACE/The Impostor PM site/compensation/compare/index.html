@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Compare Your PM Salary — The Impostor PM</title>
-    <meta name="description" content="See how your Product Manager salary compares to 680+ PMs in Portugal. Enter your details and get instant results.">
+    <meta name="description" content="See how your Product Manager salary compares to 500+ PMs in Portugal. Enter your details and get instant results.">
 
     <!-- Bootstrap 4.6.2 CSS -->
     <link rel="stylesheet"
@@ -196,6 +196,32 @@
         /* ── Divider ── */
         .form-divider { border: none; border-top: 1px solid var(--outline-light); margin: 0 0 2rem 0; }
 
+        /* ── Validation states ── */
+        .form-field-group.has-error .form-step-number {
+            background: #d92d20; color: #fff; border-color: #d92d20;
+        }
+        .form-field-group.has-error .form-control {
+            border-color: #d92d20; box-shadow: 0 0 0 .15rem rgba(217,45,32,.15);
+        }
+        .form-field-group.has-error input[type="range"] {
+            box-shadow: 0 0 0 .15rem rgba(217,45,32,.15); border-radius: 3px;
+        }
+        .field-error-msg {
+            color: #b42318; font-size: .8125rem; font-weight: 500;
+            margin-top: .5rem; display: none;
+        }
+        .form-field-group.has-error .field-error-msg { display: block; }
+        .form-error-banner {
+            display: none; background: #fef3f2; border: 1px solid #fda29b;
+            color: #b42318; border-radius: .5rem; padding: .875rem 1rem;
+            margin-bottom: 1.5rem; font-size: .875rem; line-height: 1.45;
+        }
+        .form-error-banner.visible { display: block; }
+        .form-error-banner strong { display: block; margin-bottom: .25rem; color: #912018; }
+        .form-error-banner ul { margin: 0; padding-left: 1.1rem; }
+        .form-error-banner li { margin-bottom: .125rem; }
+        .form-error-banner li a { color: #b42318; text-decoration: underline; cursor: pointer; }
+
         /* ── Results ── */
         #results-section { display: none; }
         #results-section.visible { display: block; }
@@ -244,7 +270,10 @@
         /* ── Perception ── */
         .perception-section { padding: 2.5rem 0; text-align: center; }
         .perception-boxes {
-            display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;
+            display: flex; gap: 1.5rem; justify-content: center; align-items: center; flex-wrap: nowrap; margin-bottom: 1.5rem;
+        }
+        @media (max-width: 576px) {
+            .perception-boxes { flex-direction: column; }
         }
         .perception-box {
             text-align: center; padding: 1.75rem 2.5rem;
@@ -287,6 +316,84 @@
         }
         .bar-default { background: var(--near-black); opacity: .2; }
         .bar-user { background: var(--golden); }
+
+        /* ── Perks toggle ── */
+        .perks-toggle {
+            display: flex; align-items: center; justify-content: center; gap: .625rem;
+            margin-top: 1.25rem; cursor: pointer; user-select: none;
+        }
+        .perks-toggle input[type="checkbox"] { display: none; }
+        .toggle-track {
+            width: 40px; height: 22px; border-radius: 11px;
+            background: var(--surface-container); position: relative; transition: background .2s; flex-shrink: 0;
+        }
+        .toggle-track::after {
+            content: ""; position: absolute; top: 3px; left: 3px;
+            width: 16px; height: 16px; border-radius: 50%;
+            background: var(--white); box-shadow: 0 1px 3px rgba(0,0,0,.15); transition: transform .2s;
+        }
+        .perks-toggle input:checked + .toggle-track { background: var(--golden); }
+        .perks-toggle input:checked + .toggle-track::after { transform: translateX(18px); }
+        .perks-toggle-label { font-size: .8125rem; font-weight: 500; color: var(--text-muted); }
+        #total-comp-field { display: none; margin-top: 1.25rem; }
+        #total-comp-field.visible { display: block; }
+
+        /* ── Total comp results ── */
+        .total-comp-result { border-top: 1px solid var(--outline-light); margin-top: 2rem; padding-top: 2rem; }
+        .comp-type-badge {
+            display: inline-block; font-size: .625rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .12em; padding: .25rem .75rem; border-radius: 2rem; margin-bottom: .75rem;
+        }
+        .comp-type-badge.base { background: var(--golden-20); color: var(--near-black); }
+        .comp-type-badge.total { background: var(--near-black); color: var(--white); }
+
+        /* ── Survey modal ── */
+        .survey-modal .modal-dialog { max-width: 720px; }
+        .survey-modal .modal-content { border: none; border-radius: 1rem; overflow: hidden; background: var(--white); }
+        .survey-modal .modal-header { border-bottom: none; padding: 1.25rem 1.5rem .5rem; }
+        .survey-modal .modal-header .modal-title { font-size: 1.25rem; font-weight: 700; }
+        .survey-modal .modal-body { padding: 0 1.5rem 1.5rem; max-height: 70vh; overflow-y: auto; }
+        .survey-section-title {
+            font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
+            color: var(--text-muted); margin: 1.75rem 0 1rem; padding-bottom: .5rem;
+            border-bottom: 1px solid var(--outline-light);
+        }
+        .survey-section-title:first-child { margin-top: .5rem; }
+        .survey-field { margin-bottom: 1.25rem; }
+        .survey-field label {
+            display: block; font-size: .875rem; font-weight: 600; color: var(--near-black); margin-bottom: .35rem;
+        }
+        .survey-field label .req { color: #e74c3c; margin-left: 2px; }
+        .survey-field .form-control {
+            border: 1px solid var(--outline-light); border-radius: .5rem;
+            font-family: "Inter", sans-serif; font-weight: 400; font-size: .875rem;
+        }
+        .survey-field .form-control:focus { border-color: var(--golden); box-shadow: 0 0 0 .2rem var(--golden-20); }
+        .survey-field select.form-control { appearance: auto; }
+        .survey-field .hint { font-size: .75rem; color: var(--text-muted); margin-top: .25rem; }
+
+        /* Perks checkboxes grid */
+        .perks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+        @media (max-width: 576px) { .perks-grid { grid-template-columns: 1fr; } }
+        .perks-grid label {
+            display: flex; align-items: center; gap: .5rem; font-size: .8125rem; font-weight: 400;
+            color: var(--near-black); cursor: pointer; padding: .4rem .5rem; border-radius: .375rem;
+            transition: background .15s;
+        }
+        .perks-grid label:hover { background: var(--light-gray); }
+        .perks-grid input[type="checkbox"] { accent-color: var(--golden); width: 16px; height: 16px; flex-shrink: 0; }
+
+        .survey-modal .modal-footer { border-top: none; padding: .75rem 1.5rem 1.25rem; }
+        .survey-submit-btn {
+            width: 100%; background: var(--golden); color: var(--near-black);
+            font-weight: 600; font-size: 1rem; border: none; border-radius: .5rem;
+            padding: .75rem; cursor: pointer; transition: opacity .2s;
+        }
+        .survey-submit-btn:hover { opacity: .88; }
+        .survey-submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+        .survey-success { text-align: center; padding: 3rem 1rem; }
+        .survey-success h3 { font-size: 1.5rem; margin-bottom: .75rem; }
+        .survey-success p { color: var(--text-muted); }
         .user-salary-line {
             position: absolute; top: -4px; width: 2px; height: 16px;
             background: var(--golden); border-radius: 1px; transition: left .8s ease-out;
@@ -355,7 +462,7 @@
     <div class="container" style="max-width: 42rem;">
         <span class="hero-badge">Portugal 2026</span>
         <h1 class="mb-3">How many PMs earn more or less <span class="hero-highlight">than you</span>?</h1>
-        <p class="hero-subtitle">Enter your salary details and instantly see where you stand among 680+ Product Managers in Portugal.</p>
+        <p class="hero-subtitle">Enter your salary details and instantly see where you stand among 500+ Product Managers in Portugal.</p>
     </div>
 </section>
 
@@ -364,79 +471,114 @@
     <div class="container">
         <form id="compare-form" class="compare-form-card">
 
-            <div class="form-field-group">
+            <div id="form-error-banner" class="form-error-banner" role="alert" aria-live="polite">
+                <strong>Please fix the following before comparing your salary:</strong>
+                <ul id="form-error-list"></ul>
+            </div>
+
+            <div class="form-field-group" data-step="1">
                 <div class="form-step-number">1</div>
-                <div class="form-step-label">What's your annual gross salary?</div>
-                <div class="form-step-hint">Gross annual salary in EUR, including all components</div>
+                <div class="form-step-label">What's your annual base salary?</div>
+                <div class="form-step-hint">Gross annual base salary in EUR, before perks</div>
                 <div class="input-group" style="max-width: 200px; margin: 0 auto;">
-                    <input type="number" class="form-control" id="input-salary" min="0" step="500" placeholder="e.g. 45000" required style="border-right:0;">
+                    <input type="number" class="form-control" id="input-salary" min="0" step="500" placeholder="e.g. 45000" required style="border-right:0;text-align:center;padding-left:2.25rem;">
                     <div class="input-group-append">
                         <span class="input-group-text" style="background:var(--white);border:1px solid var(--outline-light);border-left:0;font-weight:600;border-radius:0 .5rem .5rem 0;">&euro;</span>
                     </div>
                 </div>
+                <label class="perks-toggle">
+                    <input type="checkbox" id="has-perks">
+                    <span class="toggle-track"></span>
+                    <span class="perks-toggle-label">I receive perks (stocks, health insurance, food allowance, etc)</span>
+                </label>
+                <div id="total-comp-field">
+                    <div class="form-step-hint" style="margin-top: .5rem;">Total yearly gross compensation including all perks</div>
+                    <div class="input-group" style="max-width: 200px; margin: 0 auto;">
+                        <input type="number" class="form-control" id="input-total-comp" min="0" step="500" placeholder="e.g. 52000" style="border-right:0;text-align:center;padding-left:2.25rem;">
+                        <div class="input-group-append">
+                            <span class="input-group-text" style="background:var(--white);border:1px solid var(--outline-light);border-left:0;font-weight:600;border-radius:0 .5rem .5rem 0;">&euro;</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="field-error-msg" id="error-salary"></div>
             </div>
 
             <hr class="form-divider">
 
-            <div class="form-field-group">
+            <div class="form-field-group" data-step="2">
                 <div class="form-step-number">2</div>
                 <div class="form-step-label">What's your role level?</div>
                 <div class="form-step-hint">Select your current product management role</div>
                 <select class="form-control" id="input-role" required>
                     <option value="" disabled selected>Select role</option>
-                    <option value="APM">Associate PM (APM)</option>
-                    <option value="PM">Product Manager (PM)</option>
+                    <option value="APM">Associate / Junior PM</option>
+                    <option value="PM">Product Manager</option>
                     <option value="Senior PM">Senior PM</option>
-                    <option value="Lead PM">Lead PM</option>
-                    <option value="Director of Product">Director of Product</option>
-                    <option value="VP of Product">VP of Product</option>
-                    <option value="Head of Product">Head of Product</option>
-                    <option value="CPO">CPO</option>
+                    <option value="Lead PM">Lead / Principal PM</option>
+                    <option value="Director of Product">Director / Head of Product</option>
+                    <option value="VP of Product">VP / CPO</option>
                 </select>
+                <div class="field-error-msg" id="error-role"></div>
             </div>
 
             <hr class="form-divider">
 
-            <div class="form-field-group">
+            <div class="form-field-group" data-step="3">
                 <div class="form-step-number">3</div>
                 <div class="form-step-label">Years of experience in PM?</div>
                 <div class="form-step-hint">Total years working in product management</div>
-                <select class="form-control" id="input-yoe" required>
-                    <option value="" disabled selected>Select range</option>
-                    <option value="0-2">0 &ndash; 2 years</option>
-                    <option value="3-5">3 &ndash; 5 years</option>
-                    <option value="6-8">6 &ndash; 8 years</option>
-                    <option value="9-12">9 &ndash; 12 years</option>
-                    <option value="13+">13+ years</option>
-                </select>
+                <div class="input-group" style="max-width: 200px; margin: 0 auto;">
+                    <input type="number" class="form-control" id="input-yoe" min="0" max="50" step="1" placeholder="e.g. 4" required style="border-right:0;text-align:center;padding-left:4rem;">
+                    <div class="input-group-append">
+                        <span class="input-group-text" style="background:var(--white);border:1px solid var(--outline-light);border-left:0;font-weight:600;border-radius:0 .5rem .5rem 0;">yrs</span>
+                    </div>
+                </div>
+                <div class="field-error-msg" id="error-yoe"></div>
             </div>
 
             <hr class="form-divider">
 
-            <div class="form-field-group">
+            <div class="form-field-group" data-step="4">
                 <div class="form-step-number">4</div>
                 <div class="form-step-label">Where are you based?</div>
-                <div class="form-step-hint">Select your city or working arrangement</div>
+                <div class="form-step-hint">Select your district</div>
                 <select class="form-control" id="input-city" required>
-                    <option value="" disabled selected>Select city</option>
-                    <option value="Lisbon">Lisbon</option>
-                    <option value="Porto">Porto</option>
+                    <option value="" disabled selected>Select district</option>
+                    <option value="Aveiro">Aveiro</option>
+                    <option value="Beja">Beja</option>
                     <option value="Braga">Braga</option>
+                    <option value="Bragança">Bragan&ccedil;a</option>
+                    <option value="Castelo Branco">Castelo Branco</option>
                     <option value="Coimbra">Coimbra</option>
-                    <option value="Remote/Other">Remote / Other</option>
+                    <option value="Évora">&Eacute;vora</option>
+                    <option value="Faro">Faro</option>
+                    <option value="Guarda">Guarda</option>
+                    <option value="Leiria">Leiria</option>
+                    <option value="Lisboa">Lisboa</option>
+                    <option value="Portalegre">Portalegre</option>
+                    <option value="Porto">Porto</option>
+                    <option value="Santarém">Santar&eacute;m</option>
+                    <option value="Setúbal">Set&uacute;bal</option>
+                    <option value="Viana do Castelo">Viana do Castelo</option>
+                    <option value="Vila Real">Vila Real</option>
+                    <option value="Viseu">Viseu</option>
+                    <option value="Açores">A&ccedil;ores</option>
+                    <option value="Madeira">Madeira</option>
                 </select>
+                <div class="field-error-msg" id="error-city"></div>
             </div>
 
             <hr class="form-divider">
 
-            <div class="form-field-group">
+            <div class="form-field-group" data-step="5">
                 <div class="form-step-number">5</div>
                 <div class="form-step-label">What % of PMs do you think earn less than you?</div>
                 <div class="form-step-hint">Your best guess — we'll compare it to the real data</div>
                 <div class="slider-container">
-                    <div class="slider-value" id="perception-display">50%</div>
-                    <input type="range" id="input-perception" min="0" max="100" value="50">
+                    <div class="slider-value" id="perception-display">0%</div>
+                    <input type="range" id="input-perception" min="0" max="100" value="0" data-touched="false">
                 </div>
+                <div class="field-error-msg" id="error-perception"></div>
             </div>
 
             <div class="text-center" style="margin-top: 1rem;">
@@ -458,11 +600,11 @@
             <p class="result-context" id="result-context"></p>
         </div>
 
-        <!-- Overall distribution -->
+        <!-- Base salary distribution -->
         <div class="distribution-section results-animate" style="animation-delay: .15s;">
             <p style="font-size: .8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; color: var(--text-muted); text-align: center; margin-bottom: .5rem;">Your position among all PMs in Portugal</p>
             <div class="dist-bar-wrapper">
-                <div class="dist-marker-label" id="dist-marker-label">You</div>
+                <div class="dist-marker-label" id="dist-marker-label" style="display:none;">You</div>
                 <div class="dist-marker" id="dist-marker"></div>
                 <div class="dist-bar">
                     <div class="dist-bar-fill" id="dist-bar-fill"></div>
@@ -473,6 +615,23 @@
                 </div>
             </div>
             <p class="dist-summary" id="dist-summary"></p>
+        </div>
+
+        <!-- Total comp distribution (hidden if no perks) -->
+        <div id="total-comp-results" class="distribution-section total-comp-result results-animate" style="display: none; animation-delay: .25s;">
+            <span class="comp-type-badge total">Total Compensation</span>
+            <p style="font-size: .8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; color: var(--text-muted); text-align: center; margin-bottom: .5rem;">Your total compensation position among all PMs in Portugal</p>
+            <div class="dist-bar-wrapper">
+                <div class="dist-marker" id="tc-dist-marker"></div>
+                <div class="dist-bar">
+                    <div class="dist-bar-fill" id="tc-dist-bar-fill"></div>
+                </div>
+                <div class="dist-bar-labels">
+                    <span>Lower compensation</span>
+                    <span>Higher compensation</span>
+                </div>
+            </div>
+            <p class="dist-summary" id="tc-dist-summary"></p>
         </div>
 
         <!-- Perception vs Reality -->
@@ -509,8 +668,8 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="breakdown-card">
-                        <h4>By City</h4>
-                        <div id="breakdown-city"></div>
+                        <h4>Sample Size</h4>
+                        <div id="breakdown-sample"></div>
                     </div>
                 </div>
             </div>
@@ -523,9 +682,9 @@
 <section id="upsell-section" class="upsell-section" style="display: none;">
     <div class="container" style="max-width: 36rem;">
         <h2>Want the full picture?</h2>
-        <p>Complete the full compensation survey to unlock detailed insights across 38 countries, industries, company sizes, and seniority levels.</p>
+        <p>Complete the full compensation survey to unlock detailed insights according to industries, company sizes, remote policy, gender, seniority levels, and more.</p>
         <a href="#" class="btn btn-accent" data-toggle="modal" data-target="#filloutModal">Take the Full Survey</a>
-        <p class="upsell-note">680+ PMs have already contributed</p>
+        <p class="upsell-note">500+ PMs have already contributed</p>
     </div>
 </section>
 
@@ -581,23 +740,201 @@
     </div>
 </footer>
 
-<!-- ════════════ FILLOUT FORM MODAL ════════════ -->
-<div class="modal fade" id="filloutModal" tabindex="-1" aria-labelledby="filloutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="border: none; border-radius: 1rem; overflow: hidden; background: #FFFBF3;">
-            <div class="modal-header" style="border-bottom: none; padding: .75rem 1rem 0;">
+<!-- ════════════ FULL SURVEY MODAL ════════════ -->
+<div class="modal fade survey-modal" id="filloutModal" tabindex="-1" aria-labelledby="surveyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="surveyModalLabel">Full survey</h5>
                 <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Close" style="font-size: 1.5rem; opacity: .6;">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="padding: 0 1.5rem 1.5rem; min-height: 500px;">
-                <div id="fillout-loading" class="text-center" style="padding: 4rem 0; color: var(--text-muted);">
-                    <div class="spinner-border" style="color: var(--golden);" role="status">
-                        <span class="sr-only">Loading...</span>
+            <form id="full-survey-form">
+                <div class="modal-body" id="survey-body">
+
+                    <!-- About you -->
+                    <div class="survey-section-title">About you</div>
+
+                    <div class="survey-field">
+                        <label>Email <span class="req">*</span></label>
+                        <input type="email" class="form-control" id="survey-email" required placeholder="your@email.com">
                     </div>
-                    <p style="margin-top: 1rem;">Loading form...</p>
+
+                    <div class="survey-field">
+                        <label>Gender <span class="req">*</span></label>
+                        <select class="form-control" id="survey-gender" required>
+                            <option value="" disabled selected>Select</option>
+                            <option>Female</option>
+                            <option>Male</option>
+                            <option>Non-binary</option>
+                            <option>Rather not say</option>
+                        </select>
+                    </div>
+
+                    <!-- About your company -->
+                    <div class="survey-section-title">About your company</div>
+
+                    <div class="survey-field">
+                        <label>Which company do you work for?</label>
+                        <input type="text" class="form-control" id="survey-company" placeholder="Company name">
+                    </div>
+
+                    <div class="survey-field">
+                        <label>Current Industry</label>
+                        <input type="text" class="form-control" id="survey-industry" placeholder="e.g. SaaS, Fintech, Healthcare...">
+                    </div>
+
+                    <div class="survey-field">
+                        <label>What is the size of your organisation? <span class="req">*</span></label>
+                        <select class="form-control" id="survey-org-size" required>
+                            <option value="" disabled selected>Select</option>
+                            <option>1-10</option>
+                            <option>11-50</option>
+                            <option>51-100</option>
+                            <option>101-500</option>
+                            <option>501-1000</option>
+                            <option>1001-5000</option>
+                            <option>&gt;5000</option>
+                        </select>
+                    </div>
+
+                    <div class="survey-field">
+                        <label>Type of company <span class="req">*</span></label>
+                        <select class="form-control" id="survey-company-type" required>
+                            <option value="" disabled selected>Select</option>
+                            <option>Startup</option>
+                            <option>Scale-up</option>
+                            <option>Corporate / Enterprise</option>
+                            <option>Agency / Consultancy</option>
+                            <option>Non-profit</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="survey-field">
+                        <label>Company's remote policy <span class="req">*</span></label>
+                        <select class="form-control" id="survey-remote-policy" required>
+                            <option value="" disabled selected>Select</option>
+                            <option>Fully remote</option>
+                            <option>Hybrid (optional)</option>
+                            <option>Hybrid (forced)</option>
+                            <option>Office only</option>
+                        </select>
+                    </div>
+
+                    <div class="survey-field">
+                        <label>Where is your company based? <span class="req">*</span></label>
+                        <select class="form-control" id="survey-company-location" required>
+                            <option value="" disabled selected>Select country</option>
+                            <option>Portugal</option>
+                            <option>United States</option>
+                            <option>United Kingdom</option>
+                            <option>Germany</option>
+                            <option>Spain</option>
+                            <option>France</option>
+                            <option>Netherlands</option>
+                            <option>Switzerland</option>
+                            <option>Denmark</option>
+                            <option>Sweden</option>
+                            <option>Norway</option>
+                            <option>Ireland</option>
+                            <option>Italy</option>
+                            <option>Belgium</option>
+                            <option>Austria</option>
+                            <option>Estonia</option>
+                            <option>Brazil</option>
+                            <option>Canada</option>
+                            <option>Australia</option>
+                            <option>India</option>
+                            <option>Israel</option>
+                            <option>United Arab Emirates</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <!-- About your experience -->
+                    <div class="survey-section-title">About your experience</div>
+
+                    <div class="survey-field">
+                        <label>What best describes your current employment arrangement in this role? <span class="req">*</span></label>
+                        <select class="form-control" id="survey-employment" required>
+                            <option value="" disabled selected>Select</option>
+                            <option>Full-time employee</option>
+                            <option>Part-time employee</option>
+                            <option>Contractor</option>
+                            <option>Freelancer</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="survey-field">
+                        <label>If any, what perks does your organisation offer?</label>
+                        <div class="perks-grid">
+                            <label><input type="checkbox" name="survey-perks" value="Stock"> Stock / Equity</label>
+                            <label><input type="checkbox" name="survey-perks" value="Health Insurance of Employee"> Health insurance (employee)</label>
+                            <label><input type="checkbox" name="survey-perks" value="Health Insurance for Employee's family"> Health insurance (family)</label>
+                            <label><input type="checkbox" name="survey-perks" value="Life Insurance"> Life insurance</label>
+                            <label><input type="checkbox" name="survey-perks" value="Training Budget"> Training budget</label>
+                            <label><input type="checkbox" name="survey-perks" value="Extra vacation days"> Extra vacation days</label>
+                            <label><input type="checkbox" name="survey-perks" value="Extra parental leave"> Extra parental leave</label>
+                            <label><input type="checkbox" name="survey-perks" value="Employee discounts"> Employee discounts</label>
+                            <label><input type="checkbox" name="survey-perks" value="Reimbursable expenses"> Reimbursable expenses (transport, gym, etc.)</label>
+                            <label><input type="checkbox" name="survey-perks" value="Anual/Variable bonus"> Annual / Variable bonus</label>
+                            <label><input type="checkbox" name="survey-perks" value="Other"> Other</label>
+                        </div>
+                    </div>
+
+                    <!-- Transparency questions -->
+                    <div class="survey-section-title">Transparency questions</div>
+                    <p class="hint" style="margin-top: -.5rem; margin-bottom: 1rem; font-size: .8125rem; color: var(--text-muted);">These questions are optional. We want to understand how you feel about your own compensation at the moment.</p>
+
+                    <div class="survey-field">
+                        <label>Is the company transparent in terms of career path and compensation for PMs?</label>
+                        <select class="form-control" id="survey-transparency">
+                            <option value="" disabled selected>Select</option>
+                            <option>Yes, I know my career path and compensation</option>
+                            <option>It's transparent in some aspects but not all of them</option>
+                            <option>No, it's not transparent</option>
+                            <option>I'm not sure</option>
+                        </select>
+                    </div>
+
+                    <div class="survey-field">
+                        <label>Currently do you feel that your salary is adequate to your experience and skills?</label>
+                        <select class="form-control" id="survey-adequacy">
+                            <option value="" disabled selected>Select</option>
+                            <option>Strongly agree: my salary completely matches my experience and skills</option>
+                            <option>Agree: my salary is somewhat above what feels adequate</option>
+                            <option>Neither agree nor disagree: my salary is roughly adequate</option>
+                            <option>Disagree: my salary is somewhat below what feels adequate</option>
+                            <option>Strongly disagree: my salary is far below what feels adequate</option>
+                        </select>
+                    </div>
+
+                    <div class="survey-field">
+                        <label>Thinking about your most recent salary discussion, were you comfortable negotiating your salary?</label>
+                        <select class="form-control" id="survey-negotiation">
+                            <option value="" disabled selected>Select</option>
+                            <option>Strongly agree: I was very comfortable and actively initiate these conversations</option>
+                            <option>Agree: I was generally comfortable having these conversations</option>
+                            <option>Neither agree nor disagree: I felt neutral or unsure about it</option>
+                            <option>Disagree: I was somewhat uncomfortable discussing compensation</option>
+                            <option>Strongly disagree: I avoided or dreaded these conversations</option>
+                        </select>
+                    </div>
+
                 </div>
-                <iframe id="fillout-iframe" style="width: 100%; height: 500px; border: none; display: none;" allowfullscreen></iframe>
+                <div class="modal-footer">
+                    <button type="submit" class="survey-submit-btn" id="survey-submit-btn">Submit Full Survey</button>
+                </div>
+            </form>
+            <!-- Success state -->
+            <div id="survey-success" class="survey-success" style="display: none;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">&#10003;</div>
+                <h3>Thank you!</h3>
+                <p>You'll receive the full report soon. You're helping build the most transparent PM compensation database in Portugal.</p>
+                <button type="button" class="btn btn-dark" data-dismiss="modal" style="margin-top: 1.5rem;">Close</button>
             </div>
         </div>
     </div>
@@ -613,57 +950,190 @@
 <script>
 (function() {
 
-    /* ── Fillout modal lazy-load ── */
-    var iframe = document.getElementById('fillout-iframe');
-    var loading = document.getElementById('fillout-loading');
-    var modalLoaded = false;
+    /* ── Google Sheets webhook (replace with your deployed Apps Script URL) ── */
+    var SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxW5SPrFA7aT4HKPi-ASoFFjsO4rU9ajps6fUhvezQdQyeAwnrsKWMk02Kg5SamllZ4gg/exec';
 
-    $('#filloutModal').on('show.bs.modal', function() {
-        if (!modalLoaded) {
-            iframe.src = 'https://impostorpm.fillout.com/t/nWExNDpWzkus';
-            iframe.onload = function() {
-                loading.style.display = 'none';
-                iframe.style.display = 'block';
-            };
-            modalLoaded = true;
+    /* ── Generate unique ID for linking compare + survey rows ── */
+    function generateId() {
+        return 'xxxx-xxxx-xxxx'.replace(/x/g, function() {
+            return Math.floor(Math.random() * 16).toString(16);
+        });
+    }
+    var sessionId = generateId();
+    var compareData = {};
+
+    /* ── Submit to Google Sheets ── */
+    function submitToSheets(data) {
+        if (SHEETS_WEBHOOK.indexOf('YOUR_') === 0) {
+            console.log('Sheets webhook not configured. Data:', data);
+            return Promise.resolve();
         }
+        return fetch(SHEETS_WEBHOOK, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+    }
+
+    /* ── Full survey submit ── */
+    $('#full-survey-form').on('submit', function(e) {
+        e.preventDefault();
+        var $btn = $('#survey-submit-btn');
+        $btn.prop('disabled', true).text('Submitting...');
+
+        var perks = [];
+        $('input[name="survey-perks"]:checked').each(function() { perks.push(this.value); });
+
+        var surveyData = {
+            action: 'update',
+            id: sessionId,
+            email: $('#survey-email').val(),
+            gender: $('#survey-gender').val(),
+            company: $('#survey-company').val(),
+            industry: $('#survey-industry').val(),
+            orgSize: $('#survey-org-size').val(),
+            companyType: $('#survey-company-type').val(),
+            remotePolicy: $('#survey-remote-policy').val(),
+            companyLocation: $('#survey-company-location').val(),
+            employment: $('#survey-employment').val(),
+            perks: perks.join(', '),
+            transparency: $('#survey-transparency').val() || '',
+            salaryAdequacy: $('#survey-adequacy').val() || '',
+            negotiationComfort: $('#survey-negotiation').val() || ''
+        };
+
+        submitToSheets(surveyData).then(function() {
+            $('#survey-body').hide();
+            $('.modal-footer').hide();
+            $('.survey-modal .modal-header .modal-title').hide();
+            $('#survey-success').show();
+        }).catch(function() {
+            $btn.prop('disabled', false).text('Submit Full Survey');
+            alert('Something went wrong. Please try again.');
+        });
     });
 
-    /* ── Salary data (placeholder — Portuguese PM market) ── */
-    var SALARY_DATA = {
+    /* ── Salary data — fallback (used until live data loads) ── */
+    var SALARY_DATA_FALLBACK = {
         roles: {
-            'APM':         { p10: 16000, p25: 20000, p50: 25000, p75: 30000, p90: 35000 },
-            'PM':          { p10: 24000, p25: 30000, p50: 38000, p75: 48000, p90: 55000 },
-            'Senior PM':   { p10: 34000, p25: 42000, p50: 52000, p75: 65000, p90: 75000 },
-            'Lead PM':     { p10: 42000, p25: 50000, p50: 60000, p75: 75000, p90: 85000 },
-            'Director':    { p10: 48000, p25: 58000, p50: 72000, p75: 90000, p90: 105000 },
-            'VP/Head/CPO': { p10: 55000, p25: 70000, p50: 85000, p75: 110000, p90: 135000 }
-        },
-        roleMap: {
-            'APM': 'APM', 'PM': 'PM', 'Senior PM': 'Senior PM', 'Lead PM': 'Lead PM',
-            'Director of Product': 'Director', 'VP of Product': 'VP/Head/CPO',
-            'Head of Product': 'VP/Head/CPO', 'CPO': 'VP/Head/CPO'
-        },
-        roleLabels: {
-            'APM': 'APM', 'PM': 'PM', 'Senior PM': 'Senior PM', 'Lead PM': 'Lead PM',
-            'Director': 'Director', 'VP/Head/CPO': 'VP / Head / CPO'
+            'APM':            { p10: 19590, p25: 25150, p50: 28500, p75: 35000, p90: 38550, n: 80 },
+            'PM':             { p10: 28000, p25: 36000, p50: 43350, p75: 52250, p90: 60900, n: 192 },
+            'Senior PM':      { p10: 39200, p25: 44000, p50: 53000, p75: 65000, p90: 76000, n: 122 },
+            'Lead/Principal': { p10: 45200, p25: 54590, p50: 60000, p75: 70000, p90: 84600, n: 55 },
+            'Director+':      { p10: 40230, p25: 60000, p50: 77000, p75: 90000, p90: 105399, n: 32 },
+            'VP/Head/CPO':    { p10: 65000, p25: 70000, p50: 152000, p75: 200000, p90: 250000, n: 9 }
         },
         yoe: {
-            '0-2':  { p10: 16000, p25: 20000, p50: 27000, p75: 35000, p90: 42000 },
-            '3-5':  { p10: 25000, p25: 32000, p50: 40000, p75: 52000, p90: 62000 },
-            '6-8':  { p10: 35000, p25: 42000, p50: 55000, p75: 70000, p90: 82000 },
-            '9-12': { p10: 42000, p25: 52000, p50: 65000, p75: 82000, p90: 98000 },
-            '13+':  { p10: 50000, p25: 60000, p50: 75000, p75: 95000, p90: 115000 }
+            '0-1':  { p10: 20640, p25: 25200, p50: 31500, p75: 43000, p90: 56000, n: 76 },
+            '1-3':  { p10: 20640, p25: 25200, p50: 31500, p75: 43000, p90: 56000, n: 77 },
+            '3-5':  { p10: 31040, p25: 39000, p50: 45000, p75: 56000, p90: 70000, n: 213 },
+            '6-8':  { p10: 40276, p25: 51750, p50: 59800, p75: 75000, p90: 85000, n: 104 },
+            '9-12': { p10: 39200, p25: 53250, p50: 65000, p75: 90000, p90: 197999, n: 47 },
+            '13+':  { p10: 40800, p25: 46500, p50: 70000, p75: 99000, p90: 111600, n: 17 }
         },
-        cityMultipliers: {
-            'Lisbon': 1.10, 'Porto': 1.00, 'Braga': 0.90, 'Coimbra': 0.90, 'Remote/Other': 1.05
-        },
-        overall: { p10: 20000, p25: 28000, p50: 42000, p75: 62000, p90: 82000 }
+        overall: { p10: 25200, p25: 35000, p50: 45800, p75: 60000, p90: 81965, n: 534 },
+        totalComp: {
+            roles: {
+                'APM':            { p10: 24590, p25: 27925, p50: 30500, p75: 37000, p90: 40251, n: 80 },
+                'PM':             { p10: 28569, p25: 37278, p50: 47500, p75: 55075, p90: 64980, n: 192 },
+                'Senior PM':      { p10: 40000, p25: 47941, p50: 60000, p75: 70000, p90: 85900, n: 122 },
+                'Lead/Principal': { p10: 45200, p25: 60000, p50: 69000, p75: 78000, p90: 90000, n: 55 },
+                'Director+':      { p10: 52760, p25: 70000, p50: 85000, p75: 104400, p90: 118000, n: 33 },
+                'VP/Head/CPO':    { p10: 74000, p25: 80000, p50: 170000, p75: 250000, p90: 280000, n: 9 }
+            },
+            yoe: {
+                '0-1':  { p10: 24180, p25: 28000, p50: 34500, p75: 45000, p90: 59600, n: 76 },
+                '1-3':  { p10: 24180, p25: 28000, p50: 34500, p75: 45000, p90: 59600, n: 77 },
+                '3-5':  { p10: 34348, p25: 41475, p50: 50000, p75: 60000, p90: 74099, n: 214 },
+                '6-8':  { p10: 45000, p25: 55000, p50: 63000, p75: 81161, p90: 99360, n: 104 },
+                '9-12': { p10: 44040, p25: 59000, p50: 75000, p75: 110000, p90: 234999, n: 47 },
+                '13+':  { p10: 41100, p25: 48000, p50: 70000, p75: 99000, p90: 134000, n: 17 }
+            },
+            overall: { p10: 28000, p25: 37050, p50: 50000, p75: 68000, p90: 90000, n: 535 }
+        }
     };
 
-    var ROLE_ORDER = ['APM', 'PM', 'Senior PM', 'Lead PM', 'Director', 'VP/Head/CPO'];
-    var YOE_ORDER  = ['0-2', '3-5', '6-8', '9-12', '13+'];
-    var CITY_ORDER = ['Lisbon', 'Porto', 'Braga', 'Coimbra', 'Remote/Other'];
+    /* ── Live data: start with fallback, overwrite when API responds ── */
+    var SALARY_DATA = {
+        roles: $.extend(true, {}, SALARY_DATA_FALLBACK.roles),
+        roleMap: {
+            'APM': 'APM', 'PM': 'PM', 'Senior PM': 'Senior PM',
+            'Lead PM': 'Lead/Principal', 'Principal PM': 'Lead/Principal',
+            'Director of Product': 'Director+', 'Head of Product': 'Director+',
+            'VP of Product': 'VP/Head/CPO', 'CPO': 'VP/Head/CPO'
+        },
+        roleLabels: {
+            'APM': 'APM', 'PM': 'PM', 'Senior PM': 'Senior PM',
+            'Lead/Principal': 'Lead / Principal', 'Director+': 'Director+',
+            'VP/Head/CPO': 'VP / Head / CPO'
+        },
+        yoe: $.extend(true, {}, SALARY_DATA_FALLBACK.yoe),
+        overall: $.extend(true, {}, SALARY_DATA_FALLBACK.overall),
+        totalComp: $.extend(true, {}, SALARY_DATA_FALLBACK.totalComp)
+    };
+
+    /* ── Fetch live percentiles from Google Sheets ── */
+    /* Only trust live data when the sample is statistically meaningful.
+       If the sheet is reset or has too few entries, keep the historical fallback
+       so breakdowns don't collapse to €0 medians. Per-bucket, fall back when
+       the live bucket has too few responses to be informative. */
+    var LIVE_MIN_TOTAL = 50;
+    var LIVE_MIN_BUCKET = 5;
+
+    function mergeBuckets(liveBuckets, fallbackBuckets) {
+        var out = $.extend(true, {}, fallbackBuckets);
+        if (!liveBuckets) return out;
+        for (var k in liveBuckets) {
+            if (liveBuckets.hasOwnProperty(k) && liveBuckets[k] &&
+                liveBuckets[k].n >= LIVE_MIN_BUCKET && liveBuckets[k].p50 > 0) {
+                out[k] = liveBuckets[k];
+            }
+        }
+        return out;
+    }
+
+    (function loadLiveData() {
+        fetch(SHEETS_WEBHOOK, { redirect: 'follow' })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (!data || !data.overall || !data.overall.n) return;
+                if (data.overall.n < LIVE_MIN_TOTAL) {
+                    console.log('Live sample too small (n=' + data.overall.n + '), keeping fallback');
+                    return;
+                }
+                SALARY_DATA.overall = data.overall;
+                SALARY_DATA.roles = mergeBuckets(data.roles, SALARY_DATA_FALLBACK.roles);
+                SALARY_DATA.yoe = mergeBuckets(data.yoe, SALARY_DATA_FALLBACK.yoe);
+                if (data.totalComp) {
+                    SALARY_DATA.totalComp = {
+                        roles: mergeBuckets(data.totalComp.roles, SALARY_DATA_FALLBACK.totalComp.roles),
+                        yoe: mergeBuckets(data.totalComp.yoe, SALARY_DATA_FALLBACK.totalComp.yoe),
+                        overall: (data.totalComp.overall && data.totalComp.overall.n >= LIVE_MIN_TOTAL)
+                            ? data.totalComp.overall
+                            : SALARY_DATA_FALLBACK.totalComp.overall
+                    };
+                }
+                console.log('Live data loaded: ' + data.totalEntries + ' entries');
+            })
+            .catch(function() {
+                console.log('Using fallback data');
+            });
+    })();
+
+    var ROLE_ORDER = ['APM', 'PM', 'Senior PM', 'Lead/Principal', 'Director+', 'VP/Head/CPO'];
+    var YOE_ORDER  = ['0-1', '1-3', '3-5', '6-8', '9-12', '13+'];
+
+    function yoeToBucket(years) {
+        var y = parseFloat(years);
+        if (isNaN(y) || y < 0) return null;
+        if (y <= 1) return '0-1';
+        if (y <= 3) return '1-3';
+        if (y <= 5) return '3-5';
+        if (y <= 8) return '6-8';
+        if (y <= 12) return '9-12';
+        return '13+';
+    }
 
     /* ── Utilities ── */
     function formatEUR(n) {
@@ -693,40 +1163,195 @@
         return 99;
     }
 
-    function adjustDist(dist, city) {
-        var mult = SALARY_DATA.cityMultipliers[city] || 1.0;
-        var out = {};
-        for (var k in dist) out[k] = Math.round(dist[k] * mult);
-        return out;
-    }
+    /* City data not yet available — all cities use Portugal-wide data */
+
+    /* ── City "Other" toggle ── */
+    $('#input-city').on('change', function() {
+        if (this.value === 'Other') {
+            $('#input-city-other').show().attr('required', true).focus();
+        } else {
+            $('#input-city-other').hide().removeAttr('required').val('');
+        }
+    });
+
+    /* ── Perks toggle ── */
+    $('#has-perks').on('change', function() {
+        if (this.checked) {
+            $('#total-comp-field').addClass('visible');
+        } else {
+            $('#total-comp-field').removeClass('visible');
+            $('#input-total-comp').val('');
+        }
+    });
 
     /* ── Slider live update ── */
     $('#input-perception').on('input', function() {
+        $(this).attr('data-touched', 'true');
         $('#perception-display').text(this.value + '%');
+    });
+
+    /* ── Validation helpers ── */
+    function clearValidation() {
+        $('.form-field-group').removeClass('has-error');
+        $('.field-error-msg').text('');
+        $('#form-error-banner').removeClass('visible');
+        $('#form-error-list').empty();
+    }
+    function setFieldError(step, messageId, message, bannerLabel, focusSelector) {
+        $('.form-field-group[data-step="' + step + '"]').addClass('has-error');
+        $('#' + messageId).text(message);
+        var $li = $('<li></li>');
+        var $a = $('<a></a>').text('Step ' + step + ': ' + bannerLabel).on('click', function(ev) {
+            ev.preventDefault();
+            var $el = $(focusSelector);
+            $('html, body').animate({ scrollTop: $el.offset().top - 100 }, 300);
+            setTimeout(function() { $el.focus(); }, 320);
+        });
+        $li.append($a);
+        $('#form-error-list').append($li);
+    }
+    /* Clear a field's error state as soon as the user edits it */
+    $('#input-salary, #input-total-comp, #input-role, #input-yoe, #input-city').on('input change', function() {
+        $(this).closest('.form-field-group').removeClass('has-error')
+               .find('.field-error-msg').text('');
+    });
+    $('#input-perception').on('input', function() {
+        $(this).closest('.form-field-group').removeClass('has-error')
+               .find('.field-error-msg').text('');
     });
 
     /* ── Form submit ── */
     $('#compare-form').on('submit', function(e) {
         e.preventDefault();
 
-        var salary  = parseInt($('#input-salary').val());
+        clearValidation();
+
+        var salaryRaw = $('#input-salary').val();
+        var salary  = parseInt(salaryRaw);
         var roleRaw = $('#input-role').val();
-        var yoe     = $('#input-yoe').val();
+        var yoeRaw  = $('#input-yoe').val();
+        var yoeNum  = parseFloat(yoeRaw);
         var city    = $('#input-city').val();
         var guess   = parseInt($('#input-perception').val());
+        var hasPerks = $('#has-perks').is(':checked');
+        var totalCompRaw = $('#input-total-comp').val();
+        var totalComp = hasPerks ? parseInt(totalCompRaw) : null;
 
-        if (!salary || !roleRaw || !yoe || !city) return;
+        var errors = 0;
+
+        /* Step 1 — base salary (and total comp when perks) */
+        if (salaryRaw === '' || isNaN(salary) || salary <= 0) {
+            setFieldError(1, 'error-salary',
+                'Enter your annual base salary in EUR (e.g. 45000).',
+                'enter your annual base salary',
+                '#input-salary');
+            errors++;
+        } else if (hasPerks) {
+            if (totalCompRaw === '' || isNaN(totalComp) || totalComp <= 0) {
+                setFieldError(1, 'error-salary',
+                    'You marked that you receive perks — please enter your total yearly compensation.',
+                    'enter your total compensation',
+                    '#input-total-comp');
+                errors++;
+            } else if (totalComp < salary) {
+                setFieldError(1, 'error-salary',
+                    'Total compensation must be equal to or higher than your base salary.',
+                    'total comp is lower than base salary',
+                    '#input-total-comp');
+                errors++;
+            }
+        }
+
+        /* Step 2 — role */
+        if (!roleRaw) {
+            setFieldError(2, 'error-role',
+                'Select your current product management role.',
+                'select your role',
+                '#input-role');
+            errors++;
+        }
+
+        /* Step 3 — years of experience */
+        if (yoeRaw === '' || isNaN(yoeNum)) {
+            setFieldError(3, 'error-yoe',
+                'Enter your years of experience in product management.',
+                'enter your years of experience',
+                '#input-yoe');
+            errors++;
+        } else if (yoeNum < 0 || yoeNum > 50) {
+            setFieldError(3, 'error-yoe',
+                'Years of experience must be between 0 and 50.',
+                'years of experience out of range',
+                '#input-yoe');
+            errors++;
+        }
+
+        /* Step 4 — city */
+        if (!city) {
+            setFieldError(4, 'error-city',
+                'Select the district where you are based.',
+                'select your district',
+                '#input-city');
+            errors++;
+        }
+
+        /* Step 5 — perception slider must be touched */
+        if ($('#input-perception').attr('data-touched') !== 'true') {
+            setFieldError(5, 'error-perception',
+                'Move the slider to guess what % of PMs earn less than you.',
+                'move the perception slider',
+                '#input-perception');
+            errors++;
+        }
+
+        if (errors > 0) {
+            $('#form-error-banner').addClass('visible');
+            var $firstErr = $('.form-field-group.has-error').first();
+            if ($firstErr.length) {
+                $('html, body').animate({ scrollTop: $firstErr.offset().top - 100 }, 300);
+            }
+            return;
+        }
+
+        var yoeBucket = yoeToBucket(yoeNum);
+
+        /* Store for combining with full survey later */
+        compareData = {
+            salary: salary,
+            totalComp: totalComp,
+            role: roleRaw,
+            yoe: yoeNum,
+            yoeBucket: yoeBucket,
+            city: city,
+            guess: guess
+        };
+
+        /* Save compare data to Google Sheets immediately (raw numeric YoE for later analysis) */
+        submitToSheets({
+            action: 'create',
+            id: sessionId,
+            baseSalary: salary,
+            totalComp: totalComp || '',
+            role: roleRaw,
+            yoe: yoeNum,
+            city: city,
+            perceptionGuess: guess
+        });
 
         var roleKey = SALARY_DATA.roleMap[roleRaw];
-        var overallPct = calcPercentile(salary, SALARY_DATA.overall);
-        var roleDist   = adjustDist(SALARY_DATA.roles[roleKey], city);
-        var rolePct    = calcPercentile(salary, roleDist);
+        /* Compare using total comp (base salary = total comp when no perks) */
+        var effectiveComp = totalComp || salary;
+        var overallPct = calcPercentile(effectiveComp, SALARY_DATA.totalComp.overall);
+        var rolePct    = calcPercentile(effectiveComp, SALARY_DATA.totalComp.roles[roleKey]);
 
         displayResults({
             salary: salary,
+            totalComp: totalComp,
+            effectiveComp: effectiveComp,
             role: roleRaw,
             roleKey: roleKey,
-            yoe: yoe,
+            yoe: yoeNum,
+            yoeBucket: yoeBucket,
             city: city,
             guess: guess,
             overallPct: overallPct,
@@ -737,24 +1362,28 @@
     /* ── Display results ── */
     function displayResults(d) {
         // Salary summary
-        $('#result-salary').text(formatEUR(d.salary) + ' gross / year');
-        $('#result-context').text(d.role + ' \u00B7 ' + d.yoe + ' years \u00B7 ' + d.city);
+        $('#result-salary').text(formatEUR(d.effectiveComp) + ' / year');
+        if (d.totalComp) {
+            $('#result-salary').append(' <span style="font-size:.5em;font-weight:400;color:var(--text-muted);">(perks included)</span>');
+        }
+        $('#result-context').text(d.role + ' \u00B7 ' + d.yoe + ' year' + (d.yoe === 1 ? '' : 's') + ' \u00B7 ' + d.city);
 
         // Show sections
         var $results = $('#results-section');
         $results.addClass('visible');
         $('#upsell-section').show();
 
-        // Animate distribution bar after a tick
+        // Animate distribution bar
         setTimeout(function() {
             var pct = Math.max(2, Math.min(98, d.overallPct));
             $('#dist-bar-fill').css('width', pct + '%');
             $('#dist-marker').css('left', pct + '%');
-            $('#dist-marker-label').css('left', pct + '%');
-            $('#dist-marker-label').text('You: ' + pct + '%');
         }, 100);
 
-        $('#dist-summary').html('You earn more than <strong>' + d.overallPct + '%</strong> of Product Managers in Portugal.');
+        $('#dist-summary').html('Your total compensation is higher than <strong>' + d.overallPct + '%</strong> of Product Managers in Portugal.');
+
+        // Hide the separate total comp section (no longer needed)
+        $('#total-comp-results').hide();
 
         // Perception vs reality
         $('#guess-value').text(d.guess + '%');
@@ -771,32 +1400,30 @@
         }
         $('#perception-text').text(pText);
 
-        // Breakdowns
-        renderBreakdown('roles', ROLE_ORDER, SALARY_DATA.roles, SALARY_DATA.roleLabels, d.roleKey, d.salary, d.city);
-        renderBreakdown('yoe', YOE_ORDER, SALARY_DATA.yoe, null, d.yoe, d.salary, d.city);
-        renderBreakdown('city', CITY_ORDER, null, null, d.city, d.salary, null);
+        // Breakdowns (using total comp data)
+        renderBreakdown('roles', ROLE_ORDER, SALARY_DATA.totalComp.roles, SALARY_DATA.roleLabels, d.roleKey, d.effectiveComp);
+        renderBreakdown('yoe', YOE_ORDER, SALARY_DATA.totalComp.yoe, null, d.yoeBucket, d.effectiveComp);
+        renderSampleSize(d);
 
         // Scroll to results
         $('html, body').animate({ scrollTop: $results.offset().top - 70 }, 600);
     }
 
-    function renderBreakdown(id, order, dataSource, labels, userKey, userSalary, city) {
+    function renderBreakdown(id, order, dataSource, labels, userKey, userSalary) {
         var $container = $('#breakdown-' + id);
         $container.empty();
 
         var maxVal = 0;
 
-        // For city breakdown, compute city-adjusted overall medians
         var items = [];
         for (var i = 0; i < order.length; i++) {
             var key = order[i];
             var median;
             if (id === 'city') {
-                median = Math.round(SALARY_DATA.overall.p50 * (SALARY_DATA.cityMultipliers[key] || 1));
+                /* City data not yet segmented — use overall Portugal median for all */
+                median = SALARY_DATA.overall.p50;
             } else {
-                var dist = dataSource[key];
-                if (city && id !== 'city') dist = adjustDist(dist, city);
-                median = dist.p50;
+                median = dataSource[key].p50;
             }
             if (median > maxVal) maxVal = median;
             items.push({ key: key, median: median });
@@ -840,6 +1467,39 @@
                 })($fill, pct);
             }
         }, 200);
+    }
+
+    function renderSampleSize(d) {
+        var $container = $('#breakdown-sample');
+        $container.empty();
+
+        var roleData = SALARY_DATA.totalComp.roles[d.roleKey];
+        var yoeData = SALARY_DATA.totalComp.yoe[d.yoeBucket];
+
+        var items = [
+            { label: 'Total respondents (Portugal)', value: SALARY_DATA.totalComp.overall.n },
+            { label: 'Your role (' + (SALARY_DATA.roleLabels[d.roleKey] || d.roleKey) + ')', value: roleData ? roleData.n : 0 },
+            { label: 'Your experience (' + d.yoeBucket + ' yrs)', value: yoeData ? yoeData.n : 0 }
+        ];
+
+        for (var i = 0; i < items.length; i++) {
+            var $row = $('<div class="breakdown-bar-row"></div>');
+            $row.append(
+                '<div class="breakdown-bar-label">' +
+                '<span class="name">' + items[i].label + '</span>' +
+                '<span class="value" style="font-size:.875rem;font-weight:700;color:var(--near-black);">' + items[i].value + '</span>' +
+                '</div>'
+            );
+            var pct = Math.round((items[i].value / SALARY_DATA.totalComp.overall.n) * 100);
+            var $track = $('<div class="breakdown-bar-track"></div>');
+            var $fill = $('<div class="breakdown-bar-fill bar-default" style="opacity:.4;"></div>');
+            $track.append($fill);
+            $row.append($track);
+            $container.append($row);
+            (function(el, width) {
+                setTimeout(function() { el.css('width', width + '%'); }, 50);
+            })($fill, pct);
+        }
     }
 
 })();
