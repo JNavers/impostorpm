@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<!-- This website/webapp was created in Softr. https://www.softr.io -->
+<!-- Last Published: Wed, February 18 2026 13:11:59 -->
+<html lang="en-US" dir="ltr">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <link rel="preconnect" href="https://assets.softr-files.com">
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+      crossorigin="anonymous">
+    <script>
+        const reactDefaultThemes = {defaultBaseTextSize: '16px',defaultBodyFont: 'Inter',defaultBodyFontWeight: '300',defaultBodyTextColor: '#000000',defaultButtonBackgroundColor: '#000000',defaultButtonRoundness: '.25rem',defaultRoundButtonsAndInputs: false,defaultButtonTextColor: '#ffffff',defaultContainerStyle: 'container',defaultTitleFont: 'Inter',defaultTitleFontWeight: '700',defaultTitleTextColor: '#000000',defaultSize: 'M',defaultBackgroundColor: '#ffffff',defaultShadow: true,defaultBackgroundStyle: 'HIGHLIGHTED',defaultSurfaceColor: '#ffffff',defaultSuccessColor: '#41D33E',defaultWarningColor: '#F8D313',defaultDangerColor: '#F73730',defaultNavigationDesktopTop: 'softAccent',defaultNavigationDesktopSide: 'regular',defaultNavigationMobileTop: 'softAccent',defaultNavigationMobileSide: 'regular',defaultNavigationMobileBottom: 'regular'};
+    </script>
+        <script>window.isNavigationTransitionsEnabled = true; window.isViteBuildEnabled = true; </script>
+        <script src="https://assets.softr-files.com/softr-blocks/prod/libs/softr-page-renderer/softr-page-renderer.min.js?t=1751533621"></script>
+
+<meta name="twitter:title" content="The Impostor Product Manager">
+<meta property="twitter:title" content="The Impostor Product Manager">
+<meta property="og:title" content="The Impostor Product Manager">
+<meta name="twitter:description" content="Made with Softr, the easiest way to turn your data into portals and internal tools.">
+<meta property="twitter:description" content="Made with Softr, the easiest way to turn your data into portals and internal tools.">
+<meta property="og:description" content="Made with Softr, the easiest way to turn your data into portals and internal tools.">
+<meta property="og:image" content="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/c2c50dd2-9114-4a82-98d0-e8e753faa95e.png">
+<meta name="twitter:image" content="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/c2c50dd2-9114-4a82-98d0-e8e753faa95e.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:url" content="https://www.impostor.pm/">
+<meta property="twitter:url" content="https://www.impostor.pm/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Impostor PM">
+
+<title>Impostor PM</title>
+<meta name="description" content="Made with Softr, the easiest way to turn your data into portals and internal tools.">
+
+
+<link rel="icon" type="image/x-icon" href="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8cb113e8-f737-4f66-b912-03b02e1b1406.png?rnd=1693995031718"/>
+
+
+<link rel="canonical" href="https://www.impostor.pm/" />
+<link href="https://fonts.softr-files.com/google/api/css?family=Inter:100,200,300,400,500,600,700,800,900&display=block" rel="stylesheet">
+
+<link href="https://assets.softr-files.com/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+
+<style type="text/css">
+
+    html {
+        scroll-behavior: smooth;
+        font-size: 16px;
+        overflow-x: hidden;
+        background-color: #ffffff;
+    }
+
+    body {
+        /* fallback for devices that do not support dvh units */
+        min-height: 100vh;
+        min-height: 100dvh;
+        /* reboot.css sets its own background, but we want it to match our theme */
+        background-color: inherit;
+    }
+
+    .container {
+        max-width: 100%;
+    }
+
+    @media (min-width: 576px) {
+        .container {
+            max-width: 540px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .navbar-brand img {
+            max-width: 15rem !important;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .container {
+            max-width: 720px;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .container {
+            max-width: 960px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .container {
+            max-width: 1140px;
+        }
+    }
+
+    p, h1, h2, h3, h4, h5, small {
+        white-space: pre-line;
+    }
+
+    @media screen and (max-width: 768px) {
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+    }
+
+    h1.sw-font-family-default,
+    h2.sw-font-family-default,
+    h3.sw-font-family-default {
+        font-family: "Inter";
+    }
+
+    h1.sw-font-weight-default,
+    h2.sw-font-weight-default,
+    h3.sw-font-family-default {
+        font-weight: 700;
+    }
+
+    h1.sw-text-color-default,
+    h2.sw-text-color-default,
+    h3.sw-font-family-default {
+        color: #000000;
+    }
+
+    section.sw-font-family-default,
+    header.sw-font-family-default,
+    nav.sw-font-family-default,
+    footer.sw-font-family-default,
+    div.sw-font-family-default,
+    span.sw-font-family-default,
+    small.sw-font-family-default,
+    pre.sw-font-family-default,
+    p.sw-font-family-default,
+    b.sw-font-family-default,
+    li.sw-font-family-default,
+    ul.sw-font-family-default,
+    a.sw-font-family-default,
+    h4.sw-font-family-default,
+    h5.sw-font-family-default,
+    h6.sw-font-family-default {
+        font-family: "Inter";
+    }
+
+    span.sw-font-weight-default,
+    li.sw-font-weight-default span,
+    small.sw-font-weight-default,
+    li.sw-font-weight-default small,
+    pre.sw-font-weight-default,
+    p.sw-font-weight-default,
+    h4.sw-font-weight-default,
+    h5.sw-font-weight-default,
+    h6.sw-font-weight-default {
+        font-weight: 300;
+    }
+
+    span.sw-text-color-default,
+    li.sw-text-color-default span,
+    small.sw-text-color-default,
+    li.sw-text-color-default small,
+    pre.sw-text-color-default,
+    p.sw-text-color-default,
+    div.sw-text-color-default,
+    h4.sw-text-color-default,
+    h5.sw-text-color-default,
+    h6.sw-text-color-default {
+        color: #000000;
+    }
+
+    input.sw-font-family-default,
+    textarea.sw-font-family-default {
+        font-family: "Inter";
+    }
+
+    input.sw-font-weight-default,
+    textarea.sw-font-weight-default {
+        font-weight: 300;
+    }
+
+    .sw-font-family-default::-webkit-input-placeholder,
+    .sw-font-family-default::-moz-placeholder,
+    .sw-font-family-default:-ms-input-placeholder,
+    .sw-font-family-default:-moz-placeholder {
+        font-family: "Inter";
+    }
+
+    .sw-font-family-default::-webkit-input-placeholder,
+    .sw-font-family-default::-moz-placeholder,
+    .sw-font-family-default:-ms-input-placeholder,
+    .sw-font-family-default:-moz-placeholder {
+        font-weight: 300;
+    }
+
+    .sw-text-color-default[data-element='button'] {
+        color: #ffffff;
+    }
+
+    .sw-background-color-default[data-element='button'] {
+        background-color: #000000;
+    }
+
+    .sw-border-radius-default[data-element='button'] {
+        border-radius: .25rem;
+    }
+
+    /* Micromodal styles */
+    .sw-modal {
+        display: none;
+    }
+
+    .sw-modal.is-open {
+        display: block;
+    }
+
+    .sw-modal .sw-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .sw-modal .sw-modal-container {
+        background-color: #FFFFFF;
+        padding: 40px 10px 10px 10px;
+        overflow-y: auto;
+        box-sizing: border-box;
+        position: relative;
+        margin: auto;
+        border-radius: 16px;
+    }
+
+    .sw-modal #sw-modal-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sw-modal .sw-modal-close {
+        background: transparent;
+        border: 0;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+    .sw-modal-close:focus {
+        outline: none;
+    }
+
+    .sw-modal .sw-modal-iframe {
+        border: none;
+    }
+
+    .sw-modal-size-sm {
+        width: 464px;
+        height: 350px;
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+
+
+    .sw-modal-size-md {
+        width: 755px;
+        height: 600px;
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+
+    .sw-modal-size-lg {
+        width: 1196px;
+        height: 780px;
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+
+    .sw-modal-size-xl {
+        width: 95vw;
+        height: 95vh;
+    }
+
+    .sw-modal-container > div, #sw-modal-content, #sw-modal-content iframe {
+        width: 100%;
+        height: 100%;
+    }
+
+    .sw-modal-close:before {
+        content: "\2715";
+    }
+
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
+    }
+
+
+</style>
+
+<style>
+    .sw-font-size-3xl {
+        font-size: 2rem;
+    }
+    .sw-font-size-4xl {
+        font-size: 2.25rem;
+    }
+    .sw-font-size-5xl {
+        font-size: 3rem;
+    }
+
+</style>
+
+<!-- App Integrations -->
+<!-- Global site tag (gtag.js) - Google Analytics --><script data-iub-purposes="4" class="_iub_cs_activate" type="text/plain" async src="https://www.googletagmanager.com/gtag/js?id=G-Q4C4RYPLP5"></script><script data-iub-purposes="4" class="_iub_cs_activate" type="text/plain">window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-Q4C4RYPLP5', { 'anonymize_ip': true });</script><!-- End Global site tag (gtag.js) - Google Analytics --><!-- Google map script --><script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByFQ9V6QMY4mYT9QL8K-FjJ6wXdodfyIY&libraries=places&callback=Function.prototype"></script><!-- End Google map script --><!-- Iubenda --><script type="text/javascript"> var _iub = _iub || []; _iub.csConfiguration = {"askConsentAtCookiePolicyUpdate":true,"countryDetection":true,"enableLgpd":true,"enableUspr":true,"lang":"en","lgpdAppliesGlobally":false,"perPurposeConsent":true,"siteId":3185998,"whitelabel":false,"cookiePolicyId":26472145, "banner":{ "acceptButtonCaptionColor":"#1E1E1E","acceptButtonColor":"#FFEF99","acceptButtonDisplay":true,"backgroundColor":"#FFFFFF","closeButtonDisplay":false,"customizeButtonColor":"#1E1E1E","customizeButtonDisplay":true,"explicitWithdrawal":true,"fontSizeBody":"12px","listPurposes":true,"logo":null,"linksColor":"#FFAE63","position":"float-bottom-right","rejectButtonCaptionColor":"#1E1E1E","rejectButtonColor":"#FFEF99","rejectButtonDisplay":true,"textColor":"#1E1E1E" }}; </script> <script type="text/javascript" src="//cdn.iubenda.com/cs/gpp/stub.js"></script> <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script><!-- End Iubenda --><!-- HotJar --><script data-iub-purposes="4" class="_iub_cs_activate" type="text/plain">(function(h,o,t,j,a,r){h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};h._hjSettings={hjid:5000436,hjsv:6};a=o.getElementsByTagName('head')[0];r=o.createElement('script');r.async=1;r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;a.appendChild(r);})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');</script><!-- End HotJar -->
+<!-- End Integrations -->
+
+
+
+<script>window['application_context'] = {}; window['application_context']['policies'] ={"numberOfSupportedDomains":1,"canDisableSoftrBranding":false,"hasSoftrBrandingFooterBoundSupport":false,"numberOfDatasourceRecordsPerTable":1000,"numberOfInternalUsers":5,"numberOfExternalUsers":100,"supportedNumberOfMembershipUsers":100,"hasGoogleAuthenticationSupport":true,"hasSamlAuthenticationSupport":false,"hasOpenIdAuthenticationSupport":false,"hasUserLastSeenSupport":false,"hasUserAuthOneTimeCodeSupport":false,"has2faSupport":false,"hasAdvancedSecuritySupport":false,"numberOfDaysApplicationHistory":7,"hasCustomCodeSupport":false,"hasEmbedBlockSupport":false,"hasTransferApplicationsAcrossWorkspace":false,"hasPwaSupport":false,"hasDynamicAppLogoSupport":false,"hasSignatureFieldSupport":false,"hasFormConditionsSupport":false,"hasTransferOwnershipSupport":null,"hasActionButtonRecordLevelVisibilitySupport":false,"hasActionButtonCustomUserGroupVisibilitySupport":false,"numberOfUsersInWorkspace":null,"numberOfCustomUserGroups":null,"numberOfPublishedApplications":null,"restrictedDataSources":["CLICKUP","MONDAY","SUPABASE","HUBSPOT","GOOGLE_BIGQUERY","MYSQL","POSTGRESQL","SQL_SERVER","MARIADB"],"restrictedBlocks":["calendar","chart","org-chart","inbox","kanban","signin-with-code","signin-with-phone"],"hasInlineEditingSupport":false,"hasFilteredUserSyncSupport":false,"restrictedActions":["TRIGGER_WEBHOOK"],"hasEditAddFormOptionFilterSupport":null,"hasCustomEmailSenderSupport":true,"hasSoftrApiSupport":false,"hasDomainRestrictedSignUpSupport":true,"supportedDataRestrictionOperations":["VIEW"],"hasHideBlockOnDetailsPageSupport":true,"hasOptionFilterSupport":false,"hasCustomDomainAddOnSupport":false,"hasUserAddOnSupport":false,"numberOfAiCredits":500,"workflowsMaxExecutionTimeSeconds":300,"workflowsMinimumPollingIntervalSeconds":900,"numberOfWorkflowActionExecutionsPerMonth":500,"restrictedWorkflowActions":["CALL_API","CUSTOM_CODE","OPEN_AI_SEND_PROMPT","OPEN_AI_WRITE_TEXT","OPEN_AI_SUMMARIZE_TEXT","OPEN_AI_CATEGORISE_TEXT","ANTHROPIC_AI_SEND_PROMPT","ANTHROPIC_AI_WRITE_TEXT","ANTHROPIC_AI_SUMMARIZE_TEXT","ANTHROPIC_AI_CATEGORISE_TEXT","GEMINI_AI_CATEGORISE_TEXT","GEMINI_AI_SEND_PROMPT","GEMINI_AI_SUMMARIZE_TEXT","GEMINI_AI_WRITE_TEXT","MISTRAL_AI_CATEGORISE_TEXT","MISTRAL_AI_SEND_PROMPT","MISTRAL_AI_SUMMARIZE_TEXT","MISTRAL_AI_WRITE_TEXT"],"restrictedWorkflowTriggers":["WEBHOOK"],"hasApplicationLevelCommentsSupport":false,"numberOfSupportedSoftrDatabaseRecordsPerWorkspace":5000,"numberOfSupportedSoftrDatabaseRecordsPerDatabase":1000,"supportedSoftrDatabaseStorageSizePerWorkspace":1000000000}; window['application_context']['date_and_time_settings'] = {"formatSettings":{"type":"LOCAL","localSettings":{"localizeDayAndMonth":true},"fixedSettings":null},"timezoneSettings":{"type":"LOCAL","fixedTimezone":null}}; window['application_context']['number_formatting_settings'] = {"type":"LOCAL","fixedLocale":"en-US"}; window['application_context']['global_search_settings'] = {"enabled":false,"searchPlaceholder":"Search","initialStateMessage":"Type something to start searching","initialStateImage":null,"noResultsMessage":"No results found","noResultsImage":null,"backdrop":null}; window['application_context']['user_settings'] = {"authSettings":{"loginEnabled":false,"authenticationMethods":["EMAIL"],"signUpSettings":{"policy":"DISABLED","allowedDomains":[]},"userSessionExpiration":"90_DAYS","userInactivityTimeout":"NEVER","emailAuthSettings":{"loginMethods":["PASSWORD"],"passwordSettings":{"inputLabel":"Password","inputPlaceholder":"Enter your password","forgotPasswordText":"Forgot password","incorrectPasswordText":"Incorrect password.","newPasswordLabel":"New password","newPasswordPlaceholder":"Set a secure password","strongPasswords":true,"minimumCharactersText":"At least 12 characters","upperAndLowerCaseText":"1 uppercase & 1 lowercase","numberText":"1 number (0-9)","symbolText":"1 symbol (!@#$%^&*)","repeatPasswordLabel":"Repeat password","repeatPasswordPlaceholder":"Repeat your password","passwordsDontMatchText":"Passwords don't match."},"emailOneTimeCodeSettings":{"expiration":"5_MINUTES","inputLabel":"Verification code","inputPlaceholder":"Enter verification code","resendText":"Resend","invalidCodeText":"Invalid code."},"secondaryLoginMethods":[],"smsOneTimeCodeSettings":null,"authenticatorSettings":null,"inputLabel":"Email","inputPlaceholder":"Enter your email"},"googleSettings":{"clientId":null,"clientSecret":null,"userType":"INTERNAL","emailDomains":[]},"ssoSettings":{"type":"SAML","emailDomains":[],"saml":{"acsUrl":null,"audienceUrl":null,"metadataXml":null,"emailKey":null,"firstNameKey":null,"lastNameKey":null},"openId":{"callbackUrl":null,"providerUrl":null,"tokenServiceUrl":null,"clientId":null,"clientSecret":null}}},"autoInvite":false}; window['application_context']['application_logo'] = {"type":"IMAGE","icon":{"logo":"","text":""},"image":{"horizontal":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/fb9f1c1d-37a7-4cef-a941-f641af8776b0.svg","square":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/fb9f1c1d-37a7-4cef-a941-f641af8776b0.svg"}}; window['application_context']['user_connection'] = null; </script>
+
+<style>
+ .sw-font-size-5xl {
+    font-size: 3rem;
+  }
+  .sw-font-size-4xl {
+    font-size: 2.25rem;
+  }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if($(window).width() < 768) {
+       $('h1.sw-font-size-10xl').removeClass('sw-font-size-10xl').addClass('sw-font-size-5xl');
+       $('h1.sw-font-size-9xl').removeClass('sw-font-size-9xl').addClass('sw-font-size-5xl');
+       $('h1.sw-font-size-8xl').removeClass('sw-font-size-8xl').addClass('sw-font-size-5xl');
+       $('h1.sw-font-size-7xl').removeClass('sw-font-size-7xl').addClass('sw-font-size-5xl');
+       $('h1.sw-font-size-6xl').removeClass('sw-font-size-6xl').addClass('sw-font-size-4xl');
+       $('h2.sw-font-size-10xl').removeClass('sw-font-size-10xl').addClass('sw-font-size-5xl');
+       $('h2.sw-font-size-9xl').removeClass('sw-font-size-9xl').addClass('sw-font-size-5xl');
+       $('h2.sw-font-size-8xl').removeClass('sw-font-size-8xl').addClass('sw-font-size-5xl');
+       $('h2.sw-font-size-7xl').removeClass('sw-font-size-7xl').addClass('sw-font-size-5xl');
+       $('h2.sw-font-size-6xl').removeClass('sw-font-size-6xl').addClass('sw-font-size-4xl');
+       $('div.sw-font-size-10xl').removeClass('sw-font-size-10xl').addClass('sw-font-size-5xl');
+       $('div.sw-font-size-9xl').removeClass('sw-font-size-9xl').addClass('sw-font-size-5xl');
+       $('div.sw-font-size-8xl').removeClass('sw-font-size-8xl').addClass('sw-font-size-5xl');
+       $('div.sw-font-size-7xl').removeClass('sw-font-size-7xl').addClass('sw-font-size-5xl');
+       $('div.sw-font-size-6xl').removeClass('sw-font-size-6xl').addClass('sw-font-size-4xl');
+       $('p.sw-font-size-10xl').removeClass('sw-font-size-10xl').addClass('sw-font-size-5xl');
+       $('p.sw-font-size-9xl').removeClass('sw-font-size-9xl').addClass('sw-font-size-5xl');
+       $('p.sw-font-size-8xl').removeClass('sw-font-size-8xl').addClass('sw-font-size-5xl');
+       $('p.sw-font-size-7xl').removeClass('sw-font-size-7xl').addClass('sw-font-size-5xl');
+       $('p.sw-font-size-6xl').removeClass('sw-font-size-6xl').addClass('sw-font-size-4xl');
+       $('span.sw-font-size-10xl').removeClass('sw-font-size-10xl').addClass('sw-font-size-5xl');
+       $('span.sw-font-size-9xl').removeClass('sw-font-size-9xl').addClass('sw-font-size-5xl');
+       $('span.sw-font-size-8xl').removeClass('sw-font-size-8xl').addClass('sw-font-size-5xl');
+       $('span.sw-font-size-7xl').removeClass('sw-font-size-7xl').addClass('sw-font-size-5xl');
+       $('span.sw-font-size-6xl').removeClass('sw-font-size-6xl').addClass('sw-font-size-4xl');
+    }
+  });
+</script>
+
+
+
+
+<script>window['is401Page'] = false; </script>
+
+
+<script>
+    const BlocksRenderedEventName = "@softr/page-content-loaded";
+</script>
+
+<!--Adds show-toolbar=true into action button query param only for softr.io templates preview flow. TODO uncomment after redirections are fixed-->
+<!--<script>-->
+<!--    setTimeout(() => {-->
+<!--        if (!window.location.href.includes('https://www.softr.io/templates')) {-->
+<!--            return;-->
+<!--        }-->
+<!--        const heroElement = document.getElementById('hero1');-->
+<!--        if (!heroElement) {-->
+<!--            return;-->
+<!--        }-->
+<!--        const links = heroElement.querySelectorAll('a');-->
+<!--        links.forEach(link => {-->
+<!--            const href = link.getAttribute('href');-->
+<!--            // if conditions:-->
+<!--            // 1. if href is not empty for a tag-->
+<!--            // 2. if href does not contain the softr.io dashboard link (hero "Use Template" button)-->
+<!--            // 3. if href does not already contain the show-toolbar=true query param-->
+<!--            // 4. if href contains http or https (that is if not the 'open-page' action when href is like href="/my-page", as it's handled from BE)-->
+<!--            if (href && !href.includes('https://studio.softr.io/dashboard') && !href.includes('show-toolbar=true') && (href.includes("https://") || href.includes("http://"))) {-->
+<!--                if (href.includes('?')) {-->
+<!--                    link.setAttribute('href', href + '&show-toolbar=true');-->
+<!--                } else {-->
+<!--                    link.setAttribute('href', href + '?show-toolbar=true');-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+<!--    }, 2000);-->
+<!--</script>-->
+
+<script>
+    function applyMobileTextSizesForV4Blocks() {
+        const width = window.innerWidth;
+
+        const largeElements = [
+            'h1.sw-font-size-10xl', 'h1.sw-font-size-9xl', 'h1.sw-font-size-8xl', 'h1.sw-font-size-7xl',
+            'h2.sw-font-size-10xl', 'h2.sw-font-size-9xl', 'h2.sw-font-size-8xl', 'h2.sw-font-size-7xl',
+            'h3.sw-font-size-10xl', 'h3.sw-font-size-9xl', 'h3.sw-font-size-8xl', 'h3.sw-font-size-7xl',
+            'div.sw-font-size-10xl', 'div.sw-font-size-9xl', 'div.sw-font-size-8xl', 'div.sw-font-size-7xl',
+            'p.sw-font-size-10xl', 'p.sw-font-size-9xl', 'p.sw-font-size-8xl', 'p.sw-font-size-7xl',
+            'span.sw-font-size-10xl', 'span.sw-font-size-9xl', 'span.sw-font-size-8xl', 'span.sw-font-size-7xl',
+        ];
+
+        const smallElements = [
+            'h1.sw-font-size-6xl', 'h2.sw-font-size-6xl', 'h3.sw-font-size-6xl', 'div.sw-font-size-6xl', 'p.sw-font-size-6xl', 'span.sw-font-size-6xl',
+        ];
+
+        if (width < 576) {
+            largeElements.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => {
+                    el.classList.remove(selector.split('.').slice(1).join(' '));
+                    el.classList.add('sw-font-size-4xl');
+                });
+            });
+
+            smallElements.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => {
+                    el.classList.remove(selector.split('.').slice(1).join(' '));
+                    el.classList.add('sw-font-size-3xl');
+                });
+            });
+        } else if (width < 768) {
+            largeElements.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => {
+                    el.classList.remove(selector.split('.').slice(1).join(' '));
+                    el.classList.add('sw-font-size-5xl');
+                });
+            });
+
+            smallElements.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => {
+                    el.classList.remove(selector.split('.').slice(1).join(' '));
+                    el.classList.add('sw-font-size-4xl');
+                });
+            });
+        }
+    }
+</script>
+
+<!-- This script synchronizes the query parameters and path of the top window with those of the iframe.
+     It updates the top window's URL, and include any query parameters from the iframe's URL
+     when the iframe's path is redirected. -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (shouldNotReplaceTopWithCurrent()) {
+            return;
+        }
+        try {
+            const currentUrl = new URL(window.location.href);
+            const topUrl = new URL(window.top.location.href);
+
+            const currentParams = new URLSearchParams(currentUrl.search);
+            const topParams = new URLSearchParams(topUrl.search);
+
+            for (const [key, value] of topParams) {
+                // do not append duplicate query parameters
+                if (!currentParams.has(key) && !Array.from(currentParams).some(([k, v]) => k === key)) {
+                    currentParams.append(key, value);
+                }
+            }
+
+            currentUrl.search = currentParams.toString();
+            window.top.history.pushState(null, '', currentUrl.toString());
+        } catch (error) {
+            console.error("An error occurred while updating query parameters:", error);
+        }
+    });
+
+    function shouldNotReplaceTopWithCurrent() {
+        if (window.location.href.split('?')[0] === window.top.location.href.split('?')[0]) {
+            return true;
+        }
+
+        if ("false" !== "true" && !window.top.location.href.includes(".preview.")) {
+            return true;
+        }
+
+        if ("false" === "true" || window.location.href.includes("viewMode=modal") || window.location.href.includes("viewMode%3Dmodal")) {
+            return true;
+        }
+
+        return false;
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        window.parent.postMessage({ name: 'previewIframeLoaded' }, '*');
+    });
+    /** Image lineup on mobile **/
+    window.addEventListener(BlocksRenderedEventName, function () {
+        function changeImageDirectionsOnMobile() {
+
+            const classListSection = $('body>div>section')?.attr('class')?.split(/\s+/);
+            const textClassSection = classListSection?.find(cls => cls.startsWith('feature'));
+
+            const classListHeader = $('body>div>header')?.attr('class')?.split(/\s+/);
+            const textClassHeader = classListHeader?.find(cls => cls.startsWith('hero'));
+
+            /*If FEATURE block*/
+            if (textClassSection) {
+                findRowsWidthImageAndReverse(textClassSection)
+            }
+
+            /*If HERO block*/
+            if (textClassHeader) {
+                findRowsWidthImageAndReverse(textClassHeader)
+            }
+        }
+
+        function findRowsWidthImageAndReverse(textClass) {
+            const rowsWithImages = $('.' + textClass + ' .row.align-items-center').has('img').toArray();
+            const rowsWithLeftSideImages = rowsWithImages.filter(row => {
+                return $(row).children().first().children().first().prop("tagName") === 'IMG';
+            });
+
+
+            rowsWithLeftSideImages.forEach(row => {
+                if ($(window).width() <= 768) {
+                    row.classList.add('flex-column-reverse')
+                }
+            });
+        }
+
+        if ($(window).width() <= 768) {
+            changeImageDirectionsOnMobile();
+        }
+    });
+
+    /** BG Size on mobile **/
+    window.addEventListener(BlocksRenderedEventName, function () {
+        if ($(window).width() <= 768) {
+            var element = $('section.sw-background-size-auto, header.sw-background-size-auto');
+            element.removeClass('sw-background-size-auto');
+            element.css('background-size', 'cover');
+
+            $('section.sw-background-attachment-fixed, header.sw-background-attachment-fixed').removeClass('sw-background-attachment-fixed');
+        }
+    });
+
+    /** Disable zoom on mobile **/
+    window.addEventListener(BlocksRenderedEventName, function () {
+        if ($(window).width() <= 768) {
+            $('input.sw-font-size-s').removeClass('sw-font-size-s');
+            $('textarea.sw-font-size-s').removeClass('sw-font-size-s');
+            $('select.sw-font-size-s').removeClass('sw-font-size-s');
+        }
+    });
+
+    window.addEventListener('user-sign-out', (e) => {
+        const message = {
+            name: 'user-sign-out-triggered',
+        };
+
+        window.parent.postMessage(message, '*');
+    });
+
+    function isSafari() {
+        const chromeAgent = window.navigator.userAgent.includes("Chrome");
+        const safariAgent = window.navigator.userAgent.includes("Safari");
+
+        // Google Chrome also contains "Safari" user agent.
+        return safariAgent && !chromeAgent;
+    }
+</script>
+
+<style>
+    @media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
+        .progressier-widget {
+            display: none !important;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+
+<div id="page-content" data-appsubdomain="impostor.softr.app" data-appid="b27d0a29-3518-4993-9f9d-454d45073bd1" data-pageId="2dbc9b6b-dcf0-43f0-adec-42c6e98b4392" data-workspaceid="5beccba2-59a1-4209-8acc-8398de8c83a6" data-paymentplan="" class="content">
+
+</div>
+
+
+<!-- Scripts -->
+<script src="https://assets.softr-files.com/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="https://assets.softr-files.com/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+  crossorigin="anonymous">
+</script>
+<script src="https://assets.softr-files.com/libs/micromodal/0.4.10/micromodal.min.js"></script>
+
+<script>
+    /** this function is called from list blocks (do not delete) **/
+    function openSwModal(url, size) {
+        MicroModal.init({
+            disableScroll: true,
+            awaitOpenAnimation: true,
+            awaitCloseAnimation: true
+        });
+
+        MicroModal.show("sw-modal");
+
+        const iframeElem = document.querySelector(".sw-modal-iframe");
+        const modalContainer = document.querySelector(".sw-modal-container");
+
+        const viewModeParam = "viewMode=modal";
+        const urlIsLocal = url.startsWith('#') || url.startsWith('/') || url.startsWith(window.location.origin);
+        const modalUrl = urlIsLocal ? (url.indexOf("?") !== -1 ? url + "&" + viewModeParam : url + "?" + viewModeParam) : url;
+        iframeElem.setAttribute("src", modalUrl);
+
+        modalContainer.classList.remove('sw-modal-size-sm', 'sw-modal-size-md', 'sw-modal-size-lg', 'sw-modal-size-xl');
+        modalContainer.classList.add('sw-modal-size-' + size);
+
+        setTimeout(() => {
+            // Add event listener to detect when the modal is closed
+            const closeButton = document.querySelector('.sw-modal-close');
+            const backdrop = document.querySelector('.sw-modal-overlay');
+
+            closeButton.addEventListener('click', resetIframe);
+            backdrop.addEventListener('click', resetIframe);
+        }, 1000)
+
+    }
+
+    const resetIframe = () => {
+        const iframeElem = document.querySelector('.sw-modal-iframe');
+        iframeElem.removeAttribute('src');
+    }
+</script>
+
+<script>
+    /** Bugfix on multiple ?recordId= issue **/
+    setInterval(function () {
+        $('section a').each(function () {
+            const href = $(this).attr('href');
+            if (href && href.includes('?recordId=')) {
+                const countOfRecords = (href.match(/\?recordId=/g) || []).length;
+                if (countOfRecords > 1) {
+                    const index = href.lastIndexOf('?recordId=');
+                    const cleanedHref = href.substring(0, index);
+                    $(this).attr('href', cleanedHref);
+                }
+            }
+        });
+    }, 1000);
+</script>
+
+<script type="text/javascript">
+    if (window.jQuery && window.jQuery.ajaxSetup) {
+        window.jQuery.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (settings && settings.url && (
+                    settings.url.includes('/integrations/airtable/')
+                    || settings.url.includes('/v1/applications/b27d0a29-3518-4993-9f9d-454d45073bd1')
+                    || settings.url.includes('/v1/comments')
+                    || settings.url.includes('/v3/comments')
+                    || settings.url.includes('/forms/form-to-email')
+                    || settings.url.includes('/forms/form-to-api'))
+                ) {
+                    xhr.setRequestHeader('softr-page-id', '2dbc9b6b-dcf0-43f0-adec-42c6e98b4392');
+                }
+            }
+        });
+    }
+
+    window['header1'] = {}; 
+window['hero2'] = {}; 
+window['feature-grid1'] = {}; 
+window['feature1'] = {}; 
+window['gallery1'] = {}; 
+window['cta1'] = {}; 
+window['custom-code1'] = {}; 
+window['cta2'] = {}; 
+window['partner1'] = {}; 
+window['home-footer2'] = {}; 
+var softrBlocks = [{"id":"d274cc97-ff2d-4aea-89ed-64c1326a3fd2","version":"5.0.5","hrid":"header1","name":"navigation","title":"Navigation","image":"https://assets.softr-files.com/assets/blocks/studio/list17-thumbnail.jpg","category":"Header","keywords":"header, simple, nav bar, navigation panel, sublinks, sub menu, navigation, sidebar, topbar","elements":{"definitions":{"link":{"type":"LINK","id":"ID","title":"TITLE","icon":"link-01","visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"],"predefined_user_group_type":"ALL_USERS"},"devices":["laptop","tablet","mobile"]},"action":{"id":"0","action":"OPEN_PAGE","options":{"destination":"/","openIn":"SELF","modalSize":"MD","modalSizeTypes":["SM","MD","LG","XL"],"modalType":"POPUP","modalTypes":["POPUP","SLIDING"],"openInTypes":["SELF","TAB","MODAL"],"detailsPageRecordIdentifierField":"","detailsPageRecordPrimaryField":""},"button":{}},"options":{"subtitle":{"type":"text","label":"Subtitle","value":"","required":false,"enabled":false,"placeholder":"A short text"}},"deletable":true},"category":{"type":"CATEGORY","id":"ID","title":"TITLE","icon":"folder","visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"],"predefined_user_group_type":"ALL_USERS"},"devices":["laptop","tablet","mobile"]},"children":[],"options":{"subMenuStyle":{"type":"select","label":"Sub-menu style","value":"SIMPLE_DROPDOWN","options":["SIMPLE_DROPDOWN","TABS","MEGA_MENU"],"optionsMeta":{"SIMPLE_DROPDOWN":{"label":"Simple dropdown"},"TABS":{"label":"Tabs"},"MEGA_MENU":{"label":"Mega menu"}}},"showIcons":{"type":"boolean","label":"Show icons","value":true},"fullWidth":{"type":"boolean","label":"Full-width","value":false}},"deletable":true},"userMenuItem":{"type":"LINK","id":"ID","title":"TITLE","icon":"link-01","visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["LOGGED_IN_USERS"],"predefined_user_group_type":"LOGGED_IN_USERS"},"devices":["laptop","tablet","mobile"]},"action":{"id":"1","action":"OPEN_PAGE","options":{"destination":"/","openIn":"SELF","modalSize":"MD","modalSizeTypes":["SM","MD","LG","XL"],"modalType":"POPUP","modalTypes":["POPUP","SLIDING"],"openInTypes":["SELF","TAB","MODAL"],"detailsPageRecordIdentifierField":"","detailsPageRecordPrimaryField":""},"button":{}},"options":{"subtitle":{"type":"text","label":"Subtitle","value":"","required":false,"enabled":false,"placeholder":"A short text"}},"deletable":true}},"container":{"styles":[{"type":"group","styles":[{"type":"control","controlType":"select","value":"accent","fallback":{"type":"VALUE","value":"default"},"options":["default","regular","accent","softAccent"],"optionsMeta":{"default":{"label":"Default"},"regular":{"label":"Regular"},"accent":{"label":"Accent"},"softAccent":{"label":"Soft accent"}},"label":"Top variant","key":"desktop.topVariant"},{"type":"control","controlType":"select","value":"softAccent","fallback":{"type":"VALUE","value":"default"},"options":["default","regular","accent","softAccent"],"optionsMeta":{"default":{"label":"Default"},"regular":{"label":"Regular"},"accent":{"label":"Accent"},"softAccent":{"label":"Soft accent"}},"label":"Side variant","key":"desktop.sideVariant"},{"type":"control","controlType":"size","value":null,"fallback":{"type":"THEME","key":"config.size"},"options":["S","M","L"],"label":"Size","key":"desktop.size"},{"type":"control","controlType":"roundness","value":null,"fallback":{"type":"THEME","key":"config.roundness"},"options":["NONE","SUBTLE","STANDARD","SMOOTH","CIRCULAR"],"label":"Roundness","key":"desktop.roundness"}],"expanded":false,"label":"Desktop"},{"type":"group","styles":[{"type":"control","controlType":"select","value":"accent","fallback":{"type":"VALUE","value":"default"},"options":["default","regular","accent","softAccent"],"optionsMeta":{"default":{"label":"Default"},"regular":{"label":"Regular"},"accent":{"label":"Accent"},"softAccent":{"label":"Soft accent"}},"label":"Top variant","key":"mobile.topVariant"},{"type":"control","controlType":"select","value":"softAccent","fallback":{"type":"VALUE","value":"default"},"options":["default","regular","accent","softAccent"],"optionsMeta":{"default":{"label":"Default"},"regular":{"label":"Regular"},"accent":{"label":"Accent"},"softAccent":{"label":"Soft accent"}},"label":"Drawer variant","key":"mobile.sideVariant"},{"type":"control","controlType":"select","value":"softAccent","fallback":{"type":"VALUE","value":"default"},"options":["default","regular","accent","softAccent"],"optionsMeta":{"default":{"label":"Default"},"regular":{"label":"Regular"},"accent":{"label":"Accent"},"softAccent":{"label":"Soft accent"}},"label":"Bottom variant","key":"mobile.bottomVariant"},{"type":"control","controlType":"size","value":null,"fallback":{"type":"THEME","key":"config.size"},"options":["S","M","L"],"label":"Size","key":"mobile.size"},{"type":"control","controlType":"roundness","value":null,"fallback":{"type":"THEME","key":"config.roundness"},"options":["NONE","SUBTLE","STANDARD","SMOOTH","CIRCULAR"],"label":"Roundness","key":"mobile.roundness"}],"expanded":false,"label":"Mobile"}],"options":{"title":{"type":"text","label":"Navigation name","value":"Navigation 1","required":true,"info":"An internal name for you to identify this navigation menu. You can create other versions of navigation by going to Page Settings > Navigation."}}},"layout":{"desktop":{"presets":{"items":[{"title":"Side","name":"side","image":"assets/img/blocks/navigation/desktop_side.svg"},{"title":"Top","name":"top","image":"assets/img/blocks/navigation/desktop_top.svg"},{"title":"Top & Side","name":"top_and_side","image":"assets/img/blocks/navigation/desktop_top_and_side.svg"}],"activePreset":"top"}},"mobile":{"presets":{"items":[{"title":"Bottom","name":"bottom","image":"assets/img/blocks/navigation/mobile_bottom.svg"},{"title":"Top","name":"top","image":"assets/img/blocks/navigation/mobile_top.svg"},{"title":"Top & Bottom","name":"top_and_bottom","image":"assets/img/blocks/navigation/mobile_top_and_bottom.svg"}],"activePreset":"top"}}},"logo":{"desktop":{"size":{"type":"imageShape","label":"Size","value":"1:2","options":["1:2","1:1"]}},"mobile":{"size":{"type":"imageShape","label":"Size","value":"1:2","options":["1:2","1:1"]},"position":{"type":"alignment","label":"Position","value":"START_X","options":["START_X","CENTER_X"]}}},"links":{"desktop":{"hierarchyTreeLines":{"type":"boolean","label":"Show hierarchy tree lines","value":true,"info":"Vertical lines that appear under expanded categories."},"showIcons":{"type":"boolean","label":"Show icons","value":false},"position":{"type":"alignment","label":"Position","value":"END_X","options":["START_X","CENTER_X","END_X"]}},"mobile":{"labels":{"type":"boolean","label":"Show labels","value":true},"showIcons":{"type":"boolean","label":"Show icons","value":false}},"hierarchy":[{"id":"46","title":"Primary","items":[{"type":"CATEGORY","id":"dfab391c-83c2-4f41-a3ca-e7b95480632d","title":"Our events","icon":"folder","visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"],"predefined_user_group_type":"ALL_USERS"},"devices":["laptop","tablet","mobile"]},"children":[{"type":"LINK","id":"394161e7-0c4c-401b-872c-017a076ea13e","title":"Club","icon":"link-01","visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"],"predefined_user_group_type":"ALL_USERS"},"devices":["laptop","tablet","mobile"]},"action":{"id":"0","action":"OPEN_PAGE","options":{"destination":"/club","openIn":"SELF","modalSize":"MD","modalSizeTypes":["SM","MD","LG","XL"],"modalType":"POPUP","modalTypes":["POPUP","SLIDING"],"openInTypes":["SELF","TAB","MODAL"],"detailsPageRecordIdentifierField":"","detailsPageRecordPrimaryField":""},"button":{}},"options":{"subtitle":{"type":"text","label":"Subtitle","value":"","required":false,"enabled":false,"placeholder":"A short text"}},"deletable":true},{"type":"LINK","id":"8ea059ea-9094-4316-ab23-84e0d38dc41e","title":"Product Talks","icon":"link-01","visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"],"predefined_user_group_type":"ALL_USERS"},"devices":["laptop","tablet","mobile"]},"action":{"id":"0","action":"OPEN_PAGE","options":{"destination":"/product-talks","openIn":"SELF","modalSize":"MD","modalSizeTypes":["SM","MD","LG","XL"],"modalType":"POPUP","modalTypes":["POPUP","SLIDING"],"openInTypes":["SELF","TAB","MODAL"],"detailsPageRecordIdentifierField":"","detailsPageRecordPrimaryField":""},"button":{}},"options":{"subtitle":{"type":"text","label":"Subtitle","value":"","required":false,"enabled":false,"placeholder":"A short text"}},"deletable":true},{"type":"LINK","id":"d73c8449-f32f-4f51-8e3d-d1b29b2fc700","title":"Boost","icon":"link-01","visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"],"predefined_user_group_type":"ALL_USERS"},"devices":["laptop","tablet","mobile"]},"action":{"id":"0","action":"OPEN_PAGE","options":{"destination":"/boost-2nd","openIn":"SELF","modalSize":"MD","modalSizeTypes":["SM","MD","LG","XL"],"modalType":"POPUP","modalTypes":["POPUP","SLIDING"],"openInTypes":["SELF","TAB","MODAL"],"detailsPageRecordIdentifierField":"","detailsPageRecordPrimaryField":""},"button":{}},"options":{"subtitle":{"type":"text","label":"Subtitle","value":"","required":false,"enabled":false,"placeholder":"A short text"}},"deletable":true}],"options":{"subMenuStyle":{"type":"select","label":"Sub-menu style","value":"SIMPLE_DROPDOWN","options":["SIMPLE_DROPDOWN","TABS","MEGA_MENU"],"optionsMeta":{"SIMPLE_DROPDOWN":{"label":"Simple dropdown"},"TABS":{"label":"Tabs"},"MEGA_MENU":{"label":"Mega menu"}}},"showIcons":{"type":"boolean","label":"Show icons","value":false},"fullWidth":{"type":"boolean","label":"Full-width","value":false}},"deletable":true},{"type":"LINK","id":"89b50a0e-9cd9-4954-92c6-087685f362bf","title":"Benefits","icon":"link-01","visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"],"predefined_user_group_type":"ALL_USERS"},"devices":["laptop","tablet","mobile"]},"action":{"id":"0","action":"OPEN_PAGE","options":{"destination":"/benefits","openIn":"SELF","modalSize":"MD","modalSizeTypes":["SM","MD","LG","XL"],"modalType":"POPUP","modalTypes":["POPUP","SLIDING"],"openInTypes":["SELF","TAB","MODAL"],"detailsPageRecordIdentifierField":"","detailsPageRecordPrimaryField":""},"button":{}},"options":{"subtitle":{"type":"text","label":"Subtitle","value":"","required":false,"enabled":false,"placeholder":"A short text"}},"deletable":true}]},{"id":"86","title":"Secondary","items":[]}]},"buttons":{"desktop":{"position":{"type":"alignment","label":"Position","value":"END_Y","options":["START_Y","END_Y"]},"showIcons":{"type":"boolean","label":"Show icons","value":false}},"items":[{"type":"LINK","id":"2ea59d3c-dc9b-4f9d-bd57-b5f1695c93ce","title":"Bring to my city","icon":"home-01","visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"],"predefined_user_group_type":"ALL_USERS"},"devices":["laptop","tablet","mobile"]},"action":{"id":"0","action":"OPEN_PAGE","options":{"destination":"/bring-the-club-to-my-city","openIn":"SELF","modalSize":"MD","modalSizeTypes":["SM","MD","LG","XL"],"modalType":"POPUP","modalTypes":["POPUP","SLIDING"],"openInTypes":["SELF","TAB","MODAL"],"detailsPageRecordIdentifierField":"","detailsPageRecordPrimaryField":""},"button":{}},"options":{"subtitle":{"type":"text","label":"Subtitle","value":"","required":false,"enabled":false,"placeholder":"A short text"}},"deletable":true}],"mobile":{"showIcons":{"type":"boolean","label":"Show icons","value":false}}},"userMenu":{"enabled":false,"signOutItem":{"type":"LINK","id":"88","deletable":false,"visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["LOGGED_IN_USERS"],"predefined_user_group_type":"LOGGED_IN_USERS"},"devices":["laptop","tablet","mobile"]},"options":{"subtitle":{"type":"text","label":"Subtitle","value":"","required":false,"enabled":false,"placeholder":"A short text"}},"action":{"id":"87","action":"SIGN_OUT"},"title":"Sign out","icon":"log-out-01"},"items":[{"type":"LINK","id":"91","deletable":false,"visibility":{"user_group":{"custom_user_group_ids":[],"enabled_predefined_user_group_types":["LOGGED_IN_USERS"],"predefined_user_group_type":"LOGGED_IN_USERS"},"devices":["laptop","tablet","mobile"]},"options":{"subtitle":{"type":"text","label":"Subtitle","value":"","required":false,"enabled":false,"placeholder":"A short text"}},"action":{"id":"90","action":"OPEN_PAGE","options":{"destination":"/account","openIn":"SELF","modalSize":"MD","modalSizeTypes":["SM","MD","LG","XL"],"modalType":"POPUP","modalTypes":["POPUP","SLIDING"],"openInTypes":["SELF","TAB","MODAL"],"detailsPageRecordIdentifierField":"","detailsPageRecordPrimaryField":""},"button":{}},"title":"Account settings","icon":"user-01"}]}},"type":"static","collection":null,"enabled":"true","order":"null","updated":null,"visibility":{"userGroup":{"predefinedUserGroupType":"ALL_USERS","customUserGroupIds":[],"enabledPredefinedUserGroupTypes":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"]},"devices":["laptop","tablet","mobile"],"detailsPageRecordCondition":null},"settings":{},"container":null,"presets":null,"created_at":"2025-05-05T21:55:28.539"},{"id":"2b18fee5-6cda-4ce9-9d62-66448449f883","version":"3.0.2","hrid":"hero2","name":"hero1","title":"Hero with call to action","image":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/studio/blocks/assets/hero1.png","category":"Hero","keywords":"hero, simple, CTA Hero","elements":{"imagePosition":["LEFT","RIGHT","TOP","BOTTOM"],"selectedImagePosition":"RIGHT","definitions":{"button":{"tag":"a","type":"button","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"border-radius","label":"Roundness","isPrimary":true,"classes":["sw-border-radius-l"]},{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-default"]},{"name":"padding-left-right","label":"Padding left/right","isPrimary":true,"classes":["sw-padding-left-2xs","sw-padding-right-2xs"]},{"name":"padding-top-bottom","label":"Padding top/bottom","isPrimary":true,"classes":["sw-padding-top-5xs","sw-padding-bottom-5xs"]},{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"label":"Button label","action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md","modalType":"center"},"isModelTypeEnabled":true}}}},"container":{"tag":"header","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-fff3cf"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-m"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-m"]},{"name":"border-top","label":"Border top","isPrimary":true,"classes":["sw-border-top-style-none","sw-border-top-width-xs","sw-border-top-color-000000"]},{"name":"border-bottom","label":"Border bottom","isPrimary":true,"classes":["sw-border-bottom-style-none","sw-border-bottom-width-xs","sw-border-bottom-color-000000"]}]},"header":{"primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-5xl","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-6xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"Is the Impostor Syndrome hitting hard?","htmlTag":"h1"},"text":{"tag":"p","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-l","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"—  Others feel the same.\n\nOur community is that safe space where Product Managers grow by sharing their pains and learning from others, as a group."},"buttons":{"type":"array","item_type":"#/elements/definitions/button","items":[{"tag":"a","type":"button","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-1e1e1e"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-medium"]},{"name":"border-radius","label":"Roundness","isPrimary":true,"classes":["sw-border-radius-l"]},{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-ffc600"]},{"name":"padding-left-right","label":"Padding left/right","isPrimary":true,"classes":["sw-padding-left-2xs","sw-padding-right-2xs"]},{"name":"padding-top-bottom","label":"Padding top/bottom","isPrimary":true,"classes":["sw-padding-top-5xs","sw-padding-bottom-5xs"]},{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"label":"Join the Community","action":{"type":"navigate","options":{"url":{"destination":"https://theimpostorpm.fillout.com/t/dT7U9NSoghus","target":"_blank"},"modalOptions":{"modalSize":"md","modalType":"center"},"isModelTypeEnabled":true},"action":"Open external url > https://theimpostorpm.fillout.com/t/dT7U9NSoghus"}}]},"backgroundImage":{"tag":"img","primaryStyles":[{"name":"background-repeat","label":"Repeat","isPrimary":true,"classes":["sw-background-repeat-no-repeat"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]},{"name":"background-attachment","label":"Behaviour","isPrimary":true,"classes":["sw-background-attachment-scroll"]}],"src":""},"modalSizeOptions":[{"className":"sw-letter-s","key":"sm"},{"className":"sw-letter-m","key":"md"},{"className":"sw-letter-l","key":"lg"},{"className":"sw-letter-xl","key":"xl"}],"modalTypeOptions":[{"className":"sw-modal-type-side","key":"side"},{"className":"sw-modal-type-center","key":"center"}],"imageOrVideo":{"tag":"img","primaryStyles":[{"name":"percentage-width","label":"Size","isPrimary":true,"classes":["sw-percentage-width-5xl"]},{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","isPrimary":true,"classes":["sw-border-radius-none"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/5ae70aa4-74b9-4e4f-b14a-8f9b28d4138e.png","alt":"","controls":false,"autoplay":true,"loop":true}},"type":"static","collection":null,"enabled":"true","order":"null","updated":[],"visibility":{"userGroup":{"predefinedUserGroupType":"ALL_USERS","customUserGroupIds":[],"enabledPredefinedUserGroupTypes":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"]},"devices":["laptop","tablet","mobile"],"detailsPageRecordCondition":null},"settings":{},"container":null,"presets":null,"created_at":null},{"id":"fbc93e04-4460-437b-9ff9-d3753afec33e","version":"3.1.1","hrid":"feature-grid1","name":"feature-grid2","title":"Feature grid with images","image":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/studio/blocks/assets/feature-grid2.png","category":"Feature Grid","keywords":"feature grid, simple, Highlights list","elements":{"definitions":{"feature":{"image":{"tag":"i","type":"image","primaryStyles":[{"name":"height","label":"Size","isPrimary":true,"classes":["sw-width-3xs","sw-height-3xs"]}],"otherStyles":[{"name":"others","label":"Other","isPrimary":true,"classes":["sw-margin-bottom-2xs"]}],"src":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/illustrations/rosa/girl-with-laptop.svg","alt":"Feature title"},"title":{"tag":"h6","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-semibold"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Other","isPrimary":true,"classes":["sw-margin-top-6xs","sw-margin-bottom-6xs"]}],"value":"Feature title"},"description":{"tag":"p","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"value":"Feature description"},"link":{"tag":"a","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-EAB10B"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"margin-top/bottom","label":"Margin top/bottom","isPrimary":true,"classes":["sw-margin-top-none","sw-margin-bottom-none"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-text-decoration-no-underline","hover:sw-text-decoration-no-underline","sw-display-inline-block"]}],"value":"Read more","action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md"}}}}}},"container":{"tag":"section","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-ffffff"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-s"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-s"]},{"name":"border-top","label":"Border top","isPrimary":true,"classes":["sw-border-top-style-none","sw-border-top-width-xs","sw-border-top-color-000000"]},{"name":"border-bottom","label":"Border bottom","isPrimary":true,"classes":["sw-border-bottom-style-none","sw-border-bottom-width-xs","sw-border-bottom-color-000000"]}]},"header":{"primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-3xl","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-6xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"What we do","htmlTag":"h2"},"text":{"tag":"p","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-none"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"Gain quick advice from other PMs, engage in discussions on hot topics, and meet other professionals willing to share their experiences. Whatever you need, this is your place:"},"backgroundImage":{"tag":"img","primaryStyles":[{"name":"background-repeat","label":"Repeat","isPrimary":true,"classes":["sw-background-repeat-no-repeat"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]},{"name":"background-attachment","label":"Behaviour","isPrimary":true,"classes":["sw-background-attachment-scroll"]}],"otherStyles":[],"src":""},"features":{"type":"array","minItems":0,"maxItems":1024,"item_type":"#/elements/definitions/feature","items":[{"image":{"tag":"i","type":"image","primaryStyles":[{"name":"height","label":"Size","isPrimary":true,"classes":["sw-width-7xs","sw-height-7xs"]}],"otherStyles":[{"name":"others","label":"Other","isPrimary":true,"classes":["sw-margin-bottom-2xs"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8fcc3720-1851-4374-bf71-b331cdec8ed4.png","alt":"Feature title"},"title":{"tag":"h6","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xl","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-semibold"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Other","isPrimary":true,"classes":["sw-margin-top-6xs","sw-margin-bottom-6xs"]}],"value":"Product Talks"},"description":{"tag":"p","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-s","sw-text-color-000000"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"value":"An interactive webinar series where we sit down with real experts to have honest, practical conversations about their craft."},"link":{"tag":"a","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-s","sw-text-color-1e1e1e"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-semibold"]},{"name":"margin-top/bottom","label":"Margin top/bottom","isPrimary":true,"classes":["sw-margin-top-5xs","sw-margin-bottom-none"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-text-decoration-no-underline","hover:sw-text-decoration-no-underline","sw-display-inline-block"]}],"value":"Learn more","action":{"type":"navigate","options":{"url":{"destination":"/product-talks","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Product Talks"}}},{"image":{"tag":"i","type":"image","primaryStyles":[{"name":"height","label":"Size","isPrimary":true,"classes":["sw-width-7xs","sw-height-7xs"]}],"otherStyles":[{"name":"others","label":"Other","isPrimary":true,"classes":["sw-margin-bottom-2xs"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/d3207af9-393e-4059-97ba-7ba041bffcda.png","alt":"Feature title"},"title":{"type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xl","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-semibold"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Other","isPrimary":true,"classes":["sw-margin-top-6xs","sw-margin-bottom-6xs"]}],"value":"The Club","htmlTag":"h6"},"description":{"tag":"p","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-s","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"value":"These in-person community events will enable you to have meaningful discussions about the latest trends in the industry."},"link":{"tag":"a","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-s","sw-text-color-1e1e1e"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-semibold"]},{"name":"margin-top/bottom","label":"Margin top/bottom","isPrimary":true,"classes":["sw-margin-top-5xs","sw-margin-bottom-none"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-text-decoration-no-underline","hover:sw-text-decoration-no-underline","sw-display-inline-block"]}],"value":"Learn More","action":{"type":"navigate","options":{"url":{"destination":"/club","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > club"}}},{"image":{"tag":"i","type":"image","primaryStyles":[{"name":"height","label":"Size","isPrimary":true,"classes":["sw-width-7xs","sw-height-7xs"]}],"otherStyles":[{"name":"others","label":"Other","isPrimary":true,"classes":["sw-margin-bottom-2xs"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/43e9c6df-5898-4f62-a05c-81a0d6a2740d.png","alt":"Feature title"},"title":{"type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xl","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-semibold"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Other","isPrimary":true,"classes":["sw-margin-top-6xs","sw-margin-bottom-6xs"]}],"value":"The Group","htmlTag":"h6"},"description":{"tag":"p","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-s","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"value":"In our Slack group, Product Managers from around the world are always ready to share valuable knowledge and support you."},"link":{"tag":"a","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-s","sw-text-color-1e1e1e"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-semibold"]},{"name":"margin-top/bottom","label":"Margin top/bottom","isPrimary":true,"classes":["sw-margin-top-5xs","sw-margin-bottom-none"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-text-decoration-no-underline","hover:sw-text-decoration-no-underline","sw-display-inline-block"]}],"value":"Connect with peers","action":{"type":"navigate","options":{"url":{"destination":"https://tally.so/r/w2X0de","target":"_blank"},"modalOptions":{"modalSize":"md"}},"action":"Open external url > https://tally.so/r/w2X0de"}}}]},"modalSizeOptions":[{"className":"sw-letter-s","key":"sm"},{"className":"sw-letter-m","key":"md"},{"className":"sw-letter-l","key":"lg"},{"className":"sw-letter-xl","key":"xl"}]},"type":"static","collection":null,"enabled":"true","order":"null","updated":[],"visibility":{"userGroup":{"predefinedUserGroupType":"ALL_USERS","customUserGroupIds":[],"enabledPredefinedUserGroupTypes":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"]},"devices":["laptop","tablet","mobile"],"detailsPageRecordCondition":null},"settings":{},"container":null,"presets":null,"created_at":null},{"id":"53dd057b-7162-4b32-9436-4bd4e69aaf9a","version":"3.0.0","hrid":"feature1","name":"feature3","title":"Feature with link","image":"https://assets.softr-files.com/assets/blocks/feature/feature3.png","category":"Feature","keywords":"feature, simple, Image text, simple text","elements":{"imagePosition":["LEFT","RIGHT","TOP","BOTTOM"],"selectedImagePosition":"RIGHT","definitions":{"feature":{"icon":{"tag":"i","type":"icon","primaryStyles":[{"name":"size-color","label":"Icon Size/Color","isPrimary":true,"showFor":"icon","classes":["sw-font-size-m","sw-text-color-EAB10B"]},{"name":"width","label":"Icon Size","isPrimary":true,"showFor":"image","classes":["sw-width-10xs"]}],"provider":"font-awesome","value":"fa fa-fw fa-check","src":""},"title":{"tag":"p","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"margin-bottom","label":"Margin bottom","isPrimary":true,"classes":["sw-margin-bottom-none"]}],"value":"Feature description"}}},"container":{"tag":"section","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-1e1e1e"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-m"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-m"]},{"name":"border-top","label":"Border top","isPrimary":true,"classes":["sw-border-top-style-none","sw-border-top-width-xs","sw-border-top-color-000000"]},{"name":"border-bottom","label":"Border bottom","isPrimary":true,"classes":["sw-border-bottom-style-none","sw-border-bottom-width-xs","sw-border-bottom-color-000000"]}]},"header":{"tag":"h2","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-3xl","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-4xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"Let's speak about Mental Health"},"text":{"tag":"p","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-3xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"Being a Product Manager isn’t always easy. It can feel isolating at times, and often comes with a fair share of stress. That’s why, in our Product Talks, we regularly create space to talk about it openly, sharing experiences, strategies, and support to help you face it."},"image":{"tag":"img","primaryStyles":[{"name":"percentage-width","label":"Size","isPrimary":true,"classes":["sw-percentage-width-xl"]},{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","isPrimary":true,"classes":["sw-border-radius-none"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/e04da44a-b0b0-4e8f-b41a-28299d729241.png","alt":""},"backgroundImage":{"tag":"img","primaryStyles":[{"name":"background-repeat","label":"Repeat","isPrimary":true,"classes":["sw-background-repeat-no-repeat"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]},{"name":"background-attachment","label":"Behaviour","isPrimary":true,"classes":["sw-background-attachment-scroll"]}],"src":""},"features":{"type":"array","minItems":0,"maxItems":1024,"item_type":"#/elements/definitions/feature","items":[]},"link":{"tag":"a","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"margin-top","label":"Margin top","isPrimary":true,"classes":["sw-margin-top-3xs"]},{"name":"margin-bottom","label":"Margin bottom","isPrimary":true,"classes":["sw-margin-bottom-3xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"value":"Learn More","action":{"type":"navigate","options":{"url":{"destination":"/product-talks","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Product Talks"}},"modalSizeOptions":[{"className":"sw-letter-s","key":"sm"},{"className":"sw-letter-m","key":"md"},{"className":"sw-letter-l","key":"lg"},{"className":"sw-letter-xl","key":"xl"}]},"type":"static","collection":null,"enabled":"true","order":"null","updated":[],"visibility":{"userGroup":{"predefinedUserGroupType":"ALL_USERS","customUserGroupIds":[],"enabledPredefinedUserGroupTypes":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"]},"devices":["laptop","tablet","mobile"],"detailsPageRecordCondition":null},"settings":{},"container":null,"presets":null,"created_at":"2024-05-15T09:17:51.604"},{"id":"4f17bb9e-2460-4838-8261-cc5beab1a8e1","version":"3.0.0","hrid":"gallery1","name":"gallery1","title":"Gallery with scrolling images","image":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/studio/blocks/assets/gallery1.png","category":"Gallery","keywords":"Gallery, simple, reel, feature reel, highlight reel, image reel, carousel, slideshow","elements":{"definitions":{"galleryItem":{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/studio/blocks/assets/image_placeholder1.png","alt":""}}},"container":{"tag":"section","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","classes":["sw-background-color-ffffff"]},{"name":"padding-top","label":"Padding top","classes":["sw-padding-top-s"]},{"name":"padding-bottom","label":"Padding bottom","classes":["sw-padding-bottom-s"]},{"name":"border-top","label":"Border top","classes":["sw-border-top-style-none","sw-border-top-width-xs","sw-border-top-color-000000"]},{"name":"border-bottom","label":"Border bottom","classes":["sw-border-bottom-style-none","sw-border-bottom-width-xs","sw-border-bottom-color-000000"]}]},"header":{"htmlTag":"h2","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-4xl","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-4xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":""},"text":{"tag":"p","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xl","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-3xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":""},"gallery":{"type":"array","item_type":"#/elements/definitions/galleryItem","minItems":3,"maxItems":1024,"items":[{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/b708b77b-f566-4e65-98b9-0a3e85f62bf0.jpeg","alt":""}},{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/eb9ce009-b1d8-4d2d-9432-7cb412305530.jpeg","alt":""}},{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/167df795-b0b1-427b-9c23-f618047742f5.jpeg","alt":""}},{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/a5cffae9-7a5e-4323-be72-bcd685d75659.jpeg","alt":""}},{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8fe3d258-0efa-4a5b-8a83-085636eeee63.jpeg","alt":""}},{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/5addaeac-48d0-47c6-aa76-b23cf341aec1.jpeg","alt":""}},{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/0beef04e-66c5-4ad1-b795-d077071808a5.jpeg","alt":""}},{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/76c27053-5a89-4a7f-961e-045948a585a6.jpeg","alt":""}},{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/9165c82a-c448-4a77-aa71-b7887fc83a36.jpeg","alt":""}},{"image":{"tag":"img","type":"image","primaryStyles":[{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-s"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/31adec29-e759-45f4-a72c-ad5d44f94d87.jpeg","alt":""}}]}},"type":"static","collection":null,"enabled":"true","order":"null","updated":[],"visibility":{"userGroup":{"predefinedUserGroupType":"ALL_USERS","customUserGroupIds":[],"enabledPredefinedUserGroupTypes":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"]},"devices":["laptop","tablet","mobile"],"detailsPageRecordCondition":null},"settings":{},"container":null,"presets":null,"created_at":"2025-06-20T02:28:52.864"},{"id":"e7c4c4e4-7467-4de7-bdf0-6b4dcc8d3b8d","version":"3.1.1","hrid":"cta1","name":"cta6","title":"Call to action with a button and styled background","image":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/studio/blocks/assets/cta6.png","category":"CTA","keywords":"call to action, cta, simple","elements":{"definitions":{"button":{"tag":"a","type":"button","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"border-radius","label":"Roundness","isPrimary":true,"classes":["sw-border-radius-default"]},{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-default"]},{"name":"padding-left-right","label":"Padding left/right","isPrimary":true,"classes":["sw-padding-left-3xs","sw-padding-right-3xs"]},{"name":"padding-top-bottom","label":"Padding top/bottom","isPrimary":true,"classes":["sw-padding-top-5xs","sw-padding-bottom-5xs"]},{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-text-decoration-no-underline","hover:sw-text-decoration-no-underline","hover:sw-box-shadow-m","sw-margin-bottom-6xs","sw-display-inline-block","sw-margin-left-7xs","sw-margin-right-7xs"]}],"label":"Button label","action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md"}}}}},"container":{"tag":"section","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-ffc600"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-s"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-s"]},{"name":"border-top","label":"Border top","isPrimary":true,"classes":["sw-border-top-style-none","sw-border-top-width-xs","sw-border-top-color-000000"]},{"name":"border-bottom","label":"Border bottom","isPrimary":true,"classes":["sw-border-bottom-style-none","sw-border-bottom-width-xs","sw-border-bottom-color-000000"]}]},"box":{"tag":"div","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-ffffff"]},{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","isPrimary":true,"classes":["sw-border-radius-l"]},{"name":"shadow","label":"Shadow","isPrimary":true,"classes":["sw-box-shadow-none"]},{"name":"padding-top-bottom","label":"Padding top/bottom","isPrimary":true,"classes":["sw-padding-top-2xs","sw-padding-bottom-2xs"]}]},"header":{"htmlTag":"h2","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-bold"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-4xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"The State of Product Compensation"},"text":{"tag":"p","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-3xl","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-bold"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-3xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"Do you want to learn more about pay in Product?"},"backgroundImage":{"tag":"img","primaryStyles":[{"name":"background-repeat","label":"Repeat","isPrimary":true,"classes":["sw-background-repeat-no-repeat"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]},{"name":"background-attachment","label":"Behaviour","isPrimary":true,"classes":["sw-background-attachment-scroll"]}],"otherStyles":[],"src":""},"buttons":{"type":"array","item_type":"#/elements/definitions/button","items":[{"tag":"a","type":"button","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"border-radius","label":"Roundness","isPrimary":true,"classes":["sw-border-radius-l"]},{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-1e1e1e"]},{"name":"padding-left-right","label":"Padding left/right","isPrimary":true,"classes":["sw-padding-left-3xs","sw-padding-right-3xs"]},{"name":"padding-top-bottom","label":"Padding top/bottom","isPrimary":true,"classes":["sw-padding-top-5xs","sw-padding-bottom-5xs"]},{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-text-decoration-no-underline","hover:sw-text-decoration-no-underline","hover:sw-box-shadow-m","sw-margin-bottom-6xs","sw-display-inline-block","sw-margin-left-7xs","sw-margin-right-7xs"]}],"label":"Learn more","action":{"type":"navigate","options":{"url":{"destination":"/compensation","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Compensation"}}]},"modalSizeOptions":[{"className":"sw-letter-s","key":"sm"},{"className":"sw-letter-m","key":"md"},{"className":"sw-letter-l","key":"lg"},{"className":"sw-letter-xl","key":"xl"}]},"type":"static","collection":null,"enabled":"true","order":"null","updated":[],"visibility":{"userGroup":{"predefinedUserGroupType":"ALL_USERS","customUserGroupIds":[],"enabledPredefinedUserGroupTypes":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"]},"devices":["laptop","tablet","mobile"],"detailsPageRecordCondition":null},"settings":{},"container":null,"presets":null,"created_at":"2023-06-07T15:32:58.297"},{"id":"6b64149b-5043-4526-9e06-1c92684e3a2a","version":"2.0.1","hrid":"custom-code1","name":"custom-code1","title":"Custom code block","image":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/studio/blocks/assets/custom-code1.png","category":"Custom Code","keywords":"embed, custom code, CSS, dev, developer, HTML, JS, Javascript","elements":{"container":{"tag":"section","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-ffffff"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-2xl"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-2xl"]},{"name":"border-top","label":"Border top","isPrimary":true,"classes":["sw-border-top-style-none","sw-border-top-width-xs","sw-border-top-color-000000"]},{"name":"border-bottom","label":"Border bottom","isPrimary":true,"classes":["sw-border-bottom-style-none","sw-border-bottom-width-xs","sw-border-bottom-color-000000"]}]},"code":{"tag":"div","primaryStyles":[],"value":"<script src=\"https://widget.senja.io/widget/0e45a7a8-f5b1-4a72-8ca2-2b198d0d400f/platform.js\" type=\"text/javascript\" async><\/script>\r\n<div class=\"senja-embed\" data-id=\"0e45a7a8-f5b1-4a72-8ca2-2b198d0d400f\" data-mode=\"shadow\" data-lazyload=\"false\" style=\"display: block; width: 100%;\"></div>"}},"type":"static","collection":null,"enabled":"true","order":"null","updated":[],"visibility":{"userGroup":{"predefinedUserGroupType":"ALL_USERS","customUserGroupIds":[],"enabledPredefinedUserGroupTypes":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"]},"devices":["laptop","tablet","mobile"],"detailsPageRecordCondition":null},"settings":{},"container":null,"presets":null,"created_at":"2025-07-15T00:48:38.188","compiled_markup":"<section id=\"custom-code1\"    data-block-version=\"2.0.1\" data-block-id=\"6b64149b-5043-4526-9e06-1c92684e3a2a\"    data-block-updated=\"\"    class=\"custom-code1-6b64149b-5043-4526-9e06-1c92684e3a2a sw-background-color-ffffff sw-padding-top-2xl sw-padding-bottom-2xl sw-border-top-style-none sw-border-top-width-xs sw-border-top-color-000000 sw-border-bottom-style-none sw-border-bottom-width-xs sw-border-bottom-color-000000 \">  <div class=\"container\">   <div class=\"row\">     <div class=\"col-12\">     <div class=\" \">      <script src=\"https://widget.senja.io/widget/0e45a7a8-f5b1-4a72-8ca2-2b198d0d400f/platform.js\" type=\"text/javascript\" async><\/script>\r\n<div class=\"senja-embed\" data-id=\"0e45a7a8-f5b1-4a72-8ca2-2b198d0d400f\" data-mode=\"shadow\" data-lazyload=\"false\" style=\"display: block; width: 100%;\"></div>     </div>    </div>    </div>  </div> </section> ","compiled_style":".sw-background-color-ffffff { background-color: #ffffff!important; } .sw-padding-top-2xl { padding-top: 6rem!important; } .sw-padding-bottom-2xl { padding-bottom: 6rem!important; } .sw-border-top-style-none { border-top-style: none!important; } .sw-border-top-width-xs { border-top-width: 1px!important; } .sw-border-top-color-000000 { border-top-color: #000000!important; } .sw-border-bottom-style-none { border-bottom-style: none!important; } .sw-border-bottom-width-xs { border-bottom-width: 1px!important; } .sw-border-bottom-color-000000 { border-bottom-color: #000000!important; }  ","compiled_script":""},{"id":"9d695093-5aa6-4018-baa7-1e62ae34fc54","version":"3.1.1","hrid":"cta2","name":"cta4","title":"Call to action with a button on the right","image":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/studio/blocks/assets/cta4.png","category":"CTA","keywords":"call to action, cta, simple","elements":{"definitions":{"button":{"tag":"a","type":"button","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"border-radius","label":"Roundness","isPrimary":true,"classes":["sw-border-radius-none"]},{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-default"]},{"name":"padding-left-right","label":"Padding left/right","isPrimary":true,"classes":["sw-padding-left-2xs","sw-padding-right-2xs"]},{"name":"padding-top-bottom","label":"Padding top/bottom","isPrimary":true,"classes":["sw-padding-top-5xs","sw-padding-bottom-5xs"]},{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"label":"Button label","action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md"}}}}},"container":{"tag":"section","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-fff3cf"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-2xs"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-2xs"]},{"name":"border-top","label":"Border top","isPrimary":true,"classes":["sw-border-top-style-none","sw-border-top-width-xs","sw-border-top-color-000000"]},{"name":"border-bottom","label":"Border bottom","isPrimary":true,"classes":["sw-border-bottom-style-none","sw-border-bottom-width-xs","sw-border-bottom-color-000000"]}]},"box":{"tag":"div","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-none"]},{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","isPrimary":true,"classes":["sw-border-radius-none"]},{"name":"shadow","label":"Shadow","isPrimary":true,"classes":["sw-box-shadow-none"]},{"name":"padding-top-bottom","label":"Padding top/bottom","isPrimary":true,"classes":["sw-padding-top-none","sw-padding-bottom-none"]}]},"backgroundImage":{"tag":"img","primaryStyles":[{"name":"background-repeat","label":"Repeat","isPrimary":true,"classes":["sw-background-repeat-no-repeat"]},{"name":"background-size","label":"Size","isPrimary":true,"classes":["sw-background-size-cover"]},{"name":"background-position","label":"Position","isPrimary":true,"classes":["sw-background-position-center"]},{"name":"background-attachment","label":"Behaviour","isPrimary":true,"classes":["sw-background-attachment-scroll"]}],"src":""},"header":{"htmlTag":"h2","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-3xl","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-5xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"Do you want to support our Mission?"},"text":{"tag":"p","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-default"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-3xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"All of our initiatives are free of charge for our Community. But we still have costs, so if you want to support us, why not buy us a Coffee?"},"buttons":{"type":"array","item_type":"#/elements/definitions/button","items":[{"tag":"a","type":"button","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-1e1e1e"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-medium"]},{"name":"border-radius","label":"Roundness","isPrimary":true,"classes":["sw-border-radius-l"]},{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-ffc600"]},{"name":"padding-left-right","label":"Padding left/right","isPrimary":true,"classes":["sw-padding-left-2xs","sw-padding-right-2xs"]},{"name":"padding-top-bottom","label":"Padding top/bottom","isPrimary":true,"classes":["sw-padding-top-5xs","sw-padding-bottom-5xs"]},{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"label":"Buy us a ☕️!","action":{"type":"navigate","options":{"url":{"destination":"https://ko-fi.com/impostorpm","target":"_blank"},"modalOptions":{"modalSize":"md"}},"action":"Open external url > https://ko-fi.com/impostorpm"}}]},"modalSizeOptions":[{"className":"sw-letter-s","key":"sm"},{"className":"sw-letter-m","key":"md"},{"className":"sw-letter-l","key":"lg"},{"className":"sw-letter-xl","key":"xl"}]},"type":"static","collection":null,"enabled":"true","order":"null","updated":[],"visibility":{"userGroup":{"predefinedUserGroupType":"ALL_USERS","customUserGroupIds":[],"enabledPredefinedUserGroupTypes":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"]},"devices":["laptop","tablet","mobile"],"detailsPageRecordCondition":null},"settings":{},"container":null,"presets":null,"created_at":"2023-09-20T17:37:44.168"},{"id":"5f199eb0-e3ae-4727-bc4e-3064f5e57e5b","version":"3.0.1","hrid":"partner1","name":"partner2","title":"Partner with sliding logos","image":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/studio/blocks/assets/partner2.png","category":"Partner","keywords":"partner, simple, social proof, testimonials, brands list","elements":{"definitions":{"partner":{"picture":{"tag":"img","type":"image","primaryStyles":[{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-none"]},{"name":"width","label":"Size","isPrimary":true,"classes":["sw-width-8xs"]}],"src":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/studio/blocks/assets/logo-placeholder.png"},"link":{"tag":"a","primaryStyles":[],"action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md","modalType":"center"},"isModelTypeEnabled":true}}}}},"container":{"tag":"section","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","classes":["sw-background-color-ffffff"]},{"name":"padding-top","label":"Padding top","classes":["sw-padding-top-xs"]},{"name":"padding-bottom","label":"Padding bottom","classes":["sw-padding-bottom-s"]},{"name":"border-top","label":"Border top","classes":["sw-border-top-style-none","sw-border-top-width-xs","sw-border-top-color-000000"]},{"name":"border-bottom","label":"Border bottom","classes":["sw-border-bottom-style-none","sw-border-bottom-width-xs","sw-border-bottom-color-000000"]}]},"header":{"htmlTag":"h2","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","classes":["sw-text-color-default","sw-font-size-3xl"]},{"name":"font-family","label":"Font family","classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-none"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"Where product conversations came to life"},"text":{"tag":"p","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","classes":["sw-text-color-default","sw-font-size-m"]},{"name":"font-family","label":"Font family","classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","classes":["sw-padding-top-none"]},{"name":"padding-bottom","label":"Padding bottom","classes":["sw-padding-bottom-3xs"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-normal"]}],"value":"Thank you for making space for Product Managers to grow."},"partners":{"type":"array","item_type":"#/elements/definitions/partner","items":[{"picture":{"tag":"img","type":"image","primaryStyles":[{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-none"]},{"name":"width","label":"Size","isPrimary":true,"classes":["sw-width-4xs"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/22462e06-988f-4cf9-9427-ef86c514f286.png"},"link":{"tag":"a","primaryStyles":[],"action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md","modalType":"center"},"isModelTypeEnabled":true},"action":""}}},{"picture":{"tag":"img","type":"image","primaryStyles":[{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-none"]},{"name":"width","label":"Size","isPrimary":true,"classes":["sw-width-4xs"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/4b40c7d9-6577-49e0-8bc3-2142d95de1bf.png"},"link":{"tag":"a","primaryStyles":[],"action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md","modalType":"center"},"isModelTypeEnabled":true},"action":""}}},{"picture":{"tag":"img","type":"image","primaryStyles":[{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-none"]},{"name":"width","label":"Size","isPrimary":true,"classes":["sw-width-6xs"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/f4c9a7db-e8fc-4bee-9eba-860cd47adc39.png"},"link":{"tag":"a","primaryStyles":[],"action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md","modalType":"center"},"isModelTypeEnabled":true},"action":""}}},{"picture":{"tag":"img","type":"image","primaryStyles":[{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-none"]},{"name":"width","label":"Size","isPrimary":true,"classes":["sw-width-4xs"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/7601f511-b878-4d0e-af5e-d567447da3f2.png"},"link":{"tag":"a","primaryStyles":[],"action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md","modalType":"center"},"isModelTypeEnabled":true},"action":""}}},{"picture":{"tag":"img","type":"image","primaryStyles":[{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-none"]},{"name":"width","label":"Size","isPrimary":true,"classes":["sw-width-4xs"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/12831db3-1ac9-4493-ac62-7850a18ec05f.png"},"link":{"tag":"a","primaryStyles":[],"action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md","modalType":"center"},"isModelTypeEnabled":true},"action":""}}},{"picture":{"tag":"img","type":"image","primaryStyles":[{"name":"border","label":"Border","isPrimary":true,"classes":["sw-border-style-none","sw-border-width-xs","sw-border-color-000000"]},{"name":"border-radius","label":"Roundness","classes":["sw-border-radius-none"]},{"name":"width","label":"Size","isPrimary":true,"classes":["sw-width-4xs"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/6660ca58-e6d9-48cd-af11-f3df8bb0f076.png"},"link":{"tag":"a","primaryStyles":[],"action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md","modalType":"center"},"isModelTypeEnabled":true},"action":""}}}]},"modalSizeOptions":[{"className":"sw-letter-s","key":"sm"},{"className":"sw-letter-m","key":"md"},{"className":"sw-letter-l","key":"lg"},{"className":"sw-letter-xl","key":"xl"}],"modalTypeOptions":[{"className":"sw-modal-type-side","key":"side"},{"className":"sw-modal-type-center","key":"center"}]},"type":"static","collection":null,"enabled":"true","order":"null","updated":[],"visibility":{"userGroup":{"predefinedUserGroupType":"ALL_USERS","customUserGroupIds":[],"enabledPredefinedUserGroupTypes":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"]},"devices":["laptop","tablet","mobile"],"detailsPageRecordCondition":null},"settings":{},"container":null,"presets":null,"created_at":"2025-06-20T02:30:41.840"},{"id":"deec094a-0fc4-4297-af97-a5bf0175cd43","version":"3.1.0","hrid":"home-footer2","name":"footer2","title":"Footer with link groups and description","image":"https://softr-assets-eu-shared.s3.eu-central-1.amazonaws.com/studio/blocks/assets/footer2.png","category":"Footer","keywords":"footer, simple, Navigation footer","elements":{"definitions":{"socialLink":{"tag":"a","type":"social-icon","value":"fab fa-facebook-f","url":"https://facebook.com/mycompany","primaryStyles":[{"name":"size-color","label":"Icon Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-616161"]},{"name":"width","label":"Width","isPrimary":true,"classes":["sw-width-11xs"]}],"otherStyles":[{"name":"others","label":"Others","classes":["sw-display-inline-block","sw-min-width-6xs","sw-margin-right-7xs","sw-text-align-center","sw-border-radius-s","sw-border-color-eaeff4","sw-border-style-solid","sw-border-width-xs","sw-padding-right-7xs","sw-padding-left-7xs","sw-padding-top-7xs","sw-padding-bottom-7xs","sw-opacity-2xs"]}]},"linkGroup":{"title":{"tag":"h6","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-616161"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-semibold"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-tight"]}],"value":"Group title"},"links":{"type":"array","item_type":"#/elements/definitions/link","items":[]}},"link":{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-616161"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Link name","action":{"type":"navigate","options":{"url":{"destination":"","target":""},"modalOptions":{"modalSize":"md"}}}}},"container":{"tag":"footer","type":"container","primaryStyles":[{"name":"background-color","label":"Background color","isPrimary":true,"classes":["sw-background-color-1e1e1e"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-2xl"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-2xl"]},{"name":"border-top","label":"Border top","isPrimary":true,"classes":["sw-border-top-style-none","sw-border-top-width-xs","sw-border-top-color-000000"]},{"name":"border-bottom","label":"Border bottom","isPrimary":true,"classes":["sw-border-bottom-style-none","sw-border-bottom-width-xs","sw-border-bottom-color-000000"]}]},"description":{"tag":"p","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-s","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-default"]},{"name":"padding-top","label":"Padding top","isPrimary":true,"classes":["sw-padding-top-4xs"]},{"name":"padding-bottom","label":"Padding bottom","isPrimary":true,"classes":["sw-padding-bottom-5xs"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-tight"]}],"value":"© 2025 Impostor PM. All rights reserved."},"logo":{"tag":"img","type":"image-with-link","primaryStyles":[{"name":"width","label":"Width","isPrimary":true,"classes":["sw-width-3xs"]}],"src":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/fb9f1c1d-37a7-4cef-a941-f641af8776b0.svg","alt":""},"linkGroups":{"type":"array","minItems":2,"maxItems":4,"item_type":"#/elements/definitions/linkGroup","items":[{"title":{"tag":"h6","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-bold"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-tight"]}],"value":"This is Us"},"links":{"type":"array","item_type":"#/elements/definitions/link","items":[{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"What is a Club?","action":{"type":"navigate","options":{"url":{"destination":"/club","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > About the Club"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Product Talks","action":{"type":"navigate","options":{"url":{"destination":"/product-talks","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Product Talks"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Slack Group","action":{"type":"navigate","options":{"url":{"destination":"/group","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > group"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Compensation","action":{"type":"navigate","options":{"url":{"destination":"/compensation","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > compensation"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Boost","action":{"type":"navigate","options":{"url":{"destination":"/boost-2nd","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > The Impostor PM Boost 2nd Edition"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"About us","action":{"type":"navigate","options":{"url":{"destination":"/about","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > about"}}]}},{"title":{"tag":"h6","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-bold"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-tight"]}],"value":"Our Clubs"},"links":{"type":"array","item_type":"#/elements/definitions/link","items":[{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Hamburg","action":{"type":"navigate","options":{"url":{"destination":"/club/hamburg","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Hamburg Club"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Lisbon","action":{"type":"navigate","options":{"url":{"destination":"/club/lisbon","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > lisbon"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Braga","action":{"type":"navigate","options":{"url":{"destination":"/club/braga","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Braga"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Porto","action":{"type":"navigate","options":{"url":{"destination":"/club/porto","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Porto"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Coimbra","action":{"type":"navigate","options":{"url":{"destination":"/club/coimbra","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Coimbra"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Host a Club!","action":{"type":"navigate","options":{"url":{"destination":"/bring-the-club-to-my-city","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > host a club"}}]}},{"title":{"tag":"h6","type":"text","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-bold"]},{"name":"line-height","label":"Line height","isPrimary":true,"classes":["sw-line-height-tight"]}],"value":"Benefits"},"links":{"type":"array","item_type":"#/elements/definitions/link","items":[{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Product Buildcamp","action":{"type":"navigate","options":{"url":{"destination":"/product-buildcamp","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Benefits - The Product Buildcamp"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Productized","action":{"type":"navigate","options":{"url":{"destination":"/productized","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > productized"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Tekya","action":{"type":"navigate","options":{"url":{"destination":"/tekya","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Benefits - Tekya"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Next Level Hub","action":{"type":"navigate","options":{"url":{"destination":"/nextlevelhub","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Benefits - Next Level Hub"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Product Weekend","action":{"type":"navigate","options":{"url":{"destination":"/productweekend","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > productweekend"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Builders Camp","action":{"type":"navigate","options":{"url":{"destination":"/builderscamp","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > one month pm"}},{"tag":"a","type":"link","primaryStyles":[{"name":"size-color","label":"Text Size/Color","isPrimary":true,"classes":["sw-font-size-xs","sw-text-color-ffffff"]},{"name":"font-family","label":"Font family","isPrimary":true,"classes":["sw-font-family-default"]},{"name":"font-weight","label":"Font weight","isPrimary":true,"classes":["sw-font-weight-normal"]},{"name":"letter-spacing","label":"Letter spacing","isPrimary":true,"classes":["sw-letter-spacing-normal"]}],"otherStyles":[{"name":"others","label":"Others","isPrimary":true,"classes":["sw-padding-left-none","sw-padding-bottom-7xs","hover:sw-text-decoration-no-underline"]}],"value":"Partner with us","action":{"type":"navigate","options":{"url":{"destination":"/partner-with-us","target":""},"modalOptions":{"modalSize":"md"}},"action":"Open page > Partner with us"}}]}}]},"socialLinks":{"type":"array","item_type":"#/elements/definitions/socialLink","items":[{"tag":"a","type":"social-icon","value":"fab fa-linkedin","url":"https://www.linkedin.com/company/impostorpm/","primaryStyles":[{"name":"size-color","label":"Icon Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-ffffff"]},{"name":"width","label":"Width","isPrimary":true,"classes":["sw-width-11xs"]}],"otherStyles":[{"name":"others","label":"Others","classes":["sw-display-inline-block","sw-min-width-6xs","sw-margin-right-7xs","sw-text-align-center","sw-border-radius-s","sw-border-color-eaeff4","sw-border-style-solid","sw-border-width-xs","sw-padding-right-7xs","sw-padding-left-7xs","sw-padding-top-7xs","sw-padding-bottom-7xs","sw-opacity-2xs"]}]},{"tag":"a","type":"social-icon","value":"fab fa-slack","url":"https://tally.so/r/w2X0de","primaryStyles":[{"name":"size-color","label":"Icon Size/Color","isPrimary":true,"classes":["sw-font-size-m","sw-text-color-ffffff"]},{"name":"width","label":"Width","isPrimary":true,"classes":["sw-width-11xs"]}],"otherStyles":[{"name":"others","label":"Others","classes":["sw-display-inline-block","sw-min-width-6xs","sw-margin-right-7xs","sw-text-align-center","sw-border-radius-s","sw-border-color-eaeff4","sw-border-style-solid","sw-border-width-xs","sw-padding-right-7xs","sw-padding-left-7xs","sw-padding-top-7xs","sw-padding-bottom-7xs","sw-opacity-2xs"]}]}]},"modalSizeOptions":[{"className":"sw-letter-s","key":"sm"},{"className":"sw-letter-m","key":"md"},{"className":"sw-letter-l","key":"lg"},{"className":"sw-letter-xl","key":"xl"}]},"type":"static","collection":null,"enabled":"true","order":"null","updated":[],"visibility":{"userGroup":{"predefinedUserGroupType":"ALL_USERS","customUserGroupIds":[],"enabledPredefinedUserGroupTypes":["ALL_USERS","LOGGED_IN_USERS","NON_LOGGED_IN_USERS"]},"devices":["laptop","tablet","mobile"],"detailsPageRecordCondition":null},"settings":{},"container":null,"presets":null,"created_at":"2023-09-25T14:23:32.732"}];
+softrBlocks.forEach(function(block) {
+  var blockUniqueName = block.id.replace(/-/g, '');
+  window['block_' + blockUniqueName + '_defJson'] = block;
+  window['block_' + blockUniqueName + '_defJson']['defaultTheme'] = reactDefaultThemes;
+});
+SoftrPageRenderer.render({blocks: softrBlocks, targetElement: document.getElementById('page-content'), workspaceId: "5beccba2-59a1-4209-8acc-8398de8c83a6", appId: "b27d0a29-3518-4993-9f9d-454d45073bd1", pageId: "2dbc9b6b-dcf0-43f0-adec-42c6e98b4392", showMadeWithBadge: true, badgeType: "FLOATING_BADGE", aiApp: false, paymentPlan: "", baseUrl: "https://assets.softr-files.com/softr-blocks/prod/blocks", theme: reactDefaultThemes, appCustomHeaderCode: "", pageCustomHeaderCode: "", appCustomFooterCode: "", pageCustomFooterCode: "", featureFlags: {"navigationLayout": true, "fixedBlockRoots": true, "universalDSForAirtable": true, }, context: {"application_context": {"application_logo":{"type":"IMAGE","icon":{"logo":"","text":""},"image":{"horizontal":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/fb9f1c1d-37a7-4cef-a941-f641af8776b0.svg","square":"https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/fb9f1c1d-37a7-4cef-a941-f641af8776b0.svg"}},"date_and_time_settings":{"format_settings":{"type":"LOCAL","local_settings":{"localize_day_and_month":true},"fixed_settings":null},"timezone_settings":{"type":"LOCAL","fixed_timezone":null}},"number_formatting_settings":{"type":"LOCAL","fixed_locale":"en-US"},"global_search_settings":{"enabled":false,"search_placeholder":"Search","initial_state_message":"Type something to start searching","initial_state_image":null,"no_results_message":"No results found","no_results_image":null,"backdrop":null},"user_settings":{"auth_settings":{"login_enabled":false,"authentication_methods":["EMAIL"],"sign_up_settings":{"policy":"DISABLED","allowed_domains":[]},"user_session_expiration":"90_DAYS","user_inactivity_timeout":"NEVER","email_auth_settings":{"login_methods":["PASSWORD"],"password_settings":{"input_label":"Password","input_placeholder":"Enter your password","forgot_password_text":"Forgot password","incorrect_password_text":"Incorrect password.","new_password_label":"New password","new_password_placeholder":"Set a secure password","strong_passwords":true,"minimum_characters_text":"At least 12 characters","upper_and_lower_case_text":"1 uppercase & 1 lowercase","number_text":"1 number (0-9)","symbol_text":"1 symbol (!@#$%^&*)","repeat_password_label":"Repeat password","repeat_password_placeholder":"Repeat your password","passwords_dont_match_text":"Passwords don't match."},"email_one_time_code_settings":{"expiration":"5_MINUTES","input_label":"Verification code","input_placeholder":"Enter verification code","resend_text":"Resend","invalid_code_text":"Invalid code."},"secondary_login_methods":[],"sms_one_time_code_settings":null,"authenticator_settings":null,"input_label":"Email","input_placeholder":"Enter your email"},"google_settings":{"client_id":null,"client_secret":null,"user_type":"INTERNAL","email_domains":[]},"sso_settings":{"type":"SAML","email_domains":[],"saml":{"acs_url":null,"audience_url":null,"metadata_xml":null,"email_key":null,"first_name_key":null,"last_name_key":null},"open_id":{"callback_url":null,"provider_url":null,"token_service_url":null,"client_id":null,"client_secret":null}}},"auto_invite":false},"user_connection":null,"user_group_redirection":null,"polling_configs":{"defaultPollingInterval":10000,"datasources":{"SQL_SERVER":8000,"MARIADB":8000,"MYSQL":8000,"XANO_SQL":8000,"GOOGLE_SHEET":8000,"SUPABASE":8000,"SMARTSUITE":8000,"NOTION":8000,"MONDAY":8000,"SOFTR_TABLES":8000,"CLICKUP":8000,"CODA":8000,"AIRTABLE":8000,"POSTGRESQL":8000}},"comment_settings":{"general_settings":{"allow_mentions":false,"allow_attachments":false,"rich_text_formatting":false,"block_display_settings":{"sort_direction":"NEWEST_ON_TOP","surface":false,"show_vertical_line":false},"side_panel_display_settings":{"sort_direction":"NEWEST_ON_TOP","surface":false,"show_vertical_line":false,"comment_panel_display_mode":"PUSH_MAIN_CONTENT"},"keep_comments_for_inactive_users":true,"comment_deletion_user_groups":[]},"message_settings":{"comment_list_title":"Comments","comment_box_placeholder":"Leave a comment...","notifications_toggle_label":"Enable/disable notifications","submit_button":{"label":"Submit","icon":""},"cancel_button":{"label":"Cancel","icon":""},"edit_button":{"label":"Edit","icon":"plus"},"delete_button":{"label":"Delete","icon":"trash-01"},"load_more_comments_button":{"label":"Load more comments","icon":""},"empty_state_message":"No comments yet.","edited_comment_indicator":"(edited)"},"mention_permissions":[],"comment_block_settings":[]},"spa_mode_enabled":false}}}).then(() => window.dispatchEvent(new Event("@softr/page-content-loaded")));
+
+</script>
+
+
+<script src="https://assets.softr-files.com/libs/iframe-resizer/4.2.11/iframeResizer.contentWindow.min.js" crossorigin="anonymous"></script>
+
+<!-- Localhost -->
+<script type="text/javascript">
+    if (window.location.hostname === 'localhost') {
+        if (getUrlParam('domain')) {
+            setCookie('serverName', getUrlParam('domain'), 30);
+        }
+    }
+
+    function setCookie(name, value, days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + date.toUTCString();
+        document.cookie = name + "=" + value + ";" + expires + ";path=/;" + "SameSite=None; Secure";
+    }
+
+    function getUrlParam(name) {
+        const url = new URL(window.location.href);
+        let param;
+        for (var key of url.searchParams.keys()) {
+            if (key.toLowerCase() === name.toLowerCase()) {
+                param = url.searchParams.get(name);
+                break;
+            }
+        }
+        return param;
+    }
+</script>
+
+<!-- Modal HTML -->
+<div id="sw-modal" class="sw-modal" aria-hidden="true">
+    <div class="sw-modal-overlay" data-micromodal-close>
+        <div tabindex="-1" class="sw-modal-container">
+            <div role="dialog" aria-modal="true" aria-labelledby="micromodal-title">
+                <button aria-label="Close modal" class="sw-modal-close" onclick="MicroModal.close('sw-modal')"></button>
+                <div id="sw-modal-content">
+                    <iframe class="sw-modal-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Scroll to section-->
+<script>
+
+    window.addEventListener(BlocksRenderedEventName, function () {
+        $('a').each(function (index, el) {
+            let href = $(el).attr('href');
+            let path = cleanSlugFromPath(location.pathname);
+            if (href && href.startsWith(path + '#')) {
+                const scrollTo = href.split('#')[1];
+                $(this).attr('href', '#' + scrollTo);
+            }
+        });
+
+        function cleanSlugFromPath(pagePath) {
+            if (pagePath.includes("/r/rec")) {
+                pagePath = pagePath.substring(0, pagePath.indexOf("/r/rec"));
+                pagePath = pagePath.substring(0, pagePath.lastIndexOf("/"));
+            }
+
+            return pagePath + (pagePath.endsWith('/') ? '' : '/');
+        }
+    });
+
+</script>
+
+</body>
+
+</html>
