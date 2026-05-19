@@ -1,12 +1,54 @@
-# salary-compass
+# Salary Compass
 
-Salary Compass product for The Impostor PM
+A PM compensation benchmarking tool for the Portugal market, built by The Impostor PM. PMs enter their salary and get an instant percentile ranking against the community — no account required. The data it benchmarks against is crowdsourced from the community itself.
+
+## How it works
+
+### Two-phase funnel
+
+**Phase 1 — Quick comparison**
+
+The user fills in five steps: base salary, role (9 levels from APM to CPO), years of experience, city/district, and a perception slider where they guess what percentile they think they are at. On submit, their data is written to a Google Sheet and they immediately see their results.
+
+**Phase 2 — Full survey (optional)**
+
+After seeing results, users can optionally complete a deeper survey covering company details, perks, equity, and attitudes toward compensation transparency. This enriches the dataset for others.
+
+### Percentile calculation
+
+The backend (a Google Apps Script) reads all submissions from Google Sheets, groups them by role, years-of-experience bucket, and district, then computes p10/p25/p50/p75/p90 for each segment. The frontend uses linear interpolation across those reference points to place the user's salary on a 1–99 scale.
+
+Minimum sample-size thresholds apply: at least 50 total entries to use overall data, 5 per bucket for segmented data, and 10 per district for regional benchmarks. Below those thresholds the tool falls back to hardcoded historical data baked into the HTML, so results always show up even when live data is thin.
+
+### What users see
+
+- A percentile gauge showing their position relative to the community
+- Their perception guess vs. their actual percentile
+- Horizontal bar charts broken down by role and by experience bracket
+- Regional medians by Portuguese district (where data is sufficient)
+- An optional email capture that generates a dashboard token for later access
+
+## Architecture
+
+- **Frontend**: Plain HTML/JS with Bootstrap 4, hosted as a static site. Includes embedded fallback salary data for offline/low-volume scenarios.
+- **Backend**: Google Apps Script deployed as a public HTTP endpoint. Computes and caches percentiles for 5 minutes.
+- **Storage**: Google Sheets with three tabs — Submissions, Emails, and Historical.
+- **Analytics**: PostHog, tracking every funnel step and A/B test variants.
+- **Data integrity**: Server-side enum whitelists, formula injection prevention, and outlier flagging on the Historical tab.
 
 ## Project structure
 
-- `compensation/`: public landing page for the Salary Compass product.
-- `salary-compass/`: interactive Salary Compass tool.
-- `compensation/apps-script/`: Google Apps Script backend used by the product.
+- `salary-compass/index.html` — Main interactive tool
+- `compensation/index.html` — Public landing page
+- `compensation/apps-script/Code.gs` — Google Apps Script backend (HTTP endpoints, percentile computation, Sheets I/O)
+
+## Local development and testing
+
+Append `?test=1` to the URL to enable test mode. This blocks all backend writes, silences analytics, and shows a floating panel with preset form values — safe for local development without polluting the dataset.
+
+## Data quality notes
+
+The tool is Portugal-only, which keeps the dataset focused but means sample size is the key variable to watch. Per-bucket thresholds are the main guardrail: if community submissions are sparse, more segments fall back to the embedded historical snapshot rather than live data. Growing the contributor base directly improves benchmark precision.
 
 ## Deployment
 
