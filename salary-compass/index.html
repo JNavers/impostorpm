@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https://fonts.softr-files.com https://assets.softr-files.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.softr-files.com https://assets.softr-files.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://us.i.posthog.com https://*.posthog.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://us.i.posthog.com https://*.posthog.com; form-action 'self' https://script.google.com https://script.googleusercontent.com; frame-src 'self'; upgrade-insecure-requests">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https://fonts.softr-files.com https://assets.softr-files.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.softr-files.com https://assets.softr-files.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; form-action 'self' https://script.google.com https://script.googleusercontent.com; frame-src 'self'; upgrade-insecure-requests">
     <title>Compare Your PM Salary — The Impostor PM</title>
     <meta name="description" content="See how your Product Manager salary compares with the Portugal PM compensation benchmark. Enter your details and get instant results.">
 
@@ -23,14 +23,15 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8cb113e8-f737-4f66-b912-03b02e1b1406.png">
 
-    <!-- PostHog Cloud -->
+    <!-- PostHog Cloud EU: set token in Cloudflare or replace the empty string with the public project key. -->
     <script>
-        (function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags reloadFeatureFlags getFeatureFlag getFeatureFlagPayload".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)})(document,window.posthog||[]);
-        window.TIPM_POSTHOG_KEY = window.TIPM_POSTHOG_KEY || '';
-        if (window.TIPM_POSTHOG_KEY) {
-            posthog.init(window.TIPM_POSTHOG_KEY, { api_host: 'https://us.i.posthog.com' });
-        }
+        window.TIPM_POSTHOG_CONFIG = window.TIPM_POSTHOG_CONFIG || {
+            token: 'phc_skjv4vgokxx9op9vtFHdjwNWuAA9VZZaPQ6wFguFvFcB',
+            apiHost: 'https://eu.i.posthog.com',
+            uiHost: 'https://eu.posthog.com'
+        };
     </script>
+    <script src="../assets/posthog-init.js"></script>
 
     <style>
         /* ── Color tokens ── */
@@ -2388,7 +2389,27 @@
             console.log('Sheets webhook not configured. Data:', data);
             return Promise.resolve();
         }
-        return postOpaqueToSheets(data);
+        var startedAt = performance.now();
+        return postOpaqueToSheets(data)
+            .then(function(result) {
+                if (window.tipmAnalytics) {
+                    window.tipmAnalytics.captureTiming('comp_sheets_submit_timing', startedAt, {
+                        action: data && data.action,
+                        status: 'ok'
+                    });
+                }
+                return result;
+            })
+            .catch(function(error) {
+                if (window.tipmAnalytics) {
+                    window.tipmAnalytics.captureTiming('comp_sheets_submit_timing', startedAt, {
+                        action: data && data.action,
+                        status: 'error'
+                    });
+                    window.tipmAnalytics.captureException(error, { source: 'submitToSheets' });
+                }
+                throw error;
+            });
     }
 
     /* ── Email capture + full survey retained runtime ── */
@@ -2464,9 +2485,27 @@
             console.info('[TEST MODE] track:', event, props || {});
             return;
         }
-        if (window.posthog && window.TIPM_POSTHOG_KEY && typeof window.posthog.capture === 'function') {
-            window.posthog.capture(event, props || {});
+        if (window.tipmAnalytics && typeof window.tipmAnalytics.track === 'function') {
+            window.tipmAnalytics.track(event, props || {});
         }
+    }
+
+    var EXPERIMENTS = {
+        surveyCtaVariant: 'hero-v2',
+        shareStripVariant: 'strip-v2'
+    };
+
+    function loadExperiments() {
+        if (!window.tipmAnalytics || typeof window.tipmAnalytics.getExperiment !== 'function') return;
+        EXPERIMENTS.surveyCtaVariant = window.tipmAnalytics.getExperiment('salary_compass_survey_cta', 'hero-v2');
+        EXPERIMENTS.shareStripVariant = window.tipmAnalytics.getExperiment('salary_compass_share_strip', 'strip-v2');
+        document.documentElement.setAttribute('data-survey-cta-variant', EXPERIMENTS.surveyCtaVariant);
+        document.documentElement.setAttribute('data-share-strip-variant', EXPERIMENTS.shareStripVariant);
+    }
+
+    loadExperiments();
+    if (window.posthog && typeof window.posthog.onFeatureFlags === 'function') {
+        window.posthog.onFeatureFlags(loadExperiments);
     }
 
     function fetchCounters() {
@@ -2621,12 +2660,18 @@
         return out;
     }
 
+    var liveDataStartedAt = performance.now();
     var liveDataPromise = fetch(SHEETS_WEBHOOK, { redirect: 'follow' })
         .then(function(res) { return res.json(); })
         .then(function(data) {
             if (!data || !data.overall || !data.overall.n) return;
             if (data.overall.n < LIVE_MIN_TOTAL) {
                 console.log('Live sample too small (n=' + data.overall.n + '), keeping fallback');
+                track('comp_live_data_load', {
+                    status: 'fallback_small_sample',
+                    sample_n: data.overall.n,
+                    duration_ms: Math.round(performance.now() - liveDataStartedAt)
+                });
                 return;
             }
             SALARY_DATA.overall = data.overall;
@@ -2645,9 +2690,19 @@
                 SALARY_DATA.districts = data.districts;
             }
             console.log('Live data loaded: ' + data.totalEntries + ' entries');
+            track('comp_live_data_load', {
+                status: 'ok',
+                total_entries: data.totalEntries,
+                sample_n: data.overall.n,
+                duration_ms: Math.round(performance.now() - liveDataStartedAt)
+            });
         })
         .catch(function() {
             console.log('Using fallback data');
+            track('comp_live_data_load', {
+                status: 'error',
+                duration_ms: Math.round(performance.now() - liveDataStartedAt)
+            });
         });
 
     var ROLE_ORDER = ['APM', 'PM', 'Senior PM', 'Lead/Principal', 'Director+', 'VP/Head/CPO'];
@@ -2690,6 +2745,17 @@
             }
         }
         return 99;
+    }
+
+    function salaryBand(value) {
+        var n = Number(value);
+        if (!isFinite(n) || n <= 0) return 'unknown';
+        if (n < 30000) return '<30k';
+        if (n < 45000) return '30k-45k';
+        if (n < 60000) return '45k-60k';
+        if (n < 80000) return '60k-80k';
+        if (n < 100000) return '80k-100k';
+        return '100k+';
     }
 
     /* City data not yet available — all cities use Portugal-wide data */
@@ -2848,6 +2914,7 @@
             if ($firstErr.length) {
                 $('html, body').animate({ scrollTop: $firstErr.offset().top - 100 }, 300);
             }
+            track('comp_form_submit_blocked', { errors_count: errors });
             return;
         }
 
@@ -2886,6 +2953,20 @@
         var overallPct = calcPercentile(effectiveComp, SALARY_DATA.totalComp.overall);
         var rolePct    = calcPercentile(effectiveComp, SALARY_DATA.totalComp.roles[roleKey]);
 
+        track('comp_compare_submit', {
+            role: roleRaw,
+            role_key: roleKey,
+            yoe_bucket: yoeBucket,
+            city: city,
+            salary_band: salaryBand(salary),
+            effective_comp_band: salaryBand(effectiveComp),
+            total_comp_included: !!totalComp,
+            perception_guess: guess,
+            overall_percentile: overallPct,
+            role_percentile: rolePct,
+            perception_delta: overallPct - guess
+        });
+
         displayResults({
             salary: salary,
             totalComp: totalComp,
@@ -2905,10 +2986,11 @@
     function displayResults(d) {
         latestResult = d;
         track('comp_results_view', { percentile: d.overallPct });
-        track('comp_survey_cta_view', { variant: 'hero-v2' });
-        track('comp_share_card_view', { variant: 'strip-v2', placement: 'below-survey-hero' });
+        track('comp_survey_cta_view', { variant: EXPERIMENTS.surveyCtaVariant });
+        track('comp_share_card_view', { variant: EXPERIMENTS.shareStripVariant, placement: 'below-survey-hero' });
         $('#share-pct').text('p' + d.overallPct);
         $('#dashboard-card').addClass('visible');
+        track('comp_dashboard_card_view', { percentile: d.overallPct });
         $('#post-email-loop').addClass('is-revealing');
         // Salary summary
         $('#result-salary').text(formatEUR(d.effectiveComp) + ' / year');
@@ -3043,6 +3125,12 @@
                 capturedEmail = email;
                 dashboardToken = data.token;
                 tokenStore.setItem('tipmDashboardToken', dashboardToken);
+                if (window.tipmAnalytics) {
+                    window.tipmAnalytics.identifyEmail(email, {
+                        dashboard_optin: true,
+                        newsletter_optin: newsletter
+                    });
+                }
                 track('comp_survey_email_submit', { newsletter_optin: newsletter, percentile: latestResult ? latestResult.overallPct : null });
 
                 // Morph the same dashboard-card to its success state (in place)
@@ -3069,7 +3157,7 @@
 
     $('[data-target="#filloutModal"], .js-open-survey').on('click', function() {
         track('comp_upsell_click', {
-            variant: 'hero-v2',
+            variant: EXPERIMENTS.surveyCtaVariant,
             contributor_number: (lastCounter != null ? lastCounter + 1 : null)
         });
     });
@@ -3585,6 +3673,13 @@
                 capturedEmail = inlineEmail;
                 dashboardToken = data.token;
                 tokenStore.setItem('tipmDashboardToken', dashboardToken);
+                if (window.tipmAnalytics) {
+                    window.tipmAnalytics.identifyEmail(inlineEmail, {
+                        dashboard_optin: true,
+                        newsletter_optin: inlineNewsletterOptin,
+                        source: 'full_survey_inline'
+                    });
+                }
             })
             : Promise.resolve();
 
@@ -3784,7 +3879,7 @@
         var eventName = surface === 'post_survey' ? 'comp_share_post_survey_click' : 'comp_share_click';
         var payload = surface === 'post_survey'
             ? { channel: channel, percentile: pct, contributor_number: lastCounter }
-            : { channel: channel, variant: 'strip-v2', surface: 'strip' };
+            : { channel: channel, variant: EXPERIMENTS.shareStripVariant, surface: 'strip' };
         track(eventName, payload);
         openShareTarget(channel, $item);
         if (channel !== 'copy') {
@@ -3860,7 +3955,7 @@
 
     // PNG download — below-modal strip
     $('#download-share-png').on('click', function() {
-        track('comp_share_click', { channel: 'png', variant: 'strip-v2', surface: 'strip' });
+        track('comp_share_click', { channel: 'png', variant: EXPERIMENTS.shareStripVariant, surface: 'strip' });
         renderShareCanvas();
     });
 

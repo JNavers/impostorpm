@@ -24,6 +24,16 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8cb113e8-f737-4f66-b912-03b02e1b1406.png">
 
+    <!-- PostHog Cloud EU: set token in Cloudflare or replace the empty string with the public project key. -->
+    <script>
+        window.TIPM_POSTHOG_CONFIG = window.TIPM_POSTHOG_CONFIG || {
+            token: 'phc_skjv4vgokxx9op9vtFHdjwNWuAA9VZZaPQ6wFguFvFcB',
+            apiHost: 'https://eu.i.posthog.com',
+            uiHost: 'https://eu.posthog.com'
+        };
+    </script>
+    <script src="../assets/posthog-init.js"></script>
+
     <style>
         /* ── Color tokens ── */
         :root {
@@ -988,6 +998,7 @@
             loaded = true;
         }
     });
+
 })();
 </script>
 </body>
