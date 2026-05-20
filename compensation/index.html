@@ -897,16 +897,16 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-7 mb-5 mb-lg-0">
-                <span class="eyebrow-chip"><span class="dot"></span>Product Salary Compass · Updated weekly</span>
-                <h1 class="hero-heading">Find out where your <span class="scribble-underline">PM salary</span> actually stands.</h1>
-                <p class="hero-subtitle">Two minutes. No email gate to start. Compare your number against real Product Managers — by role, years, location, and industry. Built from the data they shared, not what recruiters wish were true.</p>
+                <span class="eyebrow-chip">Product Salary Compass · Portugal</span>
+                <h1 class="hero-heading">Know exactly where your <span class="scribble-underline">PM salary</span> stands.</h1>
+                <p class="hero-subtitle">Curious? Preparing a raise? Weighing an offer? The Compass tells you if your number is below, at, or above market — against real Product Managers, not job-board ranges.</p>
                 <div class="hero-cta-row">
-                    <a href="/salary-compass/#start" class="btn-cta">Compare my salary</a>
+                    <a href="/salary-compass/#start" class="btn-cta">Analyse my salary</a>
                     <a href="#how-it-works" class="btn-cta-dark">How it works</a>
                 </div>
                 <div class="hero-counter-line" id="hero-counter-line">
                     <span class="dot-live"></span>
-                    <span><strong id="hero-counter-current">0</strong> of <strong>500</strong> PMs have shared their numbers.</span>
+                    <span><strong id="hero-counter-current">0</strong> PMs have shared their numbers.</span>
                 </div>
             </div>
 
@@ -920,25 +920,25 @@
                     <div class="hero-mockup-cohort">Senior PM · 5–8 yrs · Portugal · SaaS</div>
 
                     <div class="gauge-wrap">
-                        <svg width="100%" height="110" viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg" style="max-width:280px;">
+                        <svg width="100%" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" style="max-width:280px;">
                             <defs>
                                 <linearGradient id="gaugeFill" x1="0%" y1="0%" x2="100%" y2="0%">
                                     <stop offset="0%" stop-color="#ffe680"/>
                                     <stop offset="100%" stop-color="#ffc600"/>
                                 </linearGradient>
                             </defs>
-                            <!-- background arc -->
+                            <!-- background arc (radius 100, center 120,120) -->
                             <path d="M20 120 A100 100 0 0 1 220 120" stroke="#f0f0f0" stroke-width="14" fill="none" stroke-linecap="round"/>
-                            <!-- filled arc (~ to 38% from top: arc spans 180°, so end at ~180-38%*180 from start) -->
-                            <path d="M20 120 A100 100 0 0 1 197 47" stroke="url(#gaugeFill)" stroke-width="14" fill="none" stroke-linecap="round"/>
-                            <!-- needle -->
-                            <g transform="rotate(48 120 120)">
+                            <!-- filled arc to 62% (Top 38% badge) — endpoint on same circle -->
+                            <path d="M20 120 A100 100 0 0 1 156.8 27" stroke="url(#gaugeFill)" stroke-width="14" fill="none" stroke-linecap="round"/>
+                            <!-- needle at 62% (rotation = (62-50)*1.8 = 21.6°) -->
+                            <g transform="rotate(21.6 120 120)">
                                 <line x1="120" y1="120" x2="120" y2="40" stroke="#1e1e1e" stroke-width="3" stroke-linecap="round"/>
                                 <circle cx="120" cy="120" r="6" fill="#1e1e1e"/>
                             </g>
                             <!-- tick labels -->
-                            <text x="20" y="135" font-size="10" font-family="Inter" fill="#999">€0</text>
-                            <text x="200" y="135" font-size="10" font-family="Inter" fill="#999">€130k</text>
+                            <text x="20" y="142" font-size="10" font-family="Inter" fill="#999" text-anchor="middle">€0</text>
+                            <text x="220" y="142" font-size="10" font-family="Inter" fill="#999" text-anchor="middle">€130k</text>
                         </svg>
                     </div>
 
@@ -982,7 +982,7 @@
 </section>
 
 <!-- ════════════ 2 · SOCIAL PROOF STRIP ════════════ -->
-<section class="strip">
+<section class="strip" style="display: none;">
     <div class="container">
         <div class="strip-grid">
             <div class="strip-cell">
@@ -1005,16 +1005,48 @@
     </div>
 </section>
 
+<!-- ════════════ 2.5 · WHEN TO OPEN IT ════════════ -->
+<section class="section-warm section-pad-lg">
+    <div class="container">
+        <div class="text-center mb-5" style="max-width:760px; margin-left:auto; margin-right:auto;">
+            <span class="section-eyebrow">When to open it</span>
+            <h2 class="h2-display">PMs run the Compass for <span class="scribble-underline">three reasons.</span></h2>
+            <p class="lede">It's a salary analysis tool — for the moments when guessing costs you money.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="output-card">
+                    <span class="output-status now">Reality check</span>
+                    <h3 class="output-title">Out of curiosity</h3>
+                    <p class="output-desc">Top quartile, mid-pack, or underpaid? Get an honest read against real PMs in your cohort — no email, no recruiter spin.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="output-card">
+                    <span class="output-status soon">Raise prep</span>
+                    <h3 class="output-title">Before asking for a raise</h3>
+                    <p class="output-desc">Walk in with a percentile, not a guess. See how far below market you actually are — and by how much.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="output-card">
+                    <span class="output-status recurring">Offer review</span>
+                    <h3 class="output-title">Weighing an offer</h3>
+                    <p class="output-desc">A number just landed in your inbox. Is it market, above, or a lowball? Check before you accept, counter, or walk away.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- ════════════ 3 · THE PROBLEM ════════════ -->
 <section class="section-white section-pad-lg">
     <div class="container">
-        <div class="row align-items-end mb-5">
-            <div class="col-md-7">
-                <h2 class="h2-display">Glassdoor, LinkedIn, that one Slack thread. <span class="scribble-underline">All wrong.</span></h2>
-            </div>
-            <div class="col-md-5">
-                <p class="lede">Salary data for Product Managers is broken in three ways. The Compass fixes each one.</p>
-            </div>
+        <div class="text-center mb-5" style="max-width:760px; margin-left:auto; margin-right:auto;">
+            <span class="section-eyebrow">The data problem</span>
+            <h2 class="h2-display">Glassdoor, LinkedIn, that one Reddit thread. <span class="scribble-underline">All wrong.</span></h2>
+            <p class="lede">Salary data for PMs is broken in three ways. The Compass fixes each one.</p>
         </div>
 
         <div class="row">
@@ -1195,7 +1227,7 @@
             <div class="result-meta">Senior PM · 5–8 yrs · Portugal · SaaS</div>
 
             <div class="gauge-wrap">
-                <svg width="100%" height="140" viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg" style="max-width:340px;" aria-hidden="true">
+                <svg width="100%" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" style="max-width:340px;" aria-hidden="true">
                     <defs>
                         <linearGradient id="gaugeFillDark" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stop-color="#ffe680"/>
@@ -1203,13 +1235,13 @@
                         </linearGradient>
                     </defs>
                     <path d="M20 120 A100 100 0 0 1 220 120" stroke="rgba(255,255,255,.08)" stroke-width="14" fill="none" stroke-linecap="round"/>
-                    <path d="M20 120 A100 100 0 0 1 197 47" stroke="url(#gaugeFillDark)" stroke-width="14" fill="none" stroke-linecap="round"/>
-                    <g transform="rotate(48 120 120)">
+                    <path d="M20 120 A100 100 0 0 1 156.8 27" stroke="url(#gaugeFillDark)" stroke-width="14" fill="none" stroke-linecap="round"/>
+                    <g transform="rotate(21.6 120 120)">
                         <line x1="120" y1="120" x2="120" y2="40" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
                         <circle cx="120" cy="120" r="6" fill="#ffffff"/>
                     </g>
-                    <text x="20" y="135" font-size="10" font-family="Inter" fill="rgba(255,255,255,.5)">€0</text>
-                    <text x="200" y="135" font-size="10" font-family="Inter" fill="rgba(255,255,255,.5)">€130k</text>
+                    <text x="20" y="142" font-size="10" font-family="Inter" fill="rgba(255,255,255,.5)" text-anchor="middle">€0</text>
+                    <text x="220" y="142" font-size="10" font-family="Inter" fill="rgba(255,255,255,.5)" text-anchor="middle">€130k</text>
                 </svg>
             </div>
 
@@ -1498,15 +1530,25 @@
 
 <script>
 (function() {
-    /* ── Live counter from Apps Script ── */
+    /* ── Live counter from Apps Script ──
+     * Two metrics in play:
+     *   - SOCIAL_PROOF_METRIC ('total' = historical + submissions) → hero line, strip count.
+     *   - MILESTONE_METRIC ('surveys') → contrib block "of 500" + progress card (Dashboard unlock).
+     * Flip MILESTONE_METRIC to 'submissions' if the surveys count alone is too low to motivate.
+     */
     var SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxW5SPrFA7aT4HKPi-ASoFFjsO4rU9ajps6fUhvezQdQyeAwnrsKWMk02Kg5SamllZ4gg/exec';
-    var COUNTER_METRIC = 'surveys';        // flip to 'submissions' if surveys count too low to motivate
+    var SOCIAL_PROOF_METRIC = 'total';
+    var MILESTONE_METRIC = 'surveys';
     var COUNTER_GOAL = 500;
     var COUNTER_MIN_VISIBLE = 50;          // hide hero counter when below this threshold
 
-    function renderCounter(count) {
-        if (!isFinite(count) || count < 0) return;
-        // Strip / hero / progress card all driven by same number
+    function renderCounter(counts) {
+        if (!counts || typeof counts !== 'object') return;
+        var socialProof = Number(counts[SOCIAL_PROOF_METRIC]);
+        var milestone = Number(counts[MILESTONE_METRIC]);
+        if (!isFinite(socialProof) || socialProof < 0) socialProof = 0;
+        if (!isFinite(milestone) || milestone < 0) milestone = 0;
+
         var stripEl = document.getElementById('strip-count');
         var contribEl = document.getElementById('contrib-count');
         var heroEl = document.getElementById('hero-counter-current');
@@ -1515,17 +1557,17 @@
         var pCount = document.getElementById('contrib-progress-count');
         var pPct = document.getElementById('contrib-progress-pct');
 
-        if (stripEl) stripEl.textContent = count;
-        if (contribEl) contribEl.textContent = count;
-        if (pCount) pCount.textContent = count;
+        if (stripEl) stripEl.textContent = socialProof;
+        if (contribEl) contribEl.textContent = milestone;
+        if (pCount) pCount.textContent = milestone;
 
-        var capped = Math.min(count, COUNTER_GOAL);
+        var capped = Math.min(milestone, COUNTER_GOAL);
         var pct = Math.max(0, Math.min(100, Math.round((capped / COUNTER_GOAL) * 100)));
         if (pFill) pFill.style.width = pct + '%';
         if (pPct) pPct.textContent = pct + '%';
 
-        if (count >= COUNTER_MIN_VISIBLE) {
-            if (heroEl) heroEl.textContent = count;
+        if (socialProof >= COUNTER_MIN_VISIBLE) {
+            if (heroEl) heroEl.textContent = socialProof;
             if (heroLine) heroLine.classList.add('is-visible');
         }
     }
@@ -1534,7 +1576,7 @@
         var host = window.location.hostname;
         var isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(host) !== -1;
         if (isLocalhost) {
-            renderCounter(412);
+            renderCounter({ submissions: 80, surveys: 50, historical: 762, total: 842 });
             return;
         }
         var url = SHEETS_WEBHOOK + '?action=count';
@@ -1545,8 +1587,7 @@
         Promise.race([network, timeout])
             .then(function(data) {
                 if (!data) return;
-                var n = Number(data[COUNTER_METRIC]);
-                renderCounter(n);
+                renderCounter(data);
             })
             .catch(function() { /* counter rows stay at defaults */ });
     }

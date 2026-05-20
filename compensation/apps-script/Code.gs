@@ -339,6 +339,7 @@ function getCachedCounts_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var submissionsSheet = ss.getSheetByName('Submissions');
   var emailsSheet = ss.getSheetByName('Emails');
+  var historicalSheet = ss.getSheetByName('Historical');
 
   var surveys = 0;
   if (submissionsSheet && submissionsSheet.getLastRow() > 1) {
@@ -348,10 +349,15 @@ function getCachedCounts_() {
     }
   }
 
+  var submissionsCount = submissionsSheet ? Math.max(0, submissionsSheet.getLastRow() - 1) : 0;
+  var historicalCount = historicalSheet ? Math.max(0, historicalSheet.getLastRow() - 1) : 0;
+
   var result = {
-    submissions: submissionsSheet ? Math.max(0, submissionsSheet.getLastRow() - 1) : 0,
+    submissions: submissionsCount,
     emails: emailsSheet ? Math.max(0, emailsSheet.getLastRow() - 1) : 0,
-    surveys: surveys
+    surveys: surveys,
+    historical: historicalCount,
+    total: submissionsCount + historicalCount
   };
 
   cache.put(COMP_COUNTS_CACHE_KEY, JSON.stringify(result), 60);
