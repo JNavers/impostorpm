@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <!-- ════════════ SEO ════════════ -->
+    <title>3,000 free Rezonant credits — The Impostor PM</title>
+    <meta name="description" content="A perk for The Impostor PM community: 3,000 free Rezonant credits, no strings attached.">
+    <link rel="canonical" href="https://www.impostor.pm/rezonant/">
+    <meta name="robots" content="noindex, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.impostor.pm/rezonant/">
+    <meta property="og:title" content="3,000 free Rezonant credits — The Impostor PM">
+    <meta property="og:description" content="A perk for The Impostor PM community.">
+    <meta property="og:image" content="[OG_IMAGE_URL]">
+    <meta property="og:site_name" content="The Impostor PM">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8cb113e8-f737-4f66-b912-03b02e1b1406.png">
+
+    <!-- Inter font from Softr CDN (same as rest of TIPM site) -->
+    <link href="https://fonts.softr-files.com/google/api/css?family=Inter:100,200,300,400,500,600,700,800,900&display=block" rel="stylesheet">
+
+    <!-- ════════════ JSON-LD ════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "The Impostor PM",
+      "alternateName": "TIPM",
+      "url": "https://www.impostor.pm/",
+      "logo": "https://impostorpm-huddle.pages.dev/TIPM-horizontal-white-logo.svg",
+      "description": "A community for Product Managers focused on real-world practice: salary transparency, peer mentoring, in-person Clubs, and live tools.",
+      "sameAs": [
+        "https://www.linkedin.com/company/impostorpm/"
+      ]
+    }
+    </script>
+
+    <style>
+        /* ════════════ TOKENS (shared with TIPM site) ════════════ */
+        :root {
+            --white: #ffffff;
+            --warm-yellow: #fff3cf;
+            --golden: #ffc600;
+            --golden-10: rgba(255, 198, 0, 0.10);
+            --golden-20: rgba(255, 198, 0, 0.20);
+            --golden-40: rgba(255, 198, 0, 0.40);
+            --near-black: #1e1e1e;
+            --black: #000000;
+            --light-gray: #f5f5f5;
+            --border-gray: #eaeff4;
+            --text-muted: #666666;
+            --outline-light: #e0e0e0;
+        }
+
+        /* ════════════ BASE ════════════ */
+        *, *::before, *::after { box-sizing: border-box; }
+        html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+        body {
+            margin: 0;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+            color: var(--near-black);
+            background-color: var(--white);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3 { font-family: "Inter", sans-serif; font-weight: 700; color: var(--near-black); margin: 0; line-height: 1.15; letter-spacing: -0.01em; }
+        p { margin: 0; }
+        button { font-family: inherit; }
+
+        /* ════════════ LAYOUT ════════════ */
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 20px 48px;
+        }
+        .brand {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 48px;
+        }
+        .brand-lockup {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .brand-tipm {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--near-black);
+        }
+        .brand-tipm img {
+            height: 34px;
+            width: auto;
+            display: block;
+        }
+        .brand-tipm-wordmark {
+            font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #161616;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .brand-x {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+            user-select: none;
+        }
+        .brand-rezonant {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .brand-rezonant img {
+            height: 26px;
+            width: auto;
+            display: block;
+        }
+        .stage {
+            width: 100%;
+            max-width: 480px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ════════════ SCREENS ════════════ */
+        .screen {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeIn 280ms ease both;
+        }
+        .screen.is-active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-self: flex-start;
+            align-items: center;
+            gap: 6px;
+            background: var(--golden-20);
+            color: var(--near-black);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 6px 12px;
+            border-radius: 999px;
+        }
+        .eyebrow::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--golden);
+        }
+
+        h1 { font-size: 34px; }
+        h2 { font-size: 26px; }
+        .sub {
+            font-size: 17px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        .question {
+            font-size: 15px;
+            color: var(--near-black);
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        @media (min-width: 560px) {
+            h1 { font-size: 42px; }
+            h2 { font-size: 30px; }
+            .sub { font-size: 18px; }
+        }
+
+        /* ════════════ BUTTONS (canonical TIPM CTA, compensation/index.html:209-227) ════════════ */
+        .btn-cta,
+        .btn-cta-dark {
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.2;
+            padding: .85rem 1.25rem;
+            text-decoration: none;
+            transition: opacity .2s, background-color .2s, transform .15s;
+            width: 100%;
+        }
+        .btn-cta { background: var(--golden); color: var(--near-black); }
+        .btn-cta:hover, .btn-cta:focus { color: var(--near-black); opacity: .88; text-decoration: none; outline: none; }
+        .btn-cta-dark { background: var(--near-black); color: var(--white); }
+        .btn-cta-dark:hover, .btn-cta-dark:focus { color: var(--white); opacity: .88; text-decoration: none; outline: none; }
+        .btn-cta:active, .btn-cta-dark:active { transform: translateY(1px); }
+        .btn-cta:focus-visible, .btn-cta-dark:focus-visible { box-shadow: 0 0 0 3px var(--golden-40); }
+
+        .button-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        /* ════════════ FORMS ════════════ */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 8px;
+        }
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .field-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--near-black);
+            margin-bottom: 6px;
+            letter-spacing: 0.01em;
+        }
+        .field-label .opt {
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-left: 4px;
+        }
+        .field-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: -8px;
+        }
+        input[type="email"],
+        input[type="text"],
+        input[type="url"],
+        textarea {
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--near-black);
+            background: var(--white);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 14px 16px;
+            width: 100%;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        textarea {
+            min-height: 96px;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+        input::placeholder, textarea::placeholder { color: #aaa; }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--golden);
+            box-shadow: 0 0 0 3px var(--golden-20);
+        }
+
+        /* ════════════ RADIO PILLS ════════════ */
+        .radio-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--near-black);
+            background: var(--white);
+            transition: border-color .15s, background .15s;
+        }
+        .radio-option:hover { border-color: #d0d6dd; }
+        .radio-option input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 1.5px solid var(--border-gray);
+            border-radius: 50%;
+            margin: 0;
+            flex-shrink: 0;
+            position: relative;
+            cursor: pointer;
+            transition: border-color .15s;
+        }
+        .radio-option input[type="radio"]:checked {
+            border-color: var(--golden);
+            border-width: 5px;
+        }
+        .radio-option:has(input:checked) {
+            border-color: var(--golden);
+            background: var(--golden-10);
+        }
+        .radio-option input[type="radio"]:focus-visible {
+            outline: 2px solid var(--golden);
+            outline-offset: 2px;
+        }
+
+        /* ════════════ CONSENT ROW (subtle, not a question) ════════════ */
+        .consent-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 4px 2px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text-muted);
+            line-height: 1.45;
+            background: transparent;
+            border: none;
+        }
+        .consent-row input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 1.5px solid var(--border-gray);
+            border-radius: 4px;
+            margin: 1px 0 0 0;
+            flex-shrink: 0;
+            position: relative;
+            cursor: pointer;
+            background: var(--white);
+            transition: all .15s;
+        }
+        .consent-row input[type="checkbox"]:checked {
+            background: var(--golden);
+            border-color: var(--golden);
+        }
+        .consent-row input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 0px;
+            width: 5px;
+            height: 10px;
+            border: solid var(--near-black);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* ════════════ STEP INDICATOR ════════════ */
+        .steps {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .steps-bar {
+            flex: 1;
+            height: 3px;
+            background: var(--border-gray);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+        .steps-bar::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--golden);
+            width: var(--progress, 25%);
+            transition: width .25s ease;
+        }
+        .step-nav {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .step-nav .btn-cta,
+        .step-nav .btn-cta-dark { width: 100%; }
+        .btn-secondary {
+            background: var(--white);
+            color: var(--near-black);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: .85rem 1.25rem;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color .15s, background .15s;
+            flex: 0 0 auto;
+        }
+        .btn-secondary:hover, .btn-secondary:focus { border-color: var(--near-black); outline: none; }
+
+        /* ════════════ BACK BUTTON ════════════ */
+        .back {
+            align-self: flex-start;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: -4px;
+            transition: color .15s;
+        }
+        .back:hover, .back:focus { color: var(--near-black); outline: none; }
+
+        /* ════════════ LOADING ════════════ */
+        .screen-loading {
+            align-items: center;
+            text-align: center;
+            gap: 24px;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-gray);
+            border-top-color: var(--golden);
+            border-radius: 50%;
+            animation: spin 800ms linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ════════════ FINE PRINT ════════════ */
+        .fine {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 16px;
+        }
+        .fine a { color: var(--near-black); text-decoration: underline; text-underline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="brand">
+            <div class="brand-lockup">
+                <a href="https://www.impostor.pm/" class="brand-tipm" aria-label="The Impostor PM">
+                    <img src="tipm-icon.png" alt="">
+                    <span class="brand-tipm-wordmark">The Impostor PM</span>
+                </a>
+                <span class="brand-x" aria-hidden="true">×</span>
+                <span class="brand-rezonant" aria-label="Rezonant">
+                    <img src="rezonant-wordmark.png" alt="Rezonant">
+                </span>
+            </div>
+        </header>
+
+        <div class="stage">
+
+            <!-- ════════════ SCREEN 1: ENTRY ════════════ -->
+            <section id="screen-entry" class="screen is-active" aria-labelledby="entry-headline">
+                <span class="eyebrow">Community perk</span>
+                <h1 id="entry-headline">Get 3,000 free Rezonant credits</h1>
+                <p class="sub">A perk for The Impostor PM community.</p>
+                <p class="question">Already part of The Impostor PM?</p>
+                <div class="button-stack">
+                    <button type="button" class="btn-cta" data-next="screen-member">Yes, count me in</button>
+                    <button type="button" class="btn-cta-dark" data-next="screen-join-1">Not yet</button>
+                </div>
+            </section>
+
+            <!-- ════════════ SCREEN 2A: MEMBER ════════════ -->
+            <section id="screen-member" class="screen" aria-labelledby="member-headline">
+                <button type="button" class="back" data-back="screen-entry">← Back</button>
+                <h2 id="member-headline">Welcome back.</h2>
+                <p class="sub">Quick email check, then straight to Rezonant.</p>
+                <form id="form-member" novalidate>
+                    <input type="email" name="email" required placeholder="you@work.com" autocomplete="email" aria-label="Email">
+                    <button type="submit" class="btn-cta">Get my credits</button>
+                </form>
+            </section>
+
+            <!-- ════════════ SCREEN 2B: JOIN — STEP 1 of 4 ════════════ -->
+            <section id="screen-join-1" class="screen" aria-labelledby="join-1-headline">
+                <button type="button" class="back" data-back="screen-entry">← Back</button>
+                <div class="steps"><span>Step 1 of 4</span><span class="steps-bar" style="--progress: 25%;"></span></div>
+                <h2 id="join-1-headline">Join the community + get your credits</h2>
+                <p class="sub">Quick intro to get you set up.</p>
+                <form id="form-join-1" novalidate>
+                    <div class="field-row">
+                        <div>
+                            <label class="field-label" for="j-firstname">First name</label>
+                            <input id="j-firstname" type="text" name="firstname" required autocomplete="given-name" placeholder="Maria">
+                        </div>
+                        <div>
+                            <label class="field-label" for="j-lastname">Last name</label>
+                            <input id="j-lastname" type="text" name="lastname" required autocomplete="family-name" placeholder="Lopez">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="field-label" for="j-email">Email</label>
+                        <input id="j-email" type="email" name="email" required autocomplete="email" placeholder="you@work.com">
+                    </div>
+                    <button type="submit" class="btn-cta">Continue</button>
+                </form>
+            </section>
+
+            <!-- ════════════ SCREEN 2B: JOIN — STEP 2 of 4 ════════════ -->
+            <section id="screen-join-2" class="screen" aria-labelledby="join-2-headline">
+                <button type="button" class="back" data-back="screen-join-1">← Back</button>
+                <div class="steps"><span>Step 2 of 4</span><span class="steps-bar" style="--progress: 50%;"></span></div>
+                <h2 id="join-2-headline">Where you're based</h2>
+                <p class="sub">Helps us match you to the right local Club.</p>
+                <form id="form-join-2" novalidate>
+                    <div>
+                        <label class="field-label" for="j-country">Country of residence</label>
+                        <input id="j-country" type="text" name="country" required autocomplete="country-name" placeholder="Spain">
+                    </div>
+                    <div>
+                        <label class="field-label" for="j-city">City of residence</label>
+                        <input id="j-city" type="text" name="city" required autocomplete="address-level2" placeholder="Madrid">
+                    </div>
+                    <p class="field-hint">Type your city in English.</p>
+                    <div>
+                        <label class="field-label" for="j-linkedin">LinkedIn profile <span class="opt">(optional)</span></label>
+                        <input id="j-linkedin" type="text" name="linkedin" autocomplete="url" placeholder="linkedin.com/in/you">
+                    </div>
+                    <div>
+                        <label class="field-label" for="j-company">Current company <span class="opt">(leave blank if unemployed)</span></label>
+                        <input id="j-company" type="text" name="company" autocomplete="organization" placeholder="Acme Inc.">
+                    </div>
+                    <button type="submit" class="btn-cta">Continue</button>
+                </form>
+            </section>
+
+            <!-- ════════════ SCREEN 2B: JOIN — STEP 3 of 4 ════════════ -->
+            <section id="screen-join-3" class="screen" aria-labelledby="join-3-headline">
+                <button type="button" class="back" data-back="screen-join-2">← Back</button>
+                <div class="steps"><span>Step 3 of 4</span><span class="steps-bar" style="--progress: 75%;"></span></div>
+                <h2 id="join-3-headline">Your PM journey</h2>
+                <p class="sub">No wrong answers here.</p>
+                <form id="form-join-3" novalidate>
+                    <div>
+                        <label class="field-label">What best describes your experience?</label>
+                        <div class="radio-list">
+                            <label class="radio-option"><input type="radio" name="experience" value="not_pm" required><span>I'm not a Product Manager</span></label>
+                            <label class="radio-option"><input type="radio" name="experience" value="transitioning"><span>I'm transitioning into Product Management</span></label>
+                            <label class="radio-option"><input type="radio" name="experience" value="junior"><span>Junior PM (0–1 year)</span></label>
+                            <label class="radio-option"><input type="radio" name="experience" value="mid"><span>Mid-level PM (1–3 years)</span></label>
+                            <label class="radio-option"><input type="radio" name="experience" value="experienced"><span>Experienced PM (3–5 years)</span></label>
+                            <label class="radio-option"><input type="radio" name="experience" value="senior"><span>Senior PM (5+ years)</span></label>
+                        </div>
+                    </div>
+                    <div id="current-role-field" hidden>
+                        <label class="field-label" for="j-role">What is your current role? <span class="opt">(optional)</span></label>
+                        <input id="j-role" type="text" name="role" placeholder="e.g. Sales, Project Management, Marketing">
+                    </div>
+                    <button type="submit" class="btn-cta">Continue</button>
+                </form>
+            </section>
+
+            <!-- ════════════ SCREEN 2B: JOIN — STEP 4 of 4 ════════════ -->
+            <section id="screen-join-4" class="screen" aria-labelledby="join-4-headline">
+                <button type="button" class="back" data-back="screen-join-3">← Back</button>
+                <div class="steps"><span>Step 4 of 4</span><span class="steps-bar" style="--progress: 100%;"></span></div>
+                <h2 id="join-4-headline">Almost there</h2>
+                <p class="sub">Two quick ones and your credits are ready.</p>
+                <form id="form-join-4" novalidate>
+                    <div>
+                        <label class="field-label" for="j-motivation">What motivates you to join the community? <span class="opt">(optional)</span></label>
+                        <textarea id="j-motivation" name="motivation" placeholder="Tell us what you're hoping to find here…"></textarea>
+                    </div>
+                    <div>
+                        <label class="field-label">How did you learn about The Impostor PM?</label>
+                        <div class="radio-list">
+                            <label class="radio-option"><input type="radio" name="source" value="referral" required><span>Someone referred it to me</span></label>
+                            <label class="radio-option"><input type="radio" name="source" value="linkedin"><span>LinkedIn</span></label>
+                            <label class="radio-option"><input type="radio" name="source" value="search"><span>Google / LLM search</span></label>
+                            <label class="radio-option"><input type="radio" name="source" value="other"><span>Other</span></label>
+                        </div>
+                    </div>
+                    <label class="consent-row">
+                        <input type="checkbox" name="consent" checked>
+                        <span>Yes, I agree to receive emails from The Impostor PM about future events and community updates.</span>
+                    </label>
+                    <button type="submit" class="btn-cta">Join + get my credits</button>
+                </form>
+            </section>
+
+            <!-- ════════════ SCREEN 3: LOADING ════════════ -->
+            <section id="screen-loading" class="screen screen-loading" aria-live="polite">
+                <div class="spinner" aria-hidden="true"></div>
+                <p class="sub">Loading your credits…</p>
+            </section>
+
+            <!-- ════════════ SCREEN 4: THANK YOU (Branch B only) ════════════ -->
+            <section id="screen-thanks" class="screen" aria-labelledby="thanks-headline">
+                <span class="eyebrow">You're in</span>
+                <h2 id="thanks-headline">Welcome to The Impostor PM.</h2>
+                <p class="sub">We sent the community link to your inbox. Your 3,000 Rezonant credits are one click away.</p>
+                <button type="button" class="btn-cta" id="open-rezonant">Open Rezonant</button>
+                <p class="fine">Check your inbox (and spam, just in case). The community link expires in 7 days.</p>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // ════════════ CONFIG ════════════
+        const REZONANT_SPECIAL_LINK = 'https://rezonant.dub.link/zYgVSfP';
+        const COMMUNITY_LINK = 'https://theimpostorpm.slack.com/join/shared_invite/zt-3xk5yoi6d-AtCWjHnqjyC7gDo931HKhA#/shared-invite/email';
+        const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyW_jpgDsBdIeAwGTOgAd9n6hGXyTVOLzFPLMOYWyPDhD1mDXU0KL0d_DN9xvFf6Xks/exec';
+
+        // ════════════ SCREEN ROUTING ════════════
+        function showScreen(id) {
+            document.querySelectorAll('.screen.is-active').forEach(s => s.classList.remove('is-active'));
+            const target = document.getElementById(id);
+            if (!target) return;
+            void target.offsetWidth; // restart fadeIn animation
+            target.classList.add('is-active');
+            const firstInput = target.querySelector('input');
+            if (firstInput) setTimeout(() => firstInput.focus(), 320);
+        }
+
+        document.querySelectorAll('[data-next]').forEach(btn => {
+            btn.addEventListener('click', () => showScreen(btn.dataset.next));
+        });
+        document.querySelectorAll('[data-back]').forEach(btn => {
+            btn.addEventListener('click', () => showScreen(btn.dataset.back));
+        });
+
+        // ════════════ BACKEND ════════════
+        // Fire-and-forget POST to Apps Script. We use no-cors so Apps Script
+        // (which doesn't return CORS headers) still accepts the body. The user
+        // is redirected/forwarded immediately — the POST processes in background.
+        function postToWebhook(payload) {
+            if (!WEBHOOK_URL || WEBHOOK_URL.startsWith('[')) {
+                console.warn('[rezonant] WEBHOOK_URL not configured yet — payload not sent:', payload);
+                return Promise.resolve();
+            }
+            return fetch(WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload),
+                keepalive: true
+            }).catch(err => console.error('[rezonant] webhook error:', err));
+        }
+
+        // ════════════ REDIRECT HELPER ════════════
+        function goToRezonant() {
+            window.location.href = REZONANT_SPECIAL_LINK;
+        }
+
+        // ════════════ FORM: MEMBER (Branch A) ════════════
+        document.getElementById('form-member').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = e.target.email.value.trim();
+            if (!email) return;
+
+            showScreen('screen-loading');
+
+            postToWebhook({ action: 'member_redirect', email, source: 'rezonant_landing' });
+
+            setTimeout(goToRezonant, 700);
+        });
+
+        // ════════════ FORM: JOIN (Branch B, multi-step) ════════════
+        // Accumulator that persists across steps until final submit.
+        const joinData = {};
+
+        function collectForm(form) {
+            const data = {};
+            new FormData(form).forEach((value, key) => {
+                if (typeof value === 'string') data[key] = value.trim();
+            });
+            return data;
+        }
+
+        // Normalize any LinkedIn input format to a canonical https://www.linkedin.com/in/<handle> URL.
+        // Accepts: https://www.linkedin.com/in/you, www.linkedin.com/in/you,
+        // linkedin.com/in/you, /in/you, in/you. Anything else is returned untouched.
+        function normalizeLinkedIn(value) {
+            const v = (value || '').trim();
+            if (!v) return '';
+            if (/^https?:\/\//i.test(v))            return v;
+            if (/^www\.linkedin\.com\//i.test(v))   return 'https://' + v;
+            if (/^linkedin\.com\//i.test(v))        return 'https://www.' + v;
+            if (/^\/in\//i.test(v))                 return 'https://www.linkedin.com' + v;
+            if (/^in\//i.test(v))                   return 'https://www.linkedin.com/' + v;
+            return v;
+        }
+
+        function bindJoinStep(formId, nextScreenId, transform) {
+            document.getElementById(formId).addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!e.target.checkValidity()) { e.target.reportValidity(); return; }
+                const collected = collectForm(e.target);
+                if (transform) transform(collected);
+                Object.assign(joinData, collected);
+                showScreen(nextScreenId);
+            });
+        }
+        bindJoinStep('form-join-1', 'screen-join-2');
+        bindJoinStep('form-join-2', 'screen-join-3', (d) => {
+            d.linkedin = normalizeLinkedIn(d.linkedin);
+        });
+        bindJoinStep('form-join-3', 'screen-join-4');
+
+        // Current role only shows for non-PM or transitioning answers. Always optional.
+        const currentRoleField = document.getElementById('current-role-field');
+        const currentRoleInput = document.getElementById('j-role');
+        const ROLE_SHOW_FOR = new Set(['not_pm', 'transitioning']);
+        document.querySelectorAll('input[name="experience"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const show = ROLE_SHOW_FOR.has(e.target.value);
+                currentRoleField.hidden = !show;
+                if (!show) currentRoleInput.value = '';
+            });
+        });
+
+        document.getElementById('form-join-4').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!e.target.checkValidity()) { e.target.reportValidity(); return; }
+            Object.assign(joinData, collectForm(e.target));
+            joinData.consent = e.target.consent.checked;
+
+            showScreen('screen-loading');
+
+            const payload = {
+                action: 'new_signup',
+                source_page: 'rezonant_landing',
+                ...joinData,
+            };
+            postToWebhook(payload);
+
+            setTimeout(() => showScreen('screen-thanks'), 700);
+        });
+
+        // ════════════ THANKS CTA ════════════
+        document.getElementById('open-rezonant').addEventListener('click', goToRezonant);
+    </script>
+</body>
+</html>
