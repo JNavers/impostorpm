@@ -4,6 +4,12 @@ var MAX_POST_BYTES = 12000;
 var MIN_PUBLIC_BUCKET_N = 5;
 var MIN_PUBLIC_DISTRICT_N = 10;
 
+var SALARY_COMPASS_URL = 'https://www.impostor.pm/salary-compass/';
+var SALARY_COMPASS_FROM_EMAIL = 'Javi from The Impostor PM <general@impostor.pm>';
+var SALARY_COMPASS_REPLY_TO = 'general@impostor.pm';
+var EMAIL_SHEET_HEADERS = ['Timestamp', 'Email', 'Source', 'Dashboard Opt-in', 'Newsletter Opt-in', 'Percentile', 'Token', 'Email Sent', 'Email Error'];
+var SALARY_COMPASS_BACKEND_VERSION = 'salary-compass-email-edge-v4-2026-05-25';
+
 var ALLOWED_ROLES = {
   'APM': true,
   'PM': true,
@@ -83,6 +89,14 @@ function doPost(e) {
 
 /* ── GET: Compute and return live percentiles ── */
 function doGet(e) {
+  if (e && e.parameter && e.parameter.action === 'version') {
+    return json_({ status: 'ok', service: 'salary-compass', version: SALARY_COMPASS_BACKEND_VERSION });
+  }
+
+  if (e && e.parameter && e.parameter.action === 'debug') {
+    return json_(getBackendDebug_());
+  }
+
   if (e && e.parameter && e.parameter.action === 'count') {
     var countResult = getCachedCounts_();
     return json_(countResult);
@@ -108,6 +122,26 @@ function doGet(e) {
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getBackendDebug_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var emailSheet = ss.getSheetByName('Emails');
+  var headers = [];
+  if (emailSheet && emailSheet.getLastColumn() > 0) {
+    headers = emailSheet.getRange(1, 1, 1, emailSheet.getLastColumn()).getValues()[0];
+  }
+  return {
+    status: 'ok',
+    service: 'salary-compass',
+    version: SALARY_COMPASS_BACKEND_VERSION,
+    spreadsheet_id: ss.getId(),
+    spreadsheet_name: ss.getName(),
+    emails_sheet_exists: !!emailSheet,
+    emails_last_row: emailSheet ? emailSheet.getLastRow() : 0,
+    emails_last_column: emailSheet ? emailSheet.getLastColumn() : 0,
+    emails_headers: headers
+  };
 }
 
 function parsePostData_(e) {
@@ -176,8 +210,9 @@ function getOrCreateEmailSheet_(ss) {
   var emailSheet = ss.getSheetByName('Emails');
   if (!emailSheet) {
     emailSheet = ss.insertSheet('Emails');
-    emailSheet.appendRow(['Timestamp', 'Email', 'Source', 'Dashboard Opt-in', 'Newsletter Opt-in', 'Percentile', 'Token']);
   }
+  emailSheet.getRange(1, 1, 1, EMAIL_SHEET_HEADERS.length).setValues([EMAIL_SHEET_HEADERS]);
+  emailSheet.setFrozenRows(1);
   return emailSheet;
 }
 
@@ -261,7 +296,25 @@ function updateSubmission_(sheet, emailSheet, data) {
       sheet.getRange(row, 44).setValue(cleanMoney_(data.perkPension, 0, 200000));
 
       if (data.email) {
-        emailSheet.appendRow([id, new Date().toISOString(), cleanEmail_(data.email)]);
+        var updateEmail = cleanEmail_(data.email);
+        var updateToken = cleanToken_(data.dashboardToken, 100) || Utilities.getUuid();
+        var updateEmailResult = emailDeliveryResultFromPayload_(data) || sendSalaryCompassCaptureEmail_(updateEmail, {
+          source: 'survey_inline',
+          token: updateToken,
+          newsletterOptin: false,
+          percentile: ''
+        });
+        emailSheet.appendRow([
+          new Date().toISOString(),
+          updateEmail,
+          'survey_inline',
+          true,
+          false,
+          '',
+          updateToken,
+          updateEmailResult.sent,
+          updateEmailResult.error
+        ]);
       }
       return true;
     }
@@ -367,19 +420,168 @@ function getCachedCounts_() {
 function saveEmailOnly_(ss, data) {
   var emailSheet = getOrCreateEmailSheet_(ss);
   var token = cleanToken_(data.token, 100) || Utilities.getUuid();
+  var email = cleanEmail_(data.email);
+  var source = cleanEmailSource_(data.source || 'dashboard_waitlist');
   var newsletterOptin = cleanBoolString_(data.newsletter_optin || data.newsletterOptin) === 'true';
+  var percentile = cleanNumber_(data.percentile, 0, 100);
+
+  var emailResult = emailDeliveryResultFromPayload_(data) || sendSalaryCompassCaptureEmail_(email, {
+    source: source,
+    token: token,
+    newsletterOptin: newsletterOptin,
+    percentile: percentile
+  });
+
   emailSheet.appendRow([
     new Date().toISOString(),
-    cleanEmail_(data.email),
-    cleanText_(data.source || 'frame_3', 40),
+    email,
+    source,
     true,
     newsletterOptin,
-    cleanNumber_(data.percentile, 0, 100),
-    token
+    percentile,
+    token,
+    emailResult.sent,
+    emailResult.error
   ]);
 
   clearPublicCaches_();
-  return { status: 'ok', token: token };
+  return { status: 'ok', token: token, email_sent: emailResult.sent, email_error: emailResult.error };
+}
+
+function cleanEmailSource_(value) {
+  var source = cleanText_(value, 40);
+  if (source === 'frame_3') return 'dashboard_waitlist';
+  return /^(dashboard_waitlist|survey_inline)$/.test(source) ? source : 'dashboard_waitlist';
+}
+
+function emailDeliveryResultFromPayload_(data) {
+  if (cleanText_(data.resend_via, 40) === 'email_api') {
+    return {
+      sent: cleanBoolString_(data.email_sent || data.emailSent) === 'true',
+      error: cleanText_(data.email_error || data.emailError || '', 240)
+    };
+  }
+  return null;
+}
+
+function sendSalaryCompassCaptureEmail_(to, context) {
+  try {
+    var template = buildSalaryCompassEmail_(context || {});
+    sendViaResend_({
+      to: to,
+      subject: template.subject,
+      html: template.html
+    });
+    return { sent: true, error: '' };
+  } catch (err) {
+    var message = err && err.message ? err.message : String(err);
+    Logger.log('Salary Compass email not sent: ' + message);
+    return { sent: false, error: cleanText_(message, 240) };
+  }
+}
+
+function buildSalaryCompassEmail_(context) {
+  var source = context.source || 'dashboard_waitlist';
+  var dashboardUrl = SALARY_COMPASS_URL;
+  var token = cleanToken_(context.token, 100);
+  if (token) dashboardUrl += '?access=' + encodeURIComponent(token);
+
+  if (source === 'survey_inline') {
+    return {
+      subject: 'Your Salary Compass contributor access is reserved',
+      html: wrapSalaryCompassEmail_(
+        '<p style="margin:0 0 12px 0; font-size:12px; line-height:1.4; letter-spacing:0.14em; text-transform:uppercase; color:#7A7060; font-weight:700;">Product Salary Compass</p>' +
+        '<h1 style="margin:0 0 20px 0; font-size:34px; line-height:1.05; letter-spacing:-0.03em; color:#161616; font-weight:800;">Thanks for contributing.</h1>' +
+        '<p style="margin:0 0 18px 0; font-size:17px; line-height:1.55; color:#2B2B2B;">Your survey is now counted in the Product Salary Compass dataset.</p>' +
+        '<p style="margin:0 0 24px 0; font-size:17px; line-height:1.55; color:#2B2B2B;">When the dashboard opens, this email gets contributor access so you can explore the compensation cuts we do not publish publicly.</p>' +
+        salaryCompassButton_('Return to Salary Compass', dashboardUrl) +
+        '<p style="margin:28px 0 0 0; font-size:14px; line-height:1.55; color:#6B6B6B;">We keep survey answers separate from your public identity. The email is used to send access and launch updates.</p>' +
+        '<p style="margin:24px 0 0 0; font-size:15px; line-height:1.55; color:#161616;">- Javi</p>'
+      )
+    };
+  }
+
+  return {
+    subject: 'You are on the Salary Compass dashboard list',
+    html: wrapSalaryCompassEmail_(
+      '<p style="margin:0 0 12px 0; font-size:12px; line-height:1.4; letter-spacing:0.14em; text-transform:uppercase; color:#7A7060; font-weight:700;">Product Salary Compass</p>' +
+      '<h1 style="margin:0 0 20px 0; font-size:34px; line-height:1.05; letter-spacing:-0.03em; color:#161616; font-weight:800;">You are on the list.</h1>' +
+      '<p style="margin:0 0 18px 0; font-size:17px; line-height:1.55; color:#2B2B2B;">We saved your email for the Product Salary Compass dashboard launch.</p>' +
+      '<p style="margin:0 0 24px 0; font-size:17px; line-height:1.55; color:#2B2B2B;">The public salary comparison stays free. The dashboard will add deeper cuts across role, seniority, location, industry, remote policy and compensation structure.</p>' +
+      salaryCompassButton_('Complete the survey', dashboardUrl) +
+      '<p style="margin:28px 0 0 0; font-size:14px; line-height:1.55; color:#6B6B6B;">Completing the full survey helps us make the benchmark stronger and reserves contributor-level dashboard access.</p>' +
+      '<p style="margin:24px 0 0 0; font-size:15px; line-height:1.55; color:#161616;">- Javi</p>'
+    )
+  };
+}
+
+function wrapSalaryCompassEmail_(innerHtml) {
+  return '<!DOCTYPE html>' +
+    '<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>' +
+    '<body style="margin:0; padding:0; background-color:#ECE7DC; font-family:Helvetica, Arial, sans-serif; color:#161616;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ECE7DC;"><tr><td align="center" style="padding:32px 16px;">' +
+    '<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%;">' +
+    '<tr><td style="padding:0 0 24px 0; font-size:13px; line-height:1.3; letter-spacing:0.16em; text-transform:uppercase; color:#161616; font-weight:bold;">The Impostor PM</td></tr>' +
+    '<tr><td style="background-color:#FFF8E5; border-radius:14px; padding:36px 32px;">' + innerHtml + '</td></tr>' +
+    '<tr><td style="padding:24px 0 0 0; font-size:12px; line-height:1.5; color:#6B6B6B; text-align:center;">You are receiving this because you shared your email on the Product Salary Compass.<br>The Impostor PM - A community for Product Managers.</td></tr>' +
+    '</table></td></tr></table></body></html>';
+}
+
+function salaryCompassButton_(label, url) {
+  return '<a href="' + escapeHtml_(url) + '" style="display:inline-block; background-color:#FFC600; color:#161616; text-decoration:none; font-weight:700; font-size:16px; padding:14px 24px; border-radius:8px; letter-spacing:-0.01em;">' + escapeHtml_(label) + '</a>';
+}
+
+function sendViaResend_(message) {
+  var props = PropertiesService.getScriptProperties();
+  var apiKey = props.getProperty('RESEND_API_KEY');
+  if (!apiKey) throw new Error('RESEND_API_KEY not set in Script Properties');
+
+  var fromEmail = props.getProperty('SALARY_COMPASS_FROM_EMAIL') || SALARY_COMPASS_FROM_EMAIL;
+  var replyTo = props.getProperty('SALARY_COMPASS_REPLY_TO') || SALARY_COMPASS_REPLY_TO;
+
+  var response = UrlFetchApp.fetch('https://api.resend.com/emails', {
+    method: 'post',
+    contentType: 'application/json',
+    headers: { Authorization: 'Bearer ' + apiKey },
+    payload: JSON.stringify({
+      from: fromEmail,
+      to: [message.to],
+      reply_to: replyTo,
+      subject: message.subject,
+      html: message.html
+    }),
+    muteHttpExceptions: true
+  });
+
+  var code = response.getResponseCode();
+  if (code >= 300) {
+    Logger.log('Resend ' + code + ': ' + response.getContentText());
+    throw new Error('Resend failed: ' + code);
+  }
+}
+
+function escapeHtml_(value) {
+  return String(value || '').replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+function testSalaryCompassWaitlistEmail() {
+  var to = PropertiesService.getScriptProperties().getProperty('TEST_EMAIL') || Session.getActiveUser().getEmail();
+  if (!to) throw new Error('Set TEST_EMAIL in Script Properties first');
+  sendSalaryCompassCaptureEmail_(to, {
+    source: 'dashboard_waitlist',
+    token: 'test-dashboard-token'
+  });
+}
+
+function testSalaryCompassSurveyEmail() {
+  var to = PropertiesService.getScriptProperties().getProperty('TEST_EMAIL') || Session.getActiveUser().getEmail();
+  if (!to) throw new Error('Set TEST_EMAIL in Script Properties first');
+  sendSalaryCompassCaptureEmail_(to, {
+    source: 'survey_inline',
+    token: 'test-survey-token'
+  });
 }
 
 function computePercentiles() {

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https://fonts.softr-files.com https://assets.softr-files.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.softr-files.com https://assets.softr-files.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; form-action 'self' https://script.google.com https://script.googleusercontent.com; frame-src 'self'; upgrade-insecure-requests">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https://fonts.softr-files.com https://assets.softr-files.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.softr-files.com https://assets.softr-files.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; connect-src 'self' https://www.impostor.pm https://impostor.pm https://script.google.com https://script.googleusercontent.com https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; form-action 'self' https://script.google.com https://script.googleusercontent.com; frame-src 'self'; upgrade-insecure-requests">
     <title>Compare Your PM Salary — The Impostor PM</title>
     <meta name="description" content="See how your Product Manager salary compares with the Portugal PM compensation benchmark. Enter your details and get instant results.">
 
@@ -914,8 +914,8 @@
             .share-strip-sub { font-size: .9rem; }
             .btn-share-small { font-size: 13px; padding: .5rem 1.1rem; }
         }
-        .survey-modal .modal-dialog { max-width: 720px; }
-        .survey-modal .modal-content { border-radius: 16px; }
+        .survey-modal .modal-dialog { align-items: flex-start; max-width: 720px; }
+        .survey-modal .modal-content { border-radius: 16px; display: flex; flex-direction: column; max-height: calc(100vh - 1rem); max-height: calc(100dvh - 1rem); }
         .survey-modal .modal-header {
             align-items: flex-start;
             background: var(--white);
@@ -929,7 +929,7 @@
         }
         .survey-modal .close { opacity: .75; position: absolute; right: 1rem; top: .8rem; transition: opacity .15s ease; }
         .survey-modal .close:hover { opacity: 1; }
-        .survey-modal .modal-body { max-height: none; overflow-y: visible; padding: 1.4rem 1.25rem; }
+        .survey-modal .modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 1.4rem 1.25rem; }
         .survey-progress-track { background: var(--surface-low); height: 4px; width: 100%; }
         .survey-progress-fill { background: var(--golden); height: 100%; width: 33.333%; }
         .survey-chapter { display: none; }
@@ -2322,28 +2322,21 @@
 <script>
 (function() {
 
-    /* ── Test mode: enabled when URL has ?test=1 (or ?test=true) ──
-       Blocks every backend write, replaces analytics with console logs, and
-       reveals a floating control panel for filling the form with a preset.
-       Persists for the current tab in sessionStorage so internal navigations
-       keep it on; users must re-add ?test=1 in a fresh tab to opt in again. */
-    var TEST_MODE = (function() {
-        try {
-            if (/[?&]test=(1|true)\b/i.test(window.location.search)) {
-                sessionStorage.setItem('tipmTestMode', '1');
-                return true;
-            }
-            return sessionStorage.getItem('tipmTestMode') === '1';
-        } catch (e) {
-            return /[?&]test=(1|true)\b/i.test(window.location.search);
-        }
-    })();
+    /* ── Test mode: enabled only when URL has ?test=1 (or ?test=true) ──
+       Removing ?test=1 restores real backend writes in the same tab, so QA
+       cannot silently keep simulating success through sessionStorage. */
+    var TEST_MODE = /[?&]test=(1|true)\b/i.test(window.location.search);
+    var EMAIL_SEND_TEST_MODE = /[?&]sendEmails=(1|true)\b/i.test(window.location.search);
+    if (!TEST_MODE) {
+        try { sessionStorage.removeItem('tipmTestMode'); } catch (e) {}
+    }
     if (TEST_MODE) {
         try { console.info('%c[TIPM TEST MODE]', 'background:#b3261e;color:#fff;padding:2px 6px;border-radius:3px;font-weight:600;', 'Active. Backend writes blocked, analytics muted.'); } catch (e) {}
     }
 
     /* ── Google Sheets webhook (replace with your deployed Apps Script URL) ── */
     var SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxW5SPrFA7aT4HKPi-ASoFFjsO4rU9ajps6fUhvezQdQyeAwnrsKWMk02Kg5SamllZ4gg/exec';
+    var EMAIL_API_ENDPOINT = 'https://www.impostor.pm/api/salary-compass-email';
 
     /* ── Generate unique ID for linking compare + survey rows ── */
     function generateId() {
@@ -2546,15 +2539,41 @@
         track('comp_counter_view', { count: count, goal: COUNTER_GOAL, pct: pct, metric: COUNTER_METRIC });
     }
 
-    function submitEmailOnly(email, newsletterOptin) {
+    function sendEmailViaApi(payload) {
+        return fetch(EMAIL_API_ENDPOINT, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-TIPM-Client': 'salary-compass'
+            },
+            body: JSON.stringify({
+                email: payload.email,
+                source: payload.source,
+                token: payload.token,
+                newsletter_optin: payload.newsletter_optin,
+                percentile: payload.percentile
+            })
+        }).then(function(res) {
+            return res.json().catch(function() { return {}; }).then(function(data) {
+                if (!res.ok || !data || data.status !== 'ok') {
+                    var msg = (data && (data.message || data.resend_body)) || ('Email API failed with HTTP ' + res.status);
+                    throw new Error(msg);
+                }
+                return data;
+            });
+        });
+    }
+
+    function submitEmailOnly(email, newsletterOptin, source) {
         var isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.hostname) !== -1;
         if (!dashboardToken) {
             dashboardToken = generateDashboardToken();
             tokenStore.setItem('tipmDashboardToken', dashboardToken);
         }
-        if (isLocalhost || TEST_MODE) {
+        if ((isLocalhost || TEST_MODE) && !EMAIL_SEND_TEST_MODE) {
             if (TEST_MODE) {
-                console.info('[TEST MODE] submitEmailOnly blocked. Email:', email, 'Newsletter:', newsletterOptin);
+                console.info('[TEST MODE] submitEmailOnly blocked. Email:', email, 'Newsletter:', newsletterOptin, 'Source:', source || 'dashboard_waitlist');
             }
             return new Promise(function(resolve) {
                 setTimeout(function() {
@@ -2565,18 +2584,28 @@
         var payload = {
             action: 'email_only',
             email: email,
-            source: 'frame_3',
+            source: source || 'dashboard_waitlist',
             dashboard_optin: 'true',
             newsletter_optin: newsletterOptin ? 'true' : 'false',
             percentile: latestResult ? String(latestResult.overallPct) : '',
             token: dashboardToken
         };
-        var network = postOpaqueToSheets(payload)
-            .then(function() { return { status: 'ok', token: dashboardToken }; });
         var timeout = new Promise(function(_, reject) {
-            setTimeout(function() { reject(new Error('timeout')); }, 8000);
+            setTimeout(function() { reject(new Error('Email send timed out. Please try again.')); }, 10000);
         });
-        return Promise.race([network, timeout]);
+        return Promise.race([sendEmailViaApi(payload), timeout]).then(function(emailData) {
+            var sheetPayload = Object.assign({}, payload, {
+                resend_via: 'email_api',
+                email_sent: 'true',
+                email_error: '',
+                resend_id: emailData.resend_id || ''
+            });
+            return postOpaqueToSheets(sheetPayload).catch(function() {
+                return null;
+            }).then(function() {
+                return { status: 'ok', token: dashboardToken, email_sent: true, resend_id: emailData.resend_id || '' };
+            });
+        });
     }
 
     track('comp_landing_view');
@@ -3119,7 +3148,7 @@
         }
         $button.prop('disabled', true).text('Reserving...');
 
-        submitEmailOnly(email, newsletter)
+        submitEmailOnly(email, newsletter, 'dashboard_waitlist')
             .then(function(data) {
                 if (!data || data.status !== 'ok' || !data.token) throw new Error('Missing token');
                 capturedEmail = email;
@@ -3149,8 +3178,8 @@
                     }
                 }, 700);
             })
-            .catch(function() {
-                $('#email-capture-error').text('Something went wrong. Please try again.');
+            .catch(function(err) {
+                $('#email-capture-error').text((err && err.message) ? err.message : 'Something went wrong. Please try again.');
                 $button.prop('disabled', false).text('Reserve my access');
             });
     });
@@ -3205,6 +3234,10 @@
         $('#survey-back-btn').toggle(surveyChapter > 1);
         $('#survey-next-btn').toggle(inChapter && surveyChapter < lastChapter).text('Continue →');
         $('#survey-submit-btn').toggle(surveyChapter === lastChapter);
+
+        requestAnimationFrame(function() {
+            $("#survey-body, #filloutModal").scrollTop(0);
+        });
     }
 
     $('#filloutModal').on('shown.bs.modal', function() {
@@ -3666,7 +3699,7 @@
         // then chain into the full-survey submit. Otherwise go straight to the survey submit.
         var inlineNewsletterOptin = $('#survey-newsletter-optin').is(':checked');
         var emailStep = needsEmail
-            ? submitEmailOnly(inlineEmail, inlineNewsletterOptin).then(function(data) {
+            ? submitEmailOnly(inlineEmail, inlineNewsletterOptin, 'survey_inline').then(function(data) {
                 if (!data || data.status !== 'ok' || !data.token) {
                     throw new Error('Missing token from email registration');
                 }
@@ -3761,13 +3794,13 @@
             $('#hero-counter-fill').css('width', pctBar + '%');
             $('#hero-counter-pct').text(pctBar + '%');
             lastCounter = nextCount;
-        }).catch(function() {
+        }).catch(function(err) {
             $btn.prop('disabled', false).text('Submit');
-            alert('Something went wrong. Please try again.');
+            alert((err && err.message) ? err.message : 'Something went wrong. Please try again.');
         });
-        }).catch(function() {
+        }).catch(function(err) {
             $btn.prop('disabled', false).text('Submit');
-            $emailErr.text('We could not save your email. Please try again.');
+            $emailErr.text((err && err.message) ? err.message : 'We could not save your email. Please try again.');
         });
     });
 
