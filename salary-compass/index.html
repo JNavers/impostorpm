@@ -1543,7 +1543,6 @@
                     <span>Subscribe and receive tools like this, community perks, and Product event updates.</span>
                 </label>
                 <button type="submit" class="btn-cta" style="width:100%;">Reserve my access</button>
-                <p class="fine-print">We'll email you the dashboard link.</p>
                 <div class="field-error-msg" id="email-capture-error" style="color:#ffd7d7;"></div>
             </form>
             <div class="dashboard-success" id="dashboard-success" aria-hidden="true">
@@ -3176,7 +3175,7 @@
                             550
                         );
                     }
-                }, 700);
+                }, 2800);
             })
             .catch(function(err) {
                 $('#email-capture-error').text((err && err.message) ? err.message : 'Something went wrong. Please try again.');
