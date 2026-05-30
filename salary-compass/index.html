@@ -3166,12 +3166,16 @@
                 $('#dashboard-success').attr('aria-hidden', 'false');
                 $('#dashboard-card').addClass('is-success');
 
-                // Smooth-scroll to the Survey Hero card (primary Full Survey CTA)
+                // Smooth-scroll down so the Share strip is the last thing visible
+                // (its bottom edge sits just above the footer / viewport bottom).
                 setTimeout(function() {
-                    var $target = $('.survey-hero');
+                    var $target = $('.share-strip');
                     if ($target.length) {
+                        var bottomEdge = $target.offset().top + $target.outerHeight();
+                        var dest = bottomEdge - $(window).height() + 24;
+                        dest = Math.max(0, dest);
                         $('html, body').animate(
-                            { scrollTop: $target.offset().top - 80 },
+                            { scrollTop: dest },
                             550
                         );
                     }
