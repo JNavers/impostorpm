@@ -914,7 +914,7 @@
             .share-strip-sub { font-size: .9rem; }
             .btn-share-small { font-size: 13px; padding: .5rem 1.1rem; }
         }
-        .survey-modal .modal-dialog { align-items: flex-start; max-width: 720px; }
+        .survey-modal .modal-dialog { align-items: center; max-width: 720px; }
         .survey-modal .modal-content { border-radius: 16px; display: flex; flex-direction: column; max-height: calc(100vh - 1rem); max-height: calc(100dvh - 1rem); }
         .survey-modal .modal-header {
             align-items: flex-start;
@@ -1859,6 +1859,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="survey-field is-conditional" data-field-id="survey-office-in-country" data-policy-trigger="Fully remote" hidden>
+                                <label>Does your company have an office in the country you are based?</label>
+                                <input type="hidden" id="survey-office-in-country">
+                                <div class="survey-chip-grid">
+                                    <button type="button" class="survey-chip" data-survey-target="survey-office-in-country" data-survey-value="Yes">Yes</button>
+                                    <button type="button" class="survey-chip" data-survey-target="survey-office-in-country" data-survey-value="No">No</button>
+                                </div>
+                            </div>
                             <div class="survey-field" data-field-id="survey-employment">
                                 <label>What best describes your current employment arrangement in this role?</label>
                                 <select class="form-control" id="survey-employment">
@@ -2090,14 +2098,6 @@
                             <div class="survey-field is-conditional" data-field-id="survey-company-location-other" data-other-trigger="survey-company-location" data-autoadvance="false" hidden>
                                 <label>Please specify the country</label>
                                 <input type="text" class="form-control" id="survey-company-location-other" placeholder="Type your country">
-                            </div>
-                            <div class="survey-field" data-field-id="survey-office-in-country">
-                                <label>Does your company have an office in the country you are based?</label>
-                                <input type="hidden" id="survey-office-in-country">
-                                <div class="survey-chip-grid">
-                                    <button type="button" class="survey-chip" data-survey-target="survey-office-in-country" data-survey-value="Yes">Yes</button>
-                                    <button type="button" class="survey-chip" data-survey-target="survey-office-in-country" data-survey-value="No">No</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -3328,8 +3328,9 @@
     function syncPolicyConditionals(selectedValue) {
         $('.survey-field.is-conditional[data-policy-trigger]').each(function() {
             var $field = $(this);
-            var trigger = $field.data('policy-trigger');
-            var visible = trigger === selectedValue;
+            var trigger = String($field.data('policy-trigger'));
+            // A field may list several triggering answers, pipe-separated.
+            var visible = trigger.split('|').indexOf(selectedValue) !== -1;
             $field.prop('hidden', !visible);
             if (!visible) {
                 var fieldId = $field.data('field-id');
