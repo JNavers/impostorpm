@@ -856,6 +856,7 @@
             bottom: calc(100% + 8px);
             right: 0;
             min-width: 200px;
+            max-width: calc(100vw - 16px);
             background: var(--white);
             border: 1px solid rgba(0, 0, 0, .08);
             border-radius: 12px;
@@ -3885,6 +3886,7 @@
         $('.share-menu.is-open').each(function() {
             $(this).removeClass('is-open')
                 .find('.share-menu-trigger').attr('aria-expanded', 'false');
+            $(this).find('.share-popover').css({ left: '', right: '' });
         });
     }
 
@@ -3902,8 +3904,25 @@
         if (!wasOpen) {
             $menu.addClass('is-open');
             $(this).attr('aria-expanded', 'true');
+            positionSharePopover($menu);
         }
     });
+
+    // Keep the popover on-screen: after opening, measure and flip its
+    // horizontal anchor if it overflows either viewport edge (mobile mainly).
+    function positionSharePopover($menu) {
+        var $pop = $menu.find('.share-popover');
+        if (!$pop.length) return;
+        $pop.css({ left: '', right: '' }); // back to stylesheet defaults
+        var rect = $pop[0].getBoundingClientRect();
+        var vw = window.innerWidth || document.documentElement.clientWidth;
+        var margin = 8;
+        if (rect.left < margin) {
+            $pop.css({ left: '0', right: 'auto' });
+        } else if (rect.right > vw - margin) {
+            $pop.css({ right: '0', left: 'auto' });
+        }
+    }
 
     // Channel click — track + fire
     $(document).on('click', '.share-popover-item', function(e) {
