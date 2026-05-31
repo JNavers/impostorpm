@@ -1436,7 +1436,7 @@
 <!-- ════════════ FORM ════════════ -->
 <section style="padding: 0 0 3rem;">
     <div class="container">
-        <form id="compare-form" class="compare-form-card">
+        <form id="compare-form" class="compare-form-card" autocomplete="off">
 
             <div id="form-error-banner" class="form-error-banner" role="alert" aria-live="polite">
                 <strong>Please fix the following before comparing your salary:</strong>
@@ -2927,6 +2927,26 @@
     $('#input-perception').on('input', function() {
         $(this).attr('data-touched', 'true');
         $('#perception-display').text(this.value + '%');
+    });
+
+    /* ── Reset the compare form on every page load ──
+       Browsers restore form-control values across refresh (and when a page is
+       restored from the bfcache), which left the perception slider thumb in its
+       previous position while the display still read 0%. Force a clean reset so
+       all five questions — and the slider thumb + its label — start from scratch. */
+    function resetCompareForm() {
+        var form = document.getElementById('compare-form');
+        if (form) { form.reset(); }
+        var slider = document.getElementById('input-perception');
+        if (slider) {
+            slider.value = slider.defaultValue || 0;
+            slider.setAttribute('data-touched', 'false');
+        }
+        $('#perception-display').text('0%');
+    }
+    resetCompareForm();
+    window.addEventListener('pageshow', function(e) {
+        if (e.persisted) { resetCompareForm(); }
     });
 
     /* ── Validation helpers ── */
