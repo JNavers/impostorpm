@@ -451,7 +451,7 @@ function saveEmailOnly_(ss, data) {
 function cleanEmailSource_(value) {
   var source = cleanText_(value, 40);
   if (source === 'frame_3') return 'dashboard_waitlist';
-  return /^(dashboard_waitlist|survey_inline)$/.test(source) ? source : 'dashboard_waitlist';
+  return /^(dashboard_waitlist|survey_inline|newsletter_popup|footer_newsletter)$/.test(source) ? source : 'dashboard_waitlist';
 }
 
 function emailDeliveryResultFromPayload_(data) {

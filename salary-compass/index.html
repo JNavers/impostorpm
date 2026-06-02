@@ -1053,11 +1053,11 @@
 
         /* ── Redesign v4 — Pencil polish (chips, conditional reveals, finish) ── */
         .survey-chip {
-            font-size: .9rem;
-            min-height: 44px;
-            padding: .62rem 1.15rem;
+            font-size: .78rem;
+            min-height: 32px;
+            padding: .35rem .85rem;
         }
-        .survey-likert-chip { min-height: 48px; font-size: 1rem; }
+        .survey-likert-chip { min-height: 40px; font-size: .9rem; }
         /* Conditional reveals (Hybrid days, office-in-country, "Other" inputs)
            read as a warm consequence of the user's choice — same language across the form. */
         .survey-field.is-conditional[data-other-trigger]:not([hidden]),
@@ -1941,12 +1941,16 @@
                                 <label>Current industry</label>
                                 <select class="form-control" id="survey-industry">
                                     <option value="" disabled selected>Select industry</option>
-                                    <option value="AdTech &amp; marketing">AdTech &amp; marketing</option>
+                                    <option value="AdTech">AdTech</option>
                                     <option value="AI">AI</option>
-                                    <option value="Banking &amp; insurance">Banking &amp; insurance</option>
+                                    <option value="Banking">Banking</option>
+                                    <option value="Insurance">Insurance</option>
                                     <option value="Biotech">Biotech</option>
-                                    <option value="Climate &amp; energy">Climate &amp; energy</option>
-                                    <option value="Crypto &amp; Web3">Crypto &amp; Web3</option>
+                                    <option value="Climate">Climate</option>
+                                    <option value="Energy">Energy</option>
+                                    <option value="Consulting / Professional services">Consulting / Professional services</option>
+                                    <option value="Crypto / Web3">Crypto / Web3</option>
+                                    <option value="Customer support software">Customer support software</option>
                                     <option value="Cybersecurity">Cybersecurity</option>
                                     <option value="Data">Data</option>
                                     <option value="Developer tools">Developer tools</option>
@@ -1954,7 +1958,7 @@
                                     <option value="Education">Education</option>
                                     <option value="Fintech">Fintech</option>
                                     <option value="Gaming">Gaming</option>
-                                    <option value="Hardware &amp; IoT">Hardware &amp; IoT</option>
+                                    <option value="Hardware / IoT">Hardware / IoT</option>
                                     <option value="Health">Health</option>
                                     <option value="HR tech">HR tech</option>
                                     <option value="Logistics">Logistics</option>
@@ -1964,8 +1968,6 @@
                                     <option value="PropTech">PropTech</option>
                                     <option value="Public services">Public services</option>
                                     <option value="Retail">Retail</option>
-                                    <option value="SaaS B2B">SaaS B2B</option>
-                                    <option value="SaaS B2C">SaaS B2C</option>
                                     <option value="Social impact">Social impact</option>
                                     <option value="Telecom">Telecom</option>
                                     <option value="Travel">Travel</option>
@@ -2279,19 +2281,26 @@
                                 <label>Which of your strengths does your company value most? <span class="label-note">(Pick up to 3)</span></label>
                                 <input type="hidden" id="survey-top-skills">
                                 <div class="survey-chip-grid" data-multi="survey-top-skills" data-collapse="8">
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Product vision" data-autoadvance="false">Product vision</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Prioritization" data-autoadvance="false">Prioritization</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Data" data-autoadvance="false">Data</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Discovery" data-autoadvance="false">Discovery</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Stakeholders" data-autoadvance="false">Stakeholders</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Tech depth" data-autoadvance="false">Tech depth</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="AI Fluency" data-autoadvance="false">AI Fluency</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Backlog Management" data-autoadvance="false">Backlog Management</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Business Ownership" data-autoadvance="false">Business Ownership</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Communication" data-autoadvance="false">Communication</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Data Fluency" data-autoadvance="false">Data Fluency</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Design Taste" data-autoadvance="false">Design Taste</button>
                                     <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Execution" data-autoadvance="false">Execution</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Leadership" data-autoadvance="false">Leadership</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Storytelling" data-autoadvance="false">Storytelling</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Design taste" data-autoadvance="false">Design taste</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Growth" data-autoadvance="false">Growth</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Domain expertise" data-autoadvance="false">Domain expertise</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="AI fluency" data-autoadvance="false">AI fluency</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Measuring KPIs" data-autoadvance="false">Measuring KPIs</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="People Development" data-autoadvance="false">People Development</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Prioritization" data-autoadvance="false">Prioritization</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Product Discovery" data-autoadvance="false">Product Discovery</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Product Marketing" data-autoadvance="false">Product Marketing</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Product Vision" data-autoadvance="false">Product Vision</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Prototyping" data-autoadvance="false">Prototyping</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Stakeholder Management" data-autoadvance="false">Stakeholder Management</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Strategic Impact" data-autoadvance="false">Strategic Impact</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Team Leadership" data-autoadvance="false">Team Leadership</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Technical Depth" data-autoadvance="false">Technical Depth</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="User Experience" data-autoadvance="false">User Experience</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Voice of Customer" data-autoadvance="false">Voice of Customer</button>
                                     <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Other" data-autoadvance="false">Other</button>
                                 </div>
                             </div>
@@ -2305,15 +2314,17 @@
                                 <label>If any, what perks does your organisation offer? <span class="opt">optional</span></label>
                                 <input type="hidden" id="survey-perks-list">
                                 <div class="survey-chip-grid" data-multi="survey-perks-list">
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Health insurance" data-autoadvance="false">Health insurance</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Childcare" data-autoadvance="false">Childcare</button>
                                     <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Equity (RSUs, stock options...)" data-autoadvance="false">Equity (RSUs, stock options&hellip;)</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Performance bonus" data-autoadvance="false">Performance bonus</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Wellness / Gym" data-autoadvance="false">Wellness / Gym</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Extra PTO" data-autoadvance="false">Extra PTO</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Flexible hours" data-autoadvance="false">Flexible hours</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Health insurance" data-autoadvance="false">Health insurance</button>
                                     <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Home office stipend" data-autoadvance="false">Home office stipend</button>
                                     <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Learning budget" data-autoadvance="false">Learning budget</button>
-                                    <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Extra PTO" data-autoadvance="false">Extra PTO</button>
                                     <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Meal allowance" data-autoadvance="false">Meal allowance</button>
                                     <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Pension / Retirement" data-autoadvance="false">Pension / Retirement</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Performance bonus" data-autoadvance="false">Performance bonus</button>
+                                    <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Wellness / Gym" data-autoadvance="false">Wellness / Gym</button>
                                     <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Other" data-autoadvance="false">Other</button>
                                 </div>
                             </div>
@@ -2797,21 +2808,37 @@
             token: dashboardToken
         };
         var timeout = new Promise(function(_, reject) {
-            setTimeout(function() { reject(new Error('Email send timed out. Please try again.')); }, 10000);
+            setTimeout(function() { reject(new Error('Email send timed out')); }, 10000);
         });
-        return Promise.race([sendEmailViaApi(payload), timeout]).then(function(emailData) {
-            var sheetPayload = Object.assign({}, payload, {
-                resend_via: 'email_api',
-                email_sent: 'true',
-                email_error: '',
-                resend_id: emailData.resend_id || ''
+        // Persisting the email to the Emails sheet must NOT depend on the Cloudflare
+        // email API succeeding. We try that API first because it returns a readable
+        // resend_id, but whether it succeeds or fails we ALWAYS write the row to the
+        // sheet. On API failure (unreachable / 4xx / timeout) we post without the
+        // `resend_via` flag so Apps Script delivers the capture email itself via its
+        // own server-side Resend integration. This guarantees the email is recorded.
+        return Promise.race([sendEmailViaApi(payload), timeout])
+            .then(function(emailData) {
+                var sheetPayload = Object.assign({}, payload, {
+                    resend_via: 'email_api',
+                    email_sent: 'true',
+                    email_error: '',
+                    resend_id: emailData.resend_id || ''
+                });
+                return postOpaqueToSheets(sheetPayload).catch(function() { return null; }).then(function() {
+                    return { status: 'ok', token: dashboardToken, email_sent: true, resend_id: emailData.resend_id || '' };
+                });
+            })
+            .catch(function(apiError) {
+                if (window.tipmAnalytics) {
+                    window.tipmAnalytics.captureException(apiError, { source: 'sendEmailViaApi', fallback: 'sheets_server_email' });
+                }
+                // Fallback: record the email in the sheet regardless of the API error,
+                // letting Apps Script send the email server-side. The user is still
+                // captured even if Resend/the email API is down.
+                return postOpaqueToSheets(payload).catch(function() { return null; }).then(function() {
+                    return { status: 'ok', token: dashboardToken, email_sent: false, fallback: true };
+                });
             });
-            return postOpaqueToSheets(sheetPayload).catch(function() {
-                return null;
-            }).then(function() {
-                return { status: 'ok', token: dashboardToken, email_sent: true, resend_id: emailData.resend_id || '' };
-            });
-        });
     }
 
     track('comp_landing_view');
@@ -4548,7 +4575,7 @@
             email:          'test+compensation@impostorpm.dev',
             newsletter:     true,
             // Full survey — Chapter 1 (company)
-            industry:           'SaaS B2B',
+            industry:           'Fintech',
             companyType:        'Scale-up',
             orgSize:            '51-100',
             remotePolicy:       'Hybrid',
@@ -4559,7 +4586,7 @@
             companyLocation:    'Portugal',
             officeInCountry:    'Yes',
             // Full survey — Chapter 2 (skills)
-            topSkills:          ['Product vision', 'Stakeholders'],
+            topSkills:          ['Product Vision', 'Stakeholder Management'],
             // Full survey — Chapter 3 (perks + conditional amounts)
             perks:              ['Equity (RSUs, stock options...)', 'Performance bonus'],
             bonus:              5000,

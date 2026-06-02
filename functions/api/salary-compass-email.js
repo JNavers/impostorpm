@@ -85,7 +85,7 @@ function cleanEmail(value) {
 
 function cleanSource(value) {
   const source = String(value || '').trim();
-  return /^(dashboard_waitlist|survey_inline)$/.test(source) ? source : 'dashboard_waitlist';
+  return /^(dashboard_waitlist|survey_inline|newsletter_popup|footer_newsletter)$/.test(source) ? source : 'dashboard_waitlist';
 }
 
 function cleanToken(value) {
