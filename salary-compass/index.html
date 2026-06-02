@@ -372,7 +372,7 @@
         .comp-type-badge.total { background: var(--near-black); color: var(--white); }
 
         /* ── Survey modal ── */
-        .survey-modal .modal-dialog { max-width: 720px; }
+        .survey-modal .modal-dialog { max-width: 560px; }
         .survey-modal .modal-content { border: none; border-radius: 1rem; overflow: hidden; background: var(--white); }
         .survey-modal .modal-header { border-bottom: none; padding: 1.25rem 1.5rem .5rem; }
         .survey-modal .modal-header .modal-title { font-size: 1.25rem; font-weight: 700; }
@@ -401,7 +401,7 @@
             border-bottom: 1px solid var(--outline-light);
         }
         .survey-section-title:first-child { margin-top: .5rem; }
-        .survey-field { margin-bottom: 1.25rem; }
+        .survey-field { margin-bottom: 0; }
         .survey-field label {
             display: block; font-size: .875rem; font-weight: 600; color: var(--near-black); margin-bottom: .35rem;
         }
@@ -521,177 +521,39 @@
         .dashboard-card h3 { color: var(--white); font-size: 1.8rem; letter-spacing: 0; margin: .55rem 0; }
         .dashboard-card p { color: rgba(255,255,255,.72); line-height: 1.55; }
         .dashboard-tag { font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-        .email-capture-form {
-            background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.12);
-            border-radius: 12px;
-            padding: 1rem;
-        }
-        .email-capture-form .form-control { border: none; min-height: 48px; max-width: none; }
-        .newsletter-check {
-            align-items: flex-start;
-            color: rgba(255,255,255,.82);
-            display: flex;
-            font-size: .82rem;
-            gap: .5rem;
-            line-height: 1.4;
-            margin: .85rem 0;
-        }
-        .newsletter-check input { accent-color: var(--golden); margin-top: .2rem; }
         .fine-print { color: rgba(255,255,255,.58); font-size: .75rem; line-height: 1.4; margin: .7rem 0 0; }
 
-        /* Live counter inside the lead-magnet card */
-        .counter-row {
-            background: rgba(255,255,255,.07);
+        /* Locked-dashboard card — single goal: complete the survey */
+        .lock-cta-row {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: .25rem .9rem;
+            margin-top: 1.25rem;
+        }
+        .lock-cta-hint { color: rgba(255,255,255,.58); font-size: .8rem; }
+        .locked-list {
+            display: grid;
+            gap: .55rem;
+            list-style: none;
+            margin: 1.5rem 0 0;
+            padding: 0;
+        }
+        .locked-list li {
+            align-items: center;
+            background: rgba(255,255,255,.06);
             border: 1px solid rgba(255,255,255,.12);
             border-radius: 10px;
-            margin-top: 1rem;
+            color: rgba(255,255,255,.82);
+            display: flex;
+            font-size: .92rem;
+            font-weight: 600;
+            gap: .7rem;
             padding: .7rem .9rem;
         }
-        .counter-row[hidden] { display: none; }
-        .counter-numbers {
-            align-items: baseline;
-            color: var(--white);
-            display: flex;
-            font-size: .85rem;
-            gap: .3rem;
-            margin-bottom: .55rem;
-        }
-        .counter-current {
-            color: var(--golden);
-            font-size: 1.4rem;
-            font-weight: 900;
-            line-height: 1;
-        }
-        .counter-goal { color: rgba(255,255,255,.72); font-weight: 600; }
-        .counter-bar {
-            background: rgba(255,255,255,.12);
-            border-radius: 999px;
-            height: 8px;
-            overflow: hidden;
-            width: 100%;
-        }
-        .counter-bar-fill {
-            background: var(--golden);
-            border-radius: 999px;
-            height: 100%;
-            transition: width .9s ease;
-            width: 0%;
-        }
-        .counter-sub {
-            color: rgba(255,255,255,.62);
-            font-size: .75rem;
-            line-height: 1.4;
-            margin: .55rem 0 0;
-        }
-
-        /* Email capture state machine — idle → submitting → success */
-        .dashboard-card.is-success { transition: padding .25s ease; }
-        .dashboard-card.is-success > div:first-child,
-        .dashboard-card.is-success .email-capture-form { display: none; }
+        .locked-list li i { color: var(--golden); font-size: .8rem; flex: 0 0 auto; }
         @media (min-width: 768px) {
-            .dashboard-card.visible.is-success {
-                display: block;
-                padding: 40px 32px;
-            }
-        }
-        .dashboard-success {
-            display: none;
-            margin: 0 auto;
-            max-width: 520px;
-            opacity: 0;
-            text-align: center;
-            transform: translateY(8px);
-            transition: opacity .3s ease, transform .3s ease;
-        }
-        .dashboard-card.is-success .dashboard-success {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .dashboard-success-icon {
-            align-items: center;
-            background: var(--golden);
-            border-radius: 999px;
-            color: var(--near-black);
-            display: flex;
-            height: 56px;
-            justify-content: center;
-            margin: 0 auto 1.1rem;
-            opacity: 0;
-            transform: scale(.4);
-            width: 56px;
-        }
-        .dashboard-card.is-success .dashboard-success-icon {
-            animation: success-pop .5s cubic-bezier(.34, 1.56, .64, 1) .15s forwards,
-                       success-ring 1s ease .55s 1;
-        }
-        .dashboard-success-icon svg polyline {
-            stroke-dasharray: 26;
-            stroke-dashoffset: 26;
-        }
-        .dashboard-card.is-success .dashboard-success-icon svg polyline {
-            animation: success-draw .4s ease-out .55s forwards;
-        }
-        .dashboard-success-title,
-        .dashboard-success-body,
-        .dashboard-success-pointer {
-            opacity: 0;
-            transform: translateY(6px);
-        }
-        .dashboard-card.is-success .dashboard-success-title { animation: success-rise .35s ease .8s forwards; }
-        .dashboard-card.is-success .dashboard-success-body { animation: success-rise .35s ease .92s forwards; }
-        .dashboard-card.is-success .dashboard-success-pointer { animation: success-rise .35s ease 1.08s forwards; }
-        @keyframes success-pop {
-            0% { opacity: 0; transform: scale(.4); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes success-ring {
-            0% { box-shadow: 0 0 0 0 rgba(248,180,85,.55); }
-            100% { box-shadow: 0 0 0 14px rgba(248,180,85,0); }
-        }
-        @keyframes success-draw {
-            to { stroke-dashoffset: 0; }
-        }
-        @keyframes success-rise {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .dashboard-success-title {
-            color: var(--white);
-            font-size: 1.7rem;
-            font-weight: 800;
-            letter-spacing: -0.01em;
-            margin: 0 0 .65rem;
-        }
-        .dashboard-success-body {
-            color: rgba(255,255,255,.78);
-            font-size: 1rem;
-            line-height: 1.55;
-            margin: 0;
-        }
-        .dashboard-success-body strong { color: var(--golden); font-weight: 700; word-break: break-all; }
-        .dashboard-success-divider {
-            background: rgba(255,255,255,.12);
-            height: 1px;
-            margin: 1.5rem auto;
-            max-width: 280px;
-        }
-        .dashboard-success-pointer {
-            color: rgba(255,255,255,.6);
-            font-size: .82rem;
-            margin: 0;
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .dashboard-card.is-success .dashboard-success-icon,
-            .dashboard-card.is-success .dashboard-success-icon svg polyline,
-            .dashboard-card.is-success .dashboard-success-title,
-            .dashboard-card.is-success .dashboard-success-body,
-            .dashboard-card.is-success .dashboard-success-pointer { animation: none !important; }
-            .dashboard-card.is-success .dashboard-success-icon { opacity: 1; transform: none; }
-            .dashboard-card.is-success .dashboard-success-icon svg polyline { stroke-dashoffset: 0; }
-            .dashboard-card.is-success .dashboard-success-title,
-            .dashboard-card.is-success .dashboard-success-body,
-            .dashboard-card.is-success .dashboard-success-pointer { opacity: 1; transform: none; }
+            .locked-list { margin-top: 0; }
         }
 
         .done-loop {
@@ -915,8 +777,8 @@
             .share-strip-sub { font-size: .9rem; }
             .btn-share-small { font-size: 13px; padding: .5rem 1.1rem; }
         }
-        .survey-modal .modal-dialog { align-items: center; max-width: 720px; transition: max-width .25s ease; }
-        @media (min-width: 577px) { .survey-modal .modal-dialog.is-intro { max-width: 560px; } }
+        .survey-modal .modal-dialog { align-items: center; max-width: 560px !important; }
+        @media (min-width: 577px) { .survey-modal .modal-dialog.is-intro { max-width: 560px !important; } }
         .survey-modal .modal-content { border-radius: 16px; display: flex; flex-direction: column; max-height: calc(100vh - 1rem); max-height: calc(100dvh - 1rem); }
         .survey-modal .modal-header {
             align-items: flex-start;
@@ -924,21 +786,41 @@
             border-bottom: none;
             flex-direction: column;
             gap: .35rem;
-            padding: 1rem 1.25rem .9rem;
+            padding: 1.5rem 1.25rem .5rem;
             position: sticky;
             top: 0;
             z-index: 2;
         }
-        .survey-modal .close { opacity: .75; position: absolute; right: 1rem; top: .8rem; transition: opacity .15s ease; }
+        .survey-modal .close { opacity: .75; position: absolute; right: 1.1rem; top: 1rem; z-index: 3; transition: opacity .15s ease; }
         .survey-modal .close:hover { opacity: 1; }
-        .survey-modal .modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 1.4rem 1.25rem; }
+        .survey-modal .modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: .6rem 1.25rem .6rem; }
         .modal-dialog.is-intro .modal-header { padding-top: 1rem; padding-bottom: .2rem; }
         .modal-dialog.is-intro .modal-body { padding: .7rem 1.5rem 1.35rem; }
+        /* Exit confirmation overlay (only way to leave is clicking outside) */
+        .survey-exit-confirm {
+            position: absolute; inset: 0; z-index: 10;
+            display: none; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, .95); border-radius: 16px; padding: 2rem;
+        }
+        .survey-exit-confirm.is-open { display: flex; }
+        .survey-exit-confirm .sec-card { max-width: 340px; text-align: center; }
+        .survey-exit-confirm .sec-title {
+            color: var(--near-black); font-size: 1.2rem; font-weight: 700; margin: 0 0 .5rem;
+        }
+        .survey-exit-confirm .sec-text {
+            color: var(--text-muted); font-size: .9rem; line-height: 1.5; margin: 0 0 1.35rem;
+        }
+        .survey-exit-confirm .sec-stay { display: block; width: 100%; margin-bottom: .65rem; }
+        .survey-exit-confirm .sec-exit {
+            background: none; border: none; color: var(--text-muted); cursor: pointer;
+            font-size: .85rem; font-weight: 600; text-decoration: underline;
+        }
+        .survey-exit-confirm .sec-exit:hover { color: var(--near-black); }
         .survey-progress-track { background: var(--surface-low); height: 4px; width: 100%; }
         .survey-progress-fill { background: var(--golden); height: 100%; width: 33.333%; }
         .survey-chapter { display: none; }
         .survey-chapter.active { display: block; }
-        .survey-fieldset { display: grid; gap: 1.4rem; }
+        .survey-fieldset { display: grid; gap: 1.2rem; }
         .survey-modal label {
             color: var(--near-black);
             display: block;
@@ -955,14 +837,13 @@
             border: 1px solid var(--outline-light);
             border-radius: 8px;
             font-size: .95rem;
-            max-width: 50%;
+            max-width: 100%;
             min-height: 48px;
             padding: .65rem .85rem;
             transition: border-color .15s ease, box-shadow .15s ease;
         }
-        /* Currency/suffix wrappers carry the half-width on the wrapper itself
-           so the inner input + suffix stay glued together. */
-        .survey-modal .input-with-suffix { max-width: 50%; }
+        /* Inputs and currency/suffix wrappers span the card, matching the design. */
+        .survey-modal .input-with-suffix { max-width: 100%; }
         .survey-modal .input-with-suffix .form-control { max-width: 100%; }
         @media (max-width: 576px) {
             .survey-modal .form-control,
@@ -1026,7 +907,7 @@
             flex-wrap: wrap;
             gap: .6rem;
             justify-content: flex-end;
-            padding: 1rem 1.25rem 1.1rem;
+            padding: .5rem 1.25rem 1.1rem;
         }
         .survey-modal .modal-footer .btn-cta,
         .survey-modal .modal-footer .btn-cta-dark { min-height: 44px; }
@@ -1059,15 +940,23 @@
 
         /* ── Modal header v2 — chapter segments + Q counter ── */
         .survey-chapter-segs {
-            display: flex; gap: 4px; width: 100%;
+            display: flex; gap: 8px; width: 100%; margin-bottom: 1.5rem;
         }
+        .ch-seg-col { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
         .ch-seg {
-            background: var(--surface-low); border-radius: 999px; flex: 1; height: 4px;
-            transition: background .25s ease, transform .25s ease;
-            transform-origin: center;
+            background: var(--surface-low); border-radius: 999px; height: 4px; width: 100%;
+            overflow: hidden;
         }
-        .ch-seg.is-filled { background: var(--golden); }
-        .ch-seg.is-current { background: var(--golden); transform: scaleY(1.5); }
+        .ch-seg-fill {
+            background: var(--golden); border-radius: 999px; display: block;
+            height: 100%; width: 0; transition: width .3s ease;
+        }
+        .ch-seg-label {
+            color: #b3b3b3; font-size: .68rem; font-weight: 500; line-height: 1.2;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .ch-seg-label.is-current { color: var(--near-black); font-weight: 700; }
+        @media (max-width: 420px) { .ch-seg-label { font-size: .58rem; } }
         /* ── Per-field optional tag + completed check ── */
         .survey-field label .opt {
             background: var(--white); border: 1px solid var(--outline-light);
@@ -1084,6 +973,88 @@
         .survey-field .currency-row .survey-chip {
             font-size: .72rem; padding: .25rem .6rem;
         }
+
+        /* ── Redesign v4 — Pencil polish (chips, conditional reveals, finish) ── */
+        .survey-chip {
+            font-size: .9rem;
+            min-height: 44px;
+            padding: .62rem 1.15rem;
+        }
+        .survey-likert-chip { min-height: 48px; font-size: 1rem; }
+        /* Conditional reveals (Hybrid days, office-in-country, "Other" inputs)
+           read as a warm consequence of the user's choice — same language across the form. */
+        .survey-field.is-conditional[data-other-trigger]:not([hidden]),
+        .survey-field.is-conditional[data-skill-trigger="Other"]:not([hidden]),
+        .survey-field.is-conditional[data-perk-trigger="Other"]:not([hidden]),
+        .survey-field.is-conditional[data-policy-trigger]:not([hidden]) {
+            background: #faf7ec;
+            border: 1px solid #f0e4b8;
+            border-radius: 10px;
+            margin-top: .5rem !important;
+            padding: .85rem 1rem;
+        }
+        /* Finish (email) chapter — supportive copy + trust row */
+        .survey-finish-micro {
+            color: var(--text-muted);
+            font-size: .9rem;
+            line-height: 1.5;
+            margin: 0 0 -.3rem;
+        }
+        .survey-trust-row {
+            align-items: center;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            font-size: .8rem;
+            font-weight: 500;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.1rem;
+        }
+        .survey-trust-row span { align-items: center; display: inline-flex; gap: .35rem; }
+        .survey-trust-row i { color: var(--text-muted); font-size: .8rem; }
+        .survey-finish-cta {
+            align-items: center; display: inline-flex; font-size: 1rem; gap: .5rem;
+            justify-content: center; padding: .95rem 1.25rem; width: 100%;
+            margin-bottom: .9rem;
+        }
+        .survey-email-wrap { position: relative; }
+        .survey-email-wrap .survey-email-icon {
+            color: #b0b0b0; font-size: .95rem; left: 1rem; pointer-events: none;
+            position: absolute; top: 50%; transform: translateY(-50%);
+        }
+        .survey-email-wrap .form-control { padding-left: 2.6rem; }
+        /* Golden checkbox with dark tick (matches design) */
+        .survey-newsletter-check input {
+            appearance: none; -webkit-appearance: none;
+            width: 16px; height: 16px; flex-shrink: 0; margin-top: 0;
+            border: 1.5px solid var(--near-black); border-radius: 4px;
+            background: var(--white); cursor: pointer; position: relative;
+        }
+        .survey-newsletter-check input:checked { background: var(--golden); }
+        .survey-newsletter-check input:checked::after {
+            content: ''; position: absolute; left: 5px; top: 1px;
+            width: 4px; height: 8px; border: solid var(--near-black);
+            border-width: 0 2px 2px 0; transform: rotate(45deg);
+        }
+        /* Chip overflow — "+N more" collapse for long grids */
+        .chip-more-toggle {
+            background: var(--surface-low) !important;
+            border-color: transparent !important;
+            color: var(--text-muted) !important;
+            font-weight: 600;
+        }
+        .chip-more-toggle:hover { background: #e9e9e9 !important; }
+        .survey-chip-grid.is-collapsed .chip-overflow:not(.is-selected) { display: none; }
+        /* Sub-steps — only the active sub-step's fields are shown within a chapter */
+        .survey-field.substep-hidden { display: none !important; }
+        /* Continue (next) is dark; golden is reserved for the final "Get my dashboard" submit */
+        .survey-modal #survey-next-btn {
+            background: var(--near-black) !important;
+            color: var(--white) !important;
+            border: none !important;
+        }
+        .survey-modal #survey-next-btn:hover { opacity: .88; }
 
         /* ── Input with EUR / suffix ── */
         .input-with-suffix {
@@ -1133,7 +1104,7 @@
             text-transform: none;
         }
         .survey-modal label.survey-newsletter-check {
-            align-items: flex-start;
+            align-items: center;
             color: var(--near-black);
             cursor: pointer;
             display: flex;
@@ -1143,7 +1114,7 @@
             line-height: 1.45;
             margin: .65rem 0 0;
         }
-        .survey-modal label.survey-newsletter-check input { margin-top: .2rem; }
+        .survey-modal label.survey-newsletter-check input { margin-top: 0; }
         .survey-email-error {
             color: #b3261e;
             font-size: .82rem;
@@ -1151,15 +1122,33 @@
             min-height: 1.1rem;
         }
 
-        /* ── Hybrid days conditional row ── */
+        /* ── Hybrid days conditional row — inline label + number + segmented control ── */
         .hybrid-days-row {
             align-items: center;
             display: flex;
             flex-wrap: wrap;
-            gap: .6rem;
+            gap: .7rem;
         }
-        .hybrid-days-row .hybrid-days-input { flex: 0 0 160px; }
-        .hybrid-days-row .hybrid-days-freq { flex-wrap: nowrap; gap: .4rem; margin: 0; }
+        .hybrid-days-row .hybrid-days-label { margin-bottom: 0; white-space: nowrap; }
+        .hybrid-days-row .hybrid-days-num {
+            flex: 0 0 72px; width: 72px !important; max-width: 72px !important;
+            min-height: 44px; text-align: center; padding: .5rem .4rem;
+        }
+        /* iOS-style segmented control (gray track, white selected pill) */
+        .survey-seg {
+            align-items: center; background: #ececec; border-radius: 8px;
+            display: inline-flex; gap: 2px; padding: 3px;
+        }
+        .survey-seg .survey-chip {
+            background: transparent; border: none; border-radius: 6px;
+            color: var(--text-muted); font-size: .82rem; font-weight: 600;
+            min-height: 0; padding: .42rem .8rem;
+        }
+        .survey-seg .survey-chip:hover { background: transparent; }
+        .survey-seg .survey-chip.is-selected {
+            background: var(--white); border: none; color: var(--near-black);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+        }
 
         /* ── Likert scale (1–5) ── */
         .survey-likert {
@@ -1601,38 +1590,23 @@
             <p class="dist-summary" id="tc-dist-summary"></p>
         </div>
 
-        <!-- Lead-magnet card (Stage 1 conversion: email capture) -->
+        <!-- Locked-dashboard card (single conversion goal: complete the survey) -->
         <div class="dashboard-card" id="dashboard-card">
             <div>
-                <h3>Reserve early access.</h3>
-                <p>Drop your email and get notify once we release the Product Salary Compass dashboard.</p>
-            </div>
-            <form class="email-capture-form" id="email-capture-form">
-                <input type="email" class="form-control" id="lead-email" placeholder="you@email.com" required autocomplete="email">
-                <label class="newsletter-check">
-                    <input type="checkbox" id="newsletter-optin" checked>
-                    <span>Subscribe and receive tools like this, community perks, and Product event updates.</span>
-                </label>
-                <button type="submit" class="btn-cta" style="width:100%;">Reserve my access</button>
-                <div class="field-error-msg" id="email-capture-error" style="color:#ffd7d7;"></div>
-            </form>
-            <div class="dashboard-success" id="dashboard-success" aria-hidden="true">
-                <div class="dashboard-success-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none"
-                         stroke="currentColor" stroke-width="3"
-                         stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
+                <span class="dashboard-tag" style="color: var(--golden);">Your snapshot</span>
+                <h3>This is just your snapshot.</h3>
+                <p>The full Product Salary Compass dashboard is still locked. Complete the 2-minute survey to open it.</p>
+                <div class="lock-cta-row">
+                    <button type="button" class="btn-cta js-open-survey" data-survey-source="results_lock">Take the survey to unlock &rarr;</button>
+                    <span class="lock-cta-hint">Only takes 2 minutes</span>
                 </div>
-                <h3 class="dashboard-success-title">Done.</h3>
-                <p class="dashboard-success-body">
-                    We'll email <strong id="dashboard-success-email">your address</strong> when the dashboard launches.
-                </p>
-                <div class="dashboard-success-divider"></div>
-                <p class="dashboard-success-pointer">
-                    Want to unlock every chart inside? Take 2 more minutes ↓
-                </p>
             </div>
+            <ul class="locked-list" aria-label="Locked dashboard insights">
+                <li><i class="fas fa-lock" aria-hidden="true"></i><span>Best-paid industries &amp; companies</span></li>
+                <li><i class="fas fa-lock" aria-hidden="true"></i><span>Gender pay gap (adjusted)</span></li>
+                <li><i class="fas fa-lock" aria-hidden="true"></i><span>Remote vs office pay</span></li>
+                <li><i class="fas fa-lock" aria-hidden="true"></i><span>Your level vs the full market</span></li>
+            </ul>
         </div>
 
         <!-- Perception vs Reality -->
@@ -1792,18 +1766,24 @@
 
 <!-- ════════════ FULL SURVEY MODAL ════════════ -->
 <div class="modal fade survey-modal" id="filloutModal" tabindex="-1" aria-labelledby="surveyModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered is-intro">
+    <div class="modal-dialog modal-dialog-centered is-intro">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="surveyModalLabel"></h5>
-                <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Close" style="font-size: 1.5rem; opacity: .6;">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <div class="survey-chapter-segs" aria-hidden="true">
-                    <div class="ch-seg" data-chapter="1"></div>
-                    <div class="ch-seg" data-chapter="2"></div>
-                    <div class="ch-seg" data-chapter="3"></div>
+            <div id="survey-exit-confirm" class="survey-exit-confirm" aria-hidden="true">
+                <div class="sec-card">
+                    <h4 class="sec-title">Leave and lose your progress?</h4>
+                    <p class="sec-text">Your answers aren't saved yet. If you exit now, you'll have to start over.</p>
+                    <button type="button" class="btn-cta-dark sec-stay" id="sec-stay">Keep going</button>
+                    <button type="button" class="sec-exit" id="sec-exit">Exit anyway</button>
                 </div>
+            </div>
+            <div class="modal-header">
+                <div class="survey-chapter-segs" aria-hidden="true">
+                    <div class="ch-seg-col" data-chapter="1"><span class="ch-seg"><i class="ch-seg-fill"></i></span><span class="ch-seg-label">About you</span></div>
+                    <div class="ch-seg-col" data-chapter="2"><span class="ch-seg"><i class="ch-seg-fill"></i></span><span class="ch-seg-label">Compensation</span></div>
+                    <div class="ch-seg-col" data-chapter="3"><span class="ch-seg"><i class="ch-seg-fill"></i></span><span class="ch-seg-label">Transparency</span></div>
+                    <div class="ch-seg-col" data-chapter="4"><span class="ch-seg"><i class="ch-seg-fill"></i></span><span class="ch-seg-label">Done</span></div>
+                </div>
+                <h5 class="modal-title" id="surveyModalLabel"></h5>
             </div>
             <form id="full-survey-form">
                 <div class="modal-body" id="survey-body">
@@ -1863,7 +1843,7 @@
                     <!-- Chapter 1 — About your company -->
                     <div class="survey-chapter" data-survey-chapter="1">
                         <div class="survey-fieldset">
-                            <div class="survey-field" data-field-id="survey-gender">
+                            <div class="survey-field" data-field-id="survey-gender" data-substep="0">
                                 <label>How do you identify?</label>
                                 <input type="hidden" id="survey-gender">
                                 <div class="survey-chip-grid">
@@ -1873,7 +1853,7 @@
                                     <button type="button" class="survey-chip" data-survey-target="survey-gender" data-survey-value="Prefer not to say">Prefer not to say</button>
                                 </div>
                             </div>
-                            <div class="survey-field" data-field-id="survey-industry">
+                            <div class="survey-field" data-field-id="survey-industry" data-substep="0">
                                 <label>Current industry</label>
                                 <select class="form-control" id="survey-industry">
                                     <option value="" disabled selected>Select industry</option>
@@ -1908,11 +1888,11 @@
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-industry-other" data-other-trigger="survey-industry" data-autoadvance="false" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-industry-other" data-substep="0" data-other-trigger="survey-industry" data-autoadvance="false" hidden>
                                 <label>Please specify your industry</label>
                                 <input type="text" class="form-control" id="survey-industry-other" placeholder="Type your industry">
                             </div>
-                            <div class="survey-field" data-field-id="survey-company-type">
+                            <div class="survey-field" data-field-id="survey-company-type" data-substep="0">
                                 <label>Type of company</label>
                                 <select class="form-control" id="survey-company-type">
                                     <option value="" disabled selected>Select type</option>
@@ -1927,11 +1907,11 @@
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-company-type-other" data-other-trigger="survey-company-type" data-autoadvance="false" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-company-type-other" data-substep="0" data-other-trigger="survey-company-type" data-autoadvance="false" hidden>
                                 <label>Please specify the type of company</label>
                                 <input type="text" class="form-control" id="survey-company-type-other" placeholder="Type your company type">
                             </div>
-                            <div class="survey-field" data-field-id="survey-org-size">
+                            <div class="survey-field" data-field-id="survey-org-size" data-substep="1">
                                 <label>What is the size of your organisation?</label>
                                 <input type="hidden" id="survey-org-size">
                                 <div class="survey-chip-grid">
@@ -1944,7 +1924,7 @@
                                     <button type="button" class="survey-chip" data-survey-target="survey-org-size" data-survey-value=">5000">&gt;5000</button>
                                 </div>
                             </div>
-                            <div class="survey-field" data-field-id="survey-remote-policy">
+                            <div class="survey-field" data-field-id="survey-remote-policy" data-substep="1">
                                 <label>Company's policy</label>
                                 <input type="hidden" id="survey-remote-policy">
                                 <div class="survey-chip-grid">
@@ -1954,21 +1934,18 @@
                                     <button type="button" class="survey-chip" data-survey-target="survey-remote-policy" data-survey-value="On-site">On-site</button>
                                 </div>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-hybrid-days" data-policy-trigger="Hybrid" data-autoadvance="false" hidden>
-                                <label>How many days do you need to go to the office?</label>
+                            <div class="survey-field is-conditional" data-field-id="survey-hybrid-days" data-substep="1" data-policy-trigger="Hybrid" data-autoadvance="false" hidden>
                                 <div class="hybrid-days-row">
-                                    <div class="input-with-suffix hybrid-days-input">
-                                        <input type="number" class="form-control" id="survey-hybrid-days" inputmode="numeric" min="1" max="31" step="1" placeholder="e.g. 2">
-                                        <span class="input-suffix">days</span>
-                                    </div>
+                                    <label class="hybrid-days-label">Days in office</label>
+                                    <input type="number" class="form-control hybrid-days-num" id="survey-hybrid-days" inputmode="numeric" min="1" max="31" step="1" placeholder="2">
                                     <input type="hidden" id="survey-hybrid-days-frequency">
-                                    <div class="survey-chip-grid hybrid-days-freq">
+                                    <div class="survey-seg hybrid-days-freq">
                                         <button type="button" class="survey-chip" data-survey-target="survey-hybrid-days-frequency" data-survey-value="per week" data-autoadvance="false">per week</button>
                                         <button type="button" class="survey-chip" data-survey-target="survey-hybrid-days-frequency" data-survey-value="per month" data-autoadvance="false">per month</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-office-in-country" data-policy-trigger="Fully remote" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-office-in-country" data-substep="1" data-policy-trigger="Fully remote" hidden>
                                 <label>Does your company have an office in the country you are based?</label>
                                 <input type="hidden" id="survey-office-in-country">
                                 <div class="survey-chip-grid">
@@ -1976,7 +1953,7 @@
                                     <button type="button" class="survey-chip" data-survey-target="survey-office-in-country" data-survey-value="No">No</button>
                                 </div>
                             </div>
-                            <div class="survey-field" data-field-id="survey-employment">
+                            <div class="survey-field" data-field-id="survey-employment" data-substep="2">
                                 <label>What best describes your current employment arrangement in this role?</label>
                                 <select class="form-control" id="survey-employment">
                                     <option value="" disabled selected>Select arrangement</option>
@@ -1991,15 +1968,15 @@
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-employment-other" data-other-trigger="survey-employment" data-autoadvance="false" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-employment-other" data-substep="2" data-other-trigger="survey-employment" data-autoadvance="false" hidden>
                                 <label>Please specify your employment arrangement</label>
                                 <input type="text" class="form-control" id="survey-employment-other" placeholder="Type your arrangement">
                             </div>
-                            <div class="survey-field" data-field-id="survey-company-name" data-autoadvance="false">
+                            <div class="survey-field" data-field-id="survey-company-name" data-substep="2" data-autoadvance="false">
                                 <label>Which company do you work for? <span class="opt">optional</span></label>
                                 <input type="text" class="form-control" id="survey-company-name" placeholder="Company name">
                             </div>
-                            <div class="survey-field" data-field-id="survey-company-location">
+                            <div class="survey-field" data-field-id="survey-company-location" data-substep="2">
                                 <label>Where is your company headquarter located?</label>
                                 <select class="form-control" id="survey-company-location">
                                     <option value="" disabled selected>Select country</option>
@@ -2204,7 +2181,7 @@
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-company-location-other" data-other-trigger="survey-company-location" data-autoadvance="false" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-company-location-other" data-substep="2" data-other-trigger="survey-company-location" data-autoadvance="false" hidden>
                                 <label>Please specify the country</label>
                                 <input type="text" class="form-control" id="survey-company-location-other" placeholder="Type your country">
                             </div>
@@ -2214,10 +2191,10 @@
                     <!-- Chapter 2 — Employment & Compensation -->
                     <div class="survey-chapter" data-survey-chapter="2">
                         <div class="survey-fieldset">
-                            <div class="survey-field" data-field-id="survey-top-skills" data-autoadvance="false">
+                            <div class="survey-field" data-field-id="survey-top-skills" data-substep="0" data-autoadvance="false">
                                 <label>Which of your strengths does your company value most? <span class="label-note">(Pick up to 3)</span></label>
                                 <input type="hidden" id="survey-top-skills">
-                                <div class="survey-chip-grid" data-multi="survey-top-skills">
+                                <div class="survey-chip-grid" data-multi="survey-top-skills" data-collapse="8">
                                     <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Product vision" data-autoadvance="false">Product vision</button>
                                     <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Prioritization" data-autoadvance="false">Prioritization</button>
                                     <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Data" data-autoadvance="false">Data</button>
@@ -2234,13 +2211,13 @@
                                     <button type="button" class="survey-chip" data-survey-multi="survey-top-skills" data-survey-value="Other" data-autoadvance="false">Other</button>
                                 </div>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-top-skills-other" data-skill-trigger="Other" data-autoadvance="false" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-top-skills-other" data-substep="0" data-skill-trigger="Other" data-autoadvance="false" hidden>
                                 <label>Please specify your other strength</label>
                                 <input type="text" class="form-control survey-chip-input" id="survey-top-skills-other" data-chip-target="survey-top-skills" placeholder="Type and press Enter">
                                 <p class="chip-input-help">Press Enter to add</p>
                                 <p class="chip-input-error" id="survey-top-skills-error" role="alert" hidden></p>
                             </div>
-                            <div class="survey-field" data-field-id="survey-perks-list" data-autoadvance="false">
+                            <div class="survey-field" data-field-id="survey-perks-list" data-substep="0" data-autoadvance="false">
                                 <label>If any, what perks does your organisation offer? <span class="opt">optional</span></label>
                                 <input type="hidden" id="survey-perks-list">
                                 <div class="survey-chip-grid" data-multi="survey-perks-list">
@@ -2256,55 +2233,55 @@
                                     <button type="button" class="survey-chip" data-survey-multi="survey-perks-list" data-survey-value="Other" data-autoadvance="false">Other</button>
                                 </div>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-perks-other" data-perk-trigger="Other" data-autoadvance="false" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-perks-other" data-substep="0" data-perk-trigger="Other" data-autoadvance="false" hidden>
                                 <label>Please specify your other perks</label>
                                 <input type="text" class="form-control survey-chip-input" id="survey-perks-other" data-chip-target="survey-perks-list" placeholder="Type and press Enter">
                                 <p class="chip-input-help">Press Enter to add</p>
                                 <p class="chip-input-error" id="survey-perks-error" role="alert" hidden></p>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-bonus" data-perk-trigger="Performance bonus" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-bonus" data-substep="1" data-perk-trigger="Performance bonus" hidden>
                                 <label>Annual bonus</label>
                                 <div class="input-with-suffix">
                                     <input type="number" class="form-control" id="survey-bonus" inputmode="numeric" min="0" step="500" placeholder="e.g. 5000">
                                     <span class="input-suffix">EUR / yr</span>
                                 </div>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-equity-grant" data-perk-trigger="Equity (RSUs, stock options...)" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-equity-grant" data-substep="1" data-perk-trigger="Equity (RSUs, stock options...)" hidden>
                                 <label>Equity grant value</label>
                                 <div class="input-with-suffix">
                                     <input type="number" class="form-control" id="survey-equity-grant" inputmode="numeric" min="0" step="500" placeholder="e.g. 10000">
                                     <span class="input-suffix">EUR total</span>
                                 </div>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-perk-wellness" data-perk-trigger="Wellness / Gym" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-perk-wellness" data-substep="1" data-perk-trigger="Wellness / Gym" hidden>
                                 <label>Wellness / Gym stipend</label>
                                 <div class="input-with-suffix">
                                     <input type="number" class="form-control" id="survey-perk-wellness" inputmode="numeric" min="0" step="10" placeholder="e.g. 50">
                                     <span class="input-suffix">EUR / month</span>
                                 </div>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-perk-home-office" data-perk-trigger="Home office stipend" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-perk-home-office" data-substep="1" data-perk-trigger="Home office stipend" hidden>
                                 <label>Home office stipend</label>
                                 <div class="input-with-suffix">
                                     <input type="number" class="form-control" id="survey-perk-home-office" inputmode="numeric" min="0" step="50" placeholder="e.g. 600">
                                     <span class="input-suffix">EUR / year</span>
                                 </div>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-perk-learning" data-perk-trigger="Learning budget" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-perk-learning" data-substep="1" data-perk-trigger="Learning budget" hidden>
                                 <label>Learning budget</label>
                                 <div class="input-with-suffix">
                                     <input type="number" class="form-control" id="survey-perk-learning" inputmode="numeric" min="0" step="100" placeholder="e.g. 1500">
                                     <span class="input-suffix">EUR / year</span>
                                 </div>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-perk-meal" data-perk-trigger="Meal allowance" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-perk-meal" data-substep="1" data-perk-trigger="Meal allowance" hidden>
                                 <label>Meal allowance</label>
                                 <div class="input-with-suffix">
                                     <input type="number" class="form-control" id="survey-perk-meal" inputmode="numeric" min="0" step="0.5" placeholder="e.g. 8">
                                     <span class="input-suffix">EUR / day</span>
                                 </div>
                             </div>
-                            <div class="survey-field is-conditional" data-field-id="survey-perk-pension" data-perk-trigger="Pension / Retirement" hidden>
+                            <div class="survey-field is-conditional" data-field-id="survey-perk-pension" data-substep="1" data-perk-trigger="Pension / Retirement" hidden>
                                 <label>Pension / Retirement employer contribution</label>
                                 <div class="input-with-suffix">
                                     <input type="number" class="form-control" id="survey-perk-pension" inputmode="numeric" min="0" step="100" placeholder="e.g. 2000">
@@ -2369,14 +2346,22 @@
                     <div class="survey-chapter" data-survey-chapter="4">
                         <div class="survey-fieldset">
                             <div class="survey-field" id="survey-email-field" data-field-id="survey-email" data-autoadvance="false">
-                                <label>Your email <span class="survey-email-hint">(required to send you the dashboard)</span></label>
-                                <input type="email" class="form-control" id="survey-email" placeholder="you@email.com" autocomplete="email">
+                                <label>Your email</label>
+                                <div class="survey-email-wrap">
+                                    <i class="fas fa-envelope survey-email-icon" aria-hidden="true"></i>
+                                    <input type="email" class="form-control" id="survey-email" placeholder="you@email.com" autocomplete="email">
+                                </div>
                                 <label class="survey-newsletter-check">
                                     <input type="checkbox" id="survey-newsletter-optin" checked>
-                                    <span>Subscribe and receive tools like this, community perks, and Product event updates.</span>
+                                    <span>Send me Product Salary Compass reports periodically.</span>
+                                </label>
+                                <label class="survey-newsletter-check">
+                                    <input type="checkbox" id="survey-community-optin" checked>
+                                    <span>I want to receive tools like this, community perks, and Product event updates.</span>
                                 </label>
                                 <p class="survey-email-error" id="survey-email-error" role="alert"></p>
                             </div>
+                            <button type="submit" class="btn-cta survey-finish-cta" id="survey-finish-btn">Get my dashboard <span aria-hidden="true">→</span></button>
                         </div>
                     </div>
                 </div>
@@ -2570,7 +2555,9 @@
 
     function focusNextField($currentField) {
         var $chapter = $currentField.closest('.survey-chapter');
-        var $fields = $chapter.find('.survey-field');
+        var $fields = $chapter.find('.survey-field').filter(function() {
+            return !$(this).hasClass('substep-hidden') && !$(this).prop('hidden');
+        });
         var idx = $fields.index($currentField);
         var $next = $fields.eq(idx + 1);
         if ($next.length) {
@@ -2673,7 +2660,7 @@
         });
     }
 
-    function submitEmailOnly(email, newsletterOptin, source) {
+    function submitEmailOnly(email, newsletterOptin, source, communityOptin) {
         var isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.hostname) !== -1;
         if (!dashboardToken) {
             dashboardToken = generateDashboardToken();
@@ -2695,6 +2682,7 @@
             source: source || 'dashboard_waitlist',
             dashboard_optin: 'true',
             newsletter_optin: newsletterOptin ? 'true' : 'false',
+            community_optin: communityOptin ? 'true' : 'false',
             percentile: latestResult ? String(latestResult.overallPct) : '',
             token: dashboardToken
         };
@@ -3263,63 +3251,11 @@
     }
 
 
-    $('#email-capture-form').on('submit', function(e) {
-        e.preventDefault();
-        var email = $.trim($('#lead-email').val() || '');
-        var newsletter = $('#newsletter-optin').is(':checked');
-        var $button = $('#email-capture-form button[type="submit"]');
-        $('#email-capture-error').text('');
-        if (!isValidEmail(email)) {
-            $('#email-capture-error').text('Please enter a valid email address.');
-            $('#lead-email').trigger('focus');
-            return;
-        }
-        $button.prop('disabled', true).text('Reserving...');
-
-        submitEmailOnly(email, newsletter, 'dashboard_waitlist')
-            .then(function(data) {
-                if (!data || data.status !== 'ok' || !data.token) throw new Error('Missing token');
-                capturedEmail = email;
-                dashboardToken = data.token;
-                tokenStore.setItem('tipmDashboardToken', dashboardToken);
-                if (window.tipmAnalytics) {
-                    window.tipmAnalytics.identifyEmail(email, {
-                        dashboard_optin: true,
-                        newsletter_optin: newsletter
-                    });
-                }
-                track('comp_survey_email_submit', { newsletter_optin: newsletter, percentile: latestResult ? latestResult.overallPct : null });
-
-                // Morph the same dashboard-card to its success state (in place)
-                $('#dashboard-success-email').text(email);
-                $('#dashboard-success').attr('aria-hidden', 'false');
-                $('#dashboard-card').addClass('is-success');
-
-                // Smooth-scroll down so the Share strip is the last thing visible
-                // (its bottom edge sits just above the footer / viewport bottom).
-                setTimeout(function() {
-                    var $target = $('.share-strip');
-                    if ($target.length) {
-                        var bottomEdge = $target.offset().top + $target.outerHeight();
-                        var dest = bottomEdge - $(window).height() + 24;
-                        dest = Math.max(0, dest);
-                        $('html, body').animate(
-                            { scrollTop: dest },
-                            550
-                        );
-                    }
-                }, 2800);
-            })
-            .catch(function(err) {
-                $('#email-capture-error').text((err && err.message) ? err.message : 'Something went wrong. Please try again.');
-                $button.prop('disabled', false).text('Reserve my access');
-            });
-    });
-
     $('[data-target="#filloutModal"], .js-open-survey').on('click', function() {
         track('comp_upsell_click', {
             variant: EXPERIMENTS.surveyCtaVariant,
-            contributor_number: (lastCounter != null ? lastCounter + 1 : null)
+            contributor_number: (lastCounter != null ? lastCounter + 1 : null),
+            survey_source: $(this).attr('data-survey-source') || 'survey_hero'
         });
     });
 
@@ -3327,6 +3263,54 @@
         $('#filloutModal').modal('show');
     });
 
+    var surveySubStep = 0;
+    var substepInfo = {
+        '1-0': { eyebrow: 'About you · Step 1 of 3', heading: 'You & your company' },
+        '1-1': { eyebrow: 'About you · Step 2 of 3', heading: 'Your work setup' },
+        '1-2': { eyebrow: 'About you · Step 3 of 3', heading: 'Your company' },
+        '2-0': { eyebrow: 'Compensation · Step 1 of 2', heading: 'What your company values & offers' },
+        '2-1': { eyebrow: 'Compensation · Step 2 of 2', heading: 'Put rough numbers on it' }
+    };
+    function subCount(ch) {
+        var max = -1;
+        $('.survey-chapter[data-survey-chapter="' + ch + '"] .survey-field[data-substep]').each(function() {
+            var s = parseInt($(this).attr('data-substep'), 10);
+            if (s > max) max = s;
+        });
+        return max + 1;
+    }
+    function $subFields(ch, sub) {
+        return $('.survey-chapter[data-survey-chapter="' + ch + '"] .survey-field').filter(function() {
+            var s = $(this).attr('data-substep');
+            return s === undefined ? true : parseInt(s, 10) === sub;
+        });
+    }
+    function subHasVisibleFields(ch, sub) {
+        var any = false;
+        $subFields(ch, sub).each(function() { if (!$(this).prop('hidden')) any = true; });
+        return any;
+    }
+    function surveyLastChapter() { return capturedEmail ? 3 : 4; }
+    function isLastStep() {
+        var lc = surveyLastChapter();
+        return surveyChapter === lc && surveySubStep >= Math.max(0, subCount(surveyChapter) - 1);
+    }
+    function stepAdvance(dir) {
+        var lc = surveyLastChapter();
+        var ch = surveyChapter, sub = surveySubStep, guard = 0;
+        while (guard++ < 30) {
+            if (dir > 0) {
+                var cnt = Math.max(1, subCount(ch));
+                if (sub < cnt - 1) sub++;
+                else { if (ch >= lc) return null; ch++; sub = 0; }
+            } else {
+                if (sub > 0) sub--;
+                else { if (ch <= 1) return null; ch--; sub = Math.max(0, subCount(ch) - 1); }
+            }
+            if (ch >= lc || subHasVisibleFields(ch, sub)) break;
+        }
+        return { ch: ch, sub: sub };
+    }
     function renderSurveyChapter() {
         var needsEmail = !capturedEmail;
         var lastChapter = needsEmail ? 4 : 3;
@@ -3337,9 +3321,12 @@
             3: { eyebrow: 'Step 3 / 3', heading: 'Transparency' },
             // Chapter 4 is an extra screen for the email — intentionally not
             // numbered as a step so it reads like a final field, not a 4th step.
-            4: { eyebrow: '', heading: 'Where to send your dashboard' }
+            4: { eyebrow: 'Last step', heading: 'Where should we send your dashboard?' }
         };
+        var subTotal = subCount(surveyChapter);
         var t = titles[surveyChapter] || { eyebrow: '', heading: '' };
+        var subInfo = substepInfo[surveyChapter + '-' + surveySubStep];
+        if (subInfo) t = subInfo;
         if (t.heading) {
             $('#surveyModalLabel').html(
                 (t.eyebrow ? '<span class="survey-step-eyebrow">' + t.eyebrow + '</span>' : '') +
@@ -3351,22 +3338,40 @@
         $('.survey-chapter').removeClass('active');
         $('.survey-chapter[data-survey-chapter="' + surveyChapter + '"]').addClass('active');
 
-        // Chapter segments only visible from Chapter 1 onward. Treat Chapter 4
-        // (email) as part of "done": all 3 survey segments stay filled.
+        // Within a chapter, reveal only the active sub-step's fields.
+        $('.survey-chapter[data-survey-chapter="' + surveyChapter + '"] .survey-field[data-substep]').each(function() {
+            $(this).toggleClass('substep-hidden', parseInt($(this).attr('data-substep'), 10) !== surveySubStep);
+        });
+
+        // Chapter segments visible from Chapter 1 onward; the current chapter's
+        // bar fills proportionally to the active sub-step.
         $('.survey-chapter-segs').toggle(surveyChapter >= 1);
         $('#filloutModal .modal-dialog').toggleClass('is-intro', surveyChapter === 0);
-        $('.ch-seg').each(function() {
+        $('.ch-seg-col').each(function() {
             var seg = parseInt($(this).data('chapter'), 10);
-            var filled = surveyChapter >= 4 || (seg <= surveyChapter && surveyChapter >= 1);
-            $(this).toggleClass('is-filled', filled);
+            var pct;
+            if (surveyChapter >= 4) pct = 100;
+            else if (seg < surveyChapter) pct = 100;
+            else if (seg === surveyChapter) { var n = Math.max(1, subTotal); pct = Math.round(((surveySubStep + 1) / n) * 100); }
+            else pct = 0;
+            $(this).find('.ch-seg-fill').css('width', pct + '%');
+            $(this).find('.ch-seg-label').toggleClass('is-current', seg === surveyChapter || (surveyChapter >= 4 && seg === 4));
         });
 
         // Footer is hidden on intro; visible on chapters 1–lastChapter
         var inChapter = surveyChapter >= 1 && surveyChapter <= lastChapter;
-        $('#survey-modal-footer').toggle(inChapter);
-        $('#survey-back-btn').toggle(surveyChapter > 1);
-        $('#survey-next-btn').toggle(inChapter && surveyChapter < lastChapter).text('Continue →');
-        $('#survey-submit-btn').toggle(surveyChapter === lastChapter);
+        var last = isLastStep();
+        $('#survey-modal-footer').toggle(inChapter && surveyChapter !== 4);
+        $('#survey-back-btn').toggle(surveyChapter > 1 || surveySubStep > 0);
+        $('#survey-next-btn').toggle(inChapter && !last);
+        if (inChapter && !last) {
+            var nt = stepAdvance(1);
+            var nextNames = { 2: 'Compensation', 3: 'Transparency' };
+            var nextLbl = 'Continue →';
+            if (nt && nt.ch !== surveyChapter && nextNames[nt.ch]) nextLbl = 'Next: ' + nextNames[nt.ch] + ' →';
+            $('#survey-next-btn').text(nextLbl);
+        }
+        $('#survey-submit-btn').toggle(last);
 
         requestAnimationFrame(function() {
             $("#survey-body, #filloutModal").scrollTop(0);
@@ -3376,6 +3381,7 @@
     $('#filloutModal').on('shown.bs.modal', function() {
         // Reset all v2 state
         surveyChapter = 0;
+        surveySubStep = 0;
         fieldsFilled = new Set();
         fieldsByChapter = { 1: 0, 2: 0, 3: 0, 4: 0 };
         lastFieldId = null;
@@ -3403,7 +3409,12 @@
         // just reset the field values for a clean state.
         $('#survey-email').val('');
         $('#survey-newsletter-optin').prop('checked', true);
+        $('#survey-community-optin').prop('checked', true);
         $('#survey-email-error').text('');
+        // Hybrid days frequency defaults to "per week" (a toggle should always have a side selected)
+        $('#survey-hybrid-days-frequency').val('per week');
+        $('.survey-seg .survey-chip[data-survey-target="survey-hybrid-days-frequency"]').removeClass('is-selected');
+        $('.survey-seg .survey-chip[data-survey-value="per week"]').addClass('is-selected');
 
         renderSurveyChapter();
 
@@ -3423,10 +3434,32 @@
         });
     });
 
+    // Exit guard — the only way out is clicking the backdrop / Esc; warn if any field is filled.
+    var allowExitClose = false;
+    $('#filloutModal').on('show.bs.modal', function() {
+        allowExitClose = false;
+        $('#survey-exit-confirm').removeClass('is-open');
+    });
+    $('#filloutModal').on('hide.bs.modal', function(e) {
+        if (allowExitClose || surveyWasSubmitted) return;
+        if (surveyChapter < 1 || countFilled() === 0) return;
+        e.preventDefault();
+        $('#survey-exit-confirm').addClass('is-open');
+    });
+    $(document).on('click', '#sec-stay', function() {
+        $('#survey-exit-confirm').removeClass('is-open');
+    });
+    $(document).on('click', '#sec-exit', function() {
+        allowExitClose = true;
+        $('#survey-exit-confirm').removeClass('is-open');
+        $('#filloutModal').modal('hide');
+    });
+
     // Start button on Chapter 0 → enter Chapter 1
     $('#survey-start-btn').on('click', function() {
         chapterStartedAt = Date.now();
         surveyChapter = 1;
+        surveySubStep = 0;
         renderSurveyChapter();
         track('comp_survey_chapter_start', {
             chapter_index: 1,
@@ -3704,12 +3737,11 @@
     }
 
     // Collect missing required .survey-field nodes inside a chapter.
-    function missingRequiredFields(chapterIndex) {
-        var $chapter = $('.survey-chapter[data-survey-chapter="' + chapterIndex + '"]');
+    function missingRequiredFields() {
         var missing = [];
-        $chapter.find('.survey-field').each(function() {
+        $subFields(surveyChapter, surveySubStep).each(function() {
             var $field = $(this);
-            if ($field.prop('hidden')) return;
+            if ($field.prop('hidden') || $field.hasClass('substep-hidden')) return;
             var fieldId = $field.data('field-id');
             if (!fieldId || OPTIONAL_FIELD_IDS[fieldId]) return;
             if (fieldValue(fieldId) === '') {
@@ -3753,10 +3785,9 @@
     });
 
     $('#survey-next-btn').on('click', function() {
-        var lastChapter = capturedEmail ? 3 : 4;
-        if (surveyChapter < 1 || surveyChapter >= lastChapter) return;
+        if (surveyChapter < 1 || isLastStep()) return;
         clearChapterErrors(surveyChapter);
-        var missing = missingRequiredFields(surveyChapter);
+        var missing = missingRequiredFields();
         if (missing.length) {
             flagMissingFields(missing);
             var $first = missing[0];
@@ -3771,12 +3802,17 @@
             return;
         }
         var leaving = surveyChapter;
-        track('comp_survey_chapter_complete', {
-            chapter_index: leaving,
-            time_ms: Date.now() - chapterStartedAt,
-            fields_filled_in_chapter: fieldsByChapter[leaving] || 0
-        });
-        surveyChapter = Math.min(lastChapter, surveyChapter + 1);
+        var target = stepAdvance(1);
+        if (!target) return;
+        if (target.ch !== leaving) {
+            track('comp_survey_chapter_complete', {
+                chapter_index: leaving,
+                time_ms: Date.now() - chapterStartedAt,
+                fields_filled_in_chapter: fieldsByChapter[leaving] || 0
+            });
+        }
+        surveyChapter = target.ch;
+        surveySubStep = target.sub;
         chapterStartedAt = Date.now();
         renderSurveyChapter();
         track('comp_survey_chapter_start', {
@@ -3786,8 +3822,11 @@
     });
 
     $('#survey-back-btn').on('click', function() {
-        if (surveyChapter <= 1) return;
-        surveyChapter = Math.max(1, surveyChapter - 1);
+        if (surveyChapter <= 1 && surveySubStep <= 0) return;
+        var target = stepAdvance(-1);
+        if (!target) return;
+        surveyChapter = target.ch;
+        surveySubStep = target.sub;
         chapterStartedAt = Date.now();
         renderSurveyChapter();
     });
@@ -3832,8 +3871,9 @@
         // If we need to register the email now, do that first to get a dashboardToken,
         // then chain into the full-survey submit. Otherwise go straight to the survey submit.
         var inlineNewsletterOptin = $('#survey-newsletter-optin').is(':checked');
+        var inlineCommunityOptin = $('#survey-community-optin').is(':checked');
         var emailStep = needsEmail
-            ? submitEmailOnly(inlineEmail, inlineNewsletterOptin, 'survey_inline').then(function(data) {
+            ? submitEmailOnly(inlineEmail, inlineNewsletterOptin, 'survey_inline', inlineCommunityOptin).then(function(data) {
                 if (!data || data.status !== 'ok' || !data.token) {
                     throw new Error('Missing token from email registration');
                 }
@@ -3844,6 +3884,7 @@
                     window.tipmAnalytics.identifyEmail(inlineEmail, {
                         dashboard_optin: true,
                         newsletter_optin: inlineNewsletterOptin,
+                        community_optin: inlineCommunityOptin,
                         source: 'full_survey_inline'
                     });
                 }
@@ -4464,12 +4505,6 @@
                 slider.dispatchEvent(new Event('input', { bubbles: true }));
                 slider.dispatchEvent(new Event('change', { bubbles: true }));
             }
-            setValueAndNotify('lead-email', preset.email);
-            var newsletterEl = document.getElementById('newsletter-optin');
-            if (newsletterEl) {
-                newsletterEl.checked = !!preset.newsletter;
-                newsletterEl.dispatchEvent(new Event('change', { bubbles: true }));
-            }
             console.info('[TEST MODE] Step 1 fields populated. Click Compare to advance.');
         });
 
@@ -4520,6 +4555,37 @@
         });
     }
 
+})();
+</script>
+<script>
+/* Chip overflow "+N more" — self-contained, does not touch the survey controller. */
+(function () {
+    var $ = window.jQuery; if (!$) return;
+    function setupCollapse() {
+        $('.survey-chip-grid[data-collapse]').each(function () {
+            var $grid = $(this);
+            var n = parseInt($grid.data('collapse'), 10) || 8;
+            var $chips = $grid.find('.survey-chip[data-survey-multi]');
+            if ($chips.length <= n) return;
+            $chips.each(function (i) { $(this).toggleClass('chip-overflow', i >= n); });
+            var hidden = $chips.length - n;
+            if (!$grid.find('.chip-more-toggle').length) {
+                $('<button type="button" class="survey-chip chip-more-toggle" aria-expanded="false"></button>')
+                    .appendTo($grid);
+            }
+            $grid.addClass('is-collapsed');
+            $grid.find('.chip-more-toggle').attr('aria-expanded', 'false').text('+' + hidden + ' more');
+        });
+    }
+    $(document).on('click', '.chip-more-toggle', function () {
+        var $grid = $(this).closest('.survey-chip-grid');
+        var collapsed = $grid.toggleClass('is-collapsed').hasClass('is-collapsed');
+        var hidden = $grid.find('.chip-overflow').length;
+        $(this).attr('aria-expanded', String(!collapsed))
+               .text(collapsed ? '+' + hidden + ' more' : 'Show less');
+    });
+    $(function () { setupCollapse(); });
+    $('#filloutModal').on('shown.bs.modal', function () { setupCollapse(); });
 })();
 </script>
 </body>
