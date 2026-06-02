@@ -477,6 +477,37 @@
         .footer-site .footer-links a { color: rgba(255,255,255,.6); font-size: .8125rem; font-weight: 300; transition: opacity .15s; }
         .footer-site .footer-links a:hover { opacity: 1; text-decoration: none; }
 
+        /* Footer newsletter signup */
+        .footer-newsletter-label { color: rgba(255,255,255,.6); font-size: .8125rem; line-height: 1.5; margin: 1.25rem 0 .85rem; max-width: 340px; }
+        .footer-newsletter-form { display: flex; flex-wrap: wrap; gap: .5rem; max-width: 380px; }
+        .footer-newsletter-form .form-control {
+            flex: 1 1 180px;
+            min-width: 0;
+            max-width: none;
+            min-height: 44px;
+            background: var(--white);
+            border: 1px solid rgba(255,255,255,.15);
+            color: var(--near-black);
+        }
+        .footer-newsletter-form .btn-cta { flex: 0 0 auto; }
+        .footer-newsletter-error { color: #ffd7d7; font-size: .75rem; margin-top: .5rem; }
+        .footer-newsletter-success { color: var(--golden); font-size: .8125rem; font-weight: 600; margin: .85rem 0 0; }
+
+        /* Footer bottom bar (copyright + social) */
+        .footer-site .footer-bottom {
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 1.75rem;
+        }
+        .footer-site .footer-bottom .footer-copyright { margin: 0; }
+        .footer-site .footer-social { display: flex; align-items: center; }
+        .footer-site .footer-social .social-icon { margin-right: 0; margin-left: .5rem; }
+
 
         /* ── Email capture + full survey retained components ── */
         .btn-cta,
@@ -531,7 +562,6 @@
             gap: .25rem .9rem;
             margin-top: 1.25rem;
         }
-        .lock-cta-hint { color: rgba(255,255,255,.58); font-size: .8rem; }
         .locked-list {
             display: grid;
             gap: .55rem;
@@ -554,6 +584,53 @@
         .locked-list li i { color: var(--golden); font-size: .8rem; flex: 0 0 auto; }
         @media (min-width: 768px) {
             .locked-list { margin-top: 0; }
+        }
+
+        /* Newsletter pop-up modal */
+        .newsletter-modal .modal-dialog { max-width: 440px; }
+        .newsletter-modal .modal-content {
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        .newsletter-modal-body { padding: 2.25rem 1.75rem 2rem; text-align: center; }
+        .newsletter-modal-body h3 {
+            color: var(--near-black);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            margin: 0 0 .55rem;
+        }
+        .newsletter-modal-body > div > p,
+        .newsletter-popup-success p {
+            color: var(--text-muted);
+            font-size: .95rem;
+            line-height: 1.5;
+            margin: 0 auto 1.25rem;
+            max-width: 340px;
+        }
+        #newsletter-popup-form { margin: 0 auto; max-width: 340px; }
+        #newsletter-popup-form .form-control {
+            min-height: 48px;
+            max-width: none;
+            text-align: center;
+            margin-bottom: .65rem;
+        }
+        #newsletter-popup-submit { width: 100%; }
+        .newsletter-modal .field-error-msg { color: #c0392b; font-size: .8rem; margin-top: .5rem; min-height: 1rem; }
+        .newsletter-popup-success { padding: .5rem 0; }
+        .newsletter-popup-success p { margin-bottom: 0; }
+        .newsletter-popup-success-icon {
+            align-items: center;
+            background: var(--golden);
+            border-radius: 999px;
+            color: var(--near-black);
+            display: flex;
+            height: 52px;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            width: 52px;
         }
 
         .done-loop {
@@ -1593,19 +1670,17 @@
         <!-- Locked-dashboard card (single conversion goal: complete the survey) -->
         <div class="dashboard-card" id="dashboard-card">
             <div>
-                <span class="dashboard-tag" style="color: var(--golden);">Your snapshot</span>
                 <h3>This is just your snapshot.</h3>
                 <p>The full Product Salary Compass dashboard is still locked. Complete the 2-minute survey to open it.</p>
                 <div class="lock-cta-row">
                     <button type="button" class="btn-cta js-open-survey" data-survey-source="results_lock">Take the survey to unlock &rarr;</button>
-                    <span class="lock-cta-hint">Only takes 2 minutes</span>
                 </div>
             </div>
             <ul class="locked-list" aria-label="Locked dashboard insights">
                 <li><i class="fas fa-lock" aria-hidden="true"></i><span>Best-paid industries &amp; companies</span></li>
                 <li><i class="fas fa-lock" aria-hidden="true"></i><span>Gender pay gap (adjusted)</span></li>
                 <li><i class="fas fa-lock" aria-hidden="true"></i><span>Remote vs office pay</span></li>
-                <li><i class="fas fa-lock" aria-hidden="true"></i><span>Your level vs the full market</span></li>
+                <li><i class="fas fa-lock" aria-hidden="true"></i><span>Highest-paid PM skills</span></li>
             </ul>
         </div>
 
@@ -1720,11 +1795,13 @@
                 <a href="/">
                     <img src="https://impostorpm-huddle.pages.dev/TIPM-horizontal-white-logo.svg" alt="The Impostor PM" class="footer-logo">
                 </a>
-                <p class="footer-copyright">&copy; 2026 Impostor PM. All rights reserved.</p>
-                <div>
-                    <a href="https://www.linkedin.com/company/impostorpm/" target="_blank" rel="noreferrer" class="social-icon"><i class="fab fa-linkedin"></i></a>
-                    <a href="https://tally.so/r/w2X0de" target="_blank" rel="noreferrer" class="social-icon"><i class="fab fa-slack"></i></a>
-                </div>
+                <p class="footer-newsletter-label">Exclusive PM tools like this, community perks, and Product event updates straight to your inbox.</p>
+                <form id="footer-newsletter-form" class="footer-newsletter-form" novalidate>
+                    <input type="email" class="form-control" id="footer-newsletter-email" placeholder="you@email.com" required autocomplete="email">
+                    <button type="submit" class="btn-cta" id="footer-newsletter-submit">Subscribe</button>
+                </form>
+                <div class="field-error-msg footer-newsletter-error" id="footer-newsletter-error"></div>
+                <p class="footer-newsletter-success" id="footer-newsletter-success" hidden>You're in. Check your inbox to confirm.</p>
             </div>
             <div class="col-4 col-lg-2 offset-lg-1">
                 <h6>This is Us</h6>
@@ -1759,6 +1836,13 @@
                     <li><a href="/builderscamp">Builders Camp</a></li>
                     <li><a href="/partner-with-us">Partner with us</a></li>
                 </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="footer-copyright">&copy; 2026 Impostor PM. All rights reserved.</p>
+            <div class="footer-social">
+                <a href="https://www.linkedin.com/company/impostorpm/" target="_blank" rel="noreferrer" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                <a href="https://tally.so/r/w2X0de" target="_blank" rel="noreferrer" class="social-icon"><i class="fab fa-slack"></i></a>
             </div>
         </div>
     </div>
@@ -2400,6 +2484,32 @@
                     <button type="button" class="btn-cta" id="success-share-png" style="flex:1;"><i class="fas fa-download share-icon" aria-hidden="true"></i>Download PNG</button>
                 </div>
                 <button type="button" class="success-secondary" data-dismiss="modal" id="success-back-to-results">← Back to my results</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ════════════ NEWSLETTER POP-UP MODAL ════════════ -->
+<div class="modal fade newsletter-modal" id="newsletterModal" tabindex="-1" aria-labelledby="newsletterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body newsletter-modal-body">
+                <div class="newsletter-popup-form-wrap" id="newsletter-popup-form-wrap">
+                    <h3 id="newsletterModalLabel">Don't feel like an impostor.</h3>
+                    <p>Get tools like this, PM salary insights and community perks straight to your inbox.</p>
+                    <form id="newsletter-popup-form" novalidate>
+                        <input type="email" class="form-control" id="newsletter-popup-email" placeholder="you@email.com" required autocomplete="email">
+                        <button type="submit" class="btn-cta" id="newsletter-popup-submit">Subscribe</button>
+                        <div class="field-error-msg" id="newsletter-popup-error"></div>
+                    </form>
+                </div>
+                <div class="newsletter-popup-success" id="newsletter-popup-success" hidden>
+                    <div class="newsletter-popup-success-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <h3>You're in.</h3>
+                    <p>Check your inbox to confirm your subscription.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -3187,6 +3297,9 @@
 
         // Scroll to results
         $('html, body').animate({ scrollTop: $results.offset().top - 70 }, 600);
+
+        // Newsletter capture pop-up — value first, then ask (~4s after results)
+        setTimeout(maybeShowNewsletterPopup, 4000);
     }
 
     function updateBenchmarkSampleNote() {
@@ -3261,6 +3374,107 @@
 
     $('.js-open-survey').on('click', function() {
         $('#filloutModal').modal('show');
+    });
+
+    /* ── Newsletter capture pop-up ──────────────────────────────────────────
+       Shows once per browser, a few seconds after results render. Suppressed
+       if the visitor already gave their email (survey) or the survey modal is
+       open. Reuses submitEmailOnly() with source 'newsletter_popup'.          */
+    var NEWSLETTER_POPUP_SEEN_KEY = 'tipmNewsletterPopupSeen';
+    var newsletterPopupSubmitted = false;
+
+    function maybeShowNewsletterPopup() {
+        if ($('#filloutModal').hasClass('show')) return;            // never stack on the survey
+        // In test mode (?test=1) the pop-up always shows, so QA can re-trigger it
+        // freely. In production it shows once per browser and not if already subscribed.
+        if (!TEST_MODE) {
+            if (capturedEmail) return;                              // already subscribed this session
+            try { if (tokenStore.getItem(NEWSLETTER_POPUP_SEEN_KEY)) return; } catch (e) {}
+            try { tokenStore.setItem(NEWSLETTER_POPUP_SEEN_KEY, '1'); } catch (e) {}
+        }
+
+        // Reset to the form state so re-shows don't keep the previous success screen
+        $('#newsletter-popup-success').attr('hidden', true);
+        $('#newsletter-popup-form-wrap').removeAttr('hidden');
+        $('#newsletter-popup-email').val('');
+        $('#newsletter-popup-error').text('');
+        $('#newsletter-popup-submit').prop('disabled', false).text('Subscribe');
+        newsletterPopupSubmitted = false;
+
+        $('#newsletterModal').modal('show');
+        track('comp_newsletter_popup_view', { percentile: latestResult ? latestResult.overallPct : null });
+    }
+
+    $('#newsletter-popup-form').on('submit', function(e) {
+        e.preventDefault();
+        var email = $.trim($('#newsletter-popup-email').val() || '');
+        var $button = $('#newsletter-popup-submit');
+        $('#newsletter-popup-error').text('');
+        if (!isValidEmail(email)) {
+            $('#newsletter-popup-error').text('Please enter a valid email address.');
+            $('#newsletter-popup-email').trigger('focus');
+            return;
+        }
+        $button.prop('disabled', true).text('Subscribing...');
+
+        submitEmailOnly(email, true, 'newsletter_popup')
+            .then(function(data) {
+                if (!data || data.status !== 'ok' || !data.token) throw new Error('Missing token');
+                capturedEmail = email;
+                dashboardToken = data.token;
+                try { tokenStore.setItem('tipmDashboardToken', dashboardToken); } catch (e) {}
+                newsletterPopupSubmitted = true;
+                if (window.tipmAnalytics) {
+                    window.tipmAnalytics.identifyEmail(email, { newsletter_optin: true, source: 'newsletter_popup' });
+                }
+                track('comp_newsletter_popup_submit', { percentile: latestResult ? latestResult.overallPct : null });
+
+                $('#newsletter-popup-form-wrap').attr('hidden', true);
+                $('#newsletter-popup-success').removeAttr('hidden');
+                setTimeout(function() { $('#newsletterModal').modal('hide'); }, 1800);
+            })
+            .catch(function(err) {
+                $('#newsletter-popup-error').text((err && err.message) ? err.message : 'Something went wrong. Please try again.');
+                $button.prop('disabled', false).text('Subscribe');
+            });
+    });
+
+    $('#newsletterModal').on('hidden.bs.modal', function() {
+        if (!newsletterPopupSubmitted) {
+            track('comp_newsletter_popup_dismiss', {});
+        }
+    });
+
+    /* Footer newsletter signup — same backend as the pop-up, source 'footer_newsletter' */
+    $('#footer-newsletter-form').on('submit', function(e) {
+        e.preventDefault();
+        var email = $.trim($('#footer-newsletter-email').val() || '');
+        var $button = $('#footer-newsletter-submit');
+        $('#footer-newsletter-error').text('');
+        if (!isValidEmail(email)) {
+            $('#footer-newsletter-error').text('Please enter a valid email address.');
+            $('#footer-newsletter-email').trigger('focus');
+            return;
+        }
+        $button.prop('disabled', true).text('Subscribing...');
+
+        submitEmailOnly(email, true, 'footer_newsletter')
+            .then(function(data) {
+                if (!data || data.status !== 'ok' || !data.token) throw new Error('Missing token');
+                capturedEmail = email;
+                dashboardToken = data.token;
+                try { tokenStore.setItem('tipmDashboardToken', dashboardToken); } catch (e) {}
+                if (window.tipmAnalytics) {
+                    window.tipmAnalytics.identifyEmail(email, { newsletter_optin: true, source: 'footer_newsletter' });
+                }
+                track('comp_footer_newsletter_submit', {});
+                $('#footer-newsletter-form').attr('hidden', true);
+                $('#footer-newsletter-success').removeAttr('hidden');
+            })
+            .catch(function(err) {
+                $('#footer-newsletter-error').text((err && err.message) ? err.message : 'Something went wrong. Please try again.');
+                $button.prop('disabled', false).text('Subscribe');
+            });
     });
 
     var surveySubStep = 0;
