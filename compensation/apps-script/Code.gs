@@ -7,8 +7,8 @@ var MIN_PUBLIC_DISTRICT_N = 10;
 var SALARY_COMPASS_URL = 'https://www.impostor.pm/salary-compass/';
 var SALARY_COMPASS_FROM_EMAIL = 'Javi from The Impostor PM <general@impostor.pm>';
 var SALARY_COMPASS_REPLY_TO = 'general@impostor.pm';
-var EMAIL_SHEET_HEADERS = ['Timestamp', 'Email', 'Source', 'Dashboard Opt-in', 'Newsletter Opt-in', 'Percentile', 'Token', 'Email Sent', 'Email Error'];
-var SALARY_COMPASS_BACKEND_VERSION = 'salary-compass-email-edge-v4-2026-05-25';
+var EMAIL_SHEET_HEADERS = ['Submission ID', 'Timestamp', 'Email', 'Source', 'Report Opt-in', 'Newsletter Opt-in', 'Percentile', 'Token', 'Email Sent', 'Email Error'];
+var SALARY_COMPASS_BACKEND_VERSION = 'salary-compass-email-edge-v5-2026-06-03';
 
 var ALLOWED_ROLES = {
   'APM': true,
@@ -163,6 +163,14 @@ function cleanId_(value) {
   return id;
 }
 
+/* Like cleanId_ but returns '' instead of throwing when the id is absent or
+ * malformed. Used for the Emails sheet, where newsletter pop-up / footer
+ * signups have no associated survey submission to link to. */
+function cleanIdOrBlank_(value) {
+  var id = cleanToken_(value, 80);
+  return /^[a-zA-Z0-9._-]{8,80}$/.test(id) ? id : '';
+}
+
 function cleanToken_(value, maxLen) {
   return String(value || '').replace(/[^a-zA-Z0-9._-]/g, '').slice(0, maxLen || 100);
 }
@@ -305,11 +313,12 @@ function updateSubmission_(sheet, emailSheet, data) {
           percentile: ''
         });
         emailSheet.appendRow([
+          id,
           new Date().toISOString(),
           updateEmail,
           'survey_inline',
-          true,
-          false,
+          cleanBoolString_(data.report_optin || data.reportOptin) === 'true',
+          cleanBoolString_(data.newsletter_optin || data.newsletterOptin) === 'true',
           '',
           updateToken,
           updateEmailResult.sent,
@@ -419,9 +428,11 @@ function getCachedCounts_() {
 
 function saveEmailOnly_(ss, data) {
   var emailSheet = getOrCreateEmailSheet_(ss);
+  var submissionId = cleanIdOrBlank_(data.submission_id || data.submissionId);
   var token = cleanToken_(data.token, 100) || Utilities.getUuid();
   var email = cleanEmail_(data.email);
   var source = cleanEmailSource_(data.source || 'dashboard_waitlist');
+  var reportOptin = cleanBoolString_(data.report_optin || data.reportOptin) === 'true';
   var newsletterOptin = cleanBoolString_(data.newsletter_optin || data.newsletterOptin) === 'true';
   var percentile = cleanNumber_(data.percentile, 0, 100);
 
@@ -433,10 +444,11 @@ function saveEmailOnly_(ss, data) {
   });
 
   emailSheet.appendRow([
+    submissionId,
     new Date().toISOString(),
     email,
     source,
-    true,
+    reportOptin,
     newsletterOptin,
     percentile,
     token,

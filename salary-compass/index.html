@@ -2576,6 +2576,9 @@
     var sessionId = generateId();
     var compareData = {};
     var formStarted = false;
+    // True once the comparison "create" row exists in the Submissions sheet, so we
+    // only link an email row to a submission id that actually exists.
+    var submissionCreated = false;
 
     /* ── Submit to Google Sheets ── */
     function postOpaqueToSheets(data) {
@@ -2781,15 +2784,22 @@
         });
     }
 
-    function submitEmailOnly(email, newsletterOptin, source, communityOptin) {
+    // reportOptin   -> "Send me Product Salary Compass reports periodically" checkbox
+    // newsletterOptin -> "tools / community perks / event updates" checkbox
+    // submissionId  -> links the email row to its Submissions row; pass '' when there
+    //                  is no associated survey response (cold newsletter signup).
+    function submitEmailOnly(email, reportOptin, source, newsletterOptin, submissionId) {
         var isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.hostname) !== -1;
+        var linkedSubmissionId = (submissionId === undefined || submissionId === null)
+            ? (submissionCreated ? sessionId : '')
+            : submissionId;
         if (!dashboardToken) {
             dashboardToken = generateDashboardToken();
             tokenStore.setItem('tipmDashboardToken', dashboardToken);
         }
         if ((isLocalhost || TEST_MODE) && !EMAIL_SEND_TEST_MODE) {
             if (TEST_MODE) {
-                console.info('[TEST MODE] submitEmailOnly blocked. Email:', email, 'Newsletter:', newsletterOptin, 'Source:', source || 'dashboard_waitlist');
+                console.info('[TEST MODE] submitEmailOnly blocked. Email:', email, 'Report:', reportOptin, 'Newsletter:', newsletterOptin, 'Source:', source || 'dashboard_waitlist');
             }
             return new Promise(function(resolve) {
                 setTimeout(function() {
@@ -2799,11 +2809,11 @@
         }
         var payload = {
             action: 'email_only',
+            submission_id: linkedSubmissionId,
             email: email,
             source: source || 'dashboard_waitlist',
-            dashboard_optin: 'true',
+            report_optin: reportOptin ? 'true' : 'false',
             newsletter_optin: newsletterOptin ? 'true' : 'false',
-            community_optin: communityOptin ? 'true' : 'false',
             percentile: latestResult ? String(latestResult.overallPct) : '',
             token: dashboardToken
         };
@@ -3228,6 +3238,7 @@
             city: city,
             perceptionGuess: guess
         });
+        submissionCreated = true;
 
         var roleKey = SALARY_DATA.roleMap[roleRaw];
         /* Compare using total comp (base salary = total comp when no perks) */
@@ -3444,7 +3455,7 @@
         }
         $button.prop('disabled', true).text('Subscribing...');
 
-        submitEmailOnly(email, true, 'newsletter_popup')
+        submitEmailOnly(email, false, 'newsletter_popup', true)
             .then(function(data) {
                 if (!data || data.status !== 'ok' || !data.token) throw new Error('Missing token');
                 capturedEmail = email;
@@ -3485,7 +3496,7 @@
         }
         $button.prop('disabled', true).text('Subscribing...');
 
-        submitEmailOnly(email, true, 'footer_newsletter')
+        submitEmailOnly(email, false, 'footer_newsletter', true)
             .then(function(data) {
                 if (!data || data.status !== 'ok' || !data.token) throw new Error('Missing token');
                 capturedEmail = email;
@@ -3531,7 +3542,10 @@
         $subFields(ch, sub).each(function() { if (!$(this).prop('hidden')) any = true; });
         return any;
     }
-    function surveyLastChapter() { return capturedEmail ? 3 : 4; }
+    // The email step (Chapter 4) is always shown, even if the visitor already gave
+    // their email via the newsletter pop-up or footer. This guarantees every survey
+    // response writes an email row linked to its submission id.
+    function surveyLastChapter() { return 4; }
     function isLastStep() {
         var lc = surveyLastChapter();
         return surveyChapter === lc && surveySubStep >= Math.max(0, subCount(surveyChapter) - 1);
@@ -3553,8 +3567,7 @@
         return { ch: ch, sub: sub };
     }
     function renderSurveyChapter() {
-        var needsEmail = !capturedEmail;
-        var lastChapter = needsEmail ? 4 : 3;
+        var lastChapter = 4;
         var titles = {
             0: { eyebrow: '', heading: '' },
             1: { eyebrow: 'Step 1 / 3', heading: 'About your company' },
@@ -3645,10 +3658,10 @@
         $('#survey-success').hide();
         $('#survey-submit-btn').prop('disabled', false).text('Submit');
 
-        // Chapter 4 (email) only appears when we didn't capture the email earlier.
-        // The chapter-level visibility is handled by renderSurveyChapter; here we
-        // just reset the field values for a clean state.
-        $('#survey-email').val('');
+        // Chapter 4 (email) is always shown. If the visitor already gave their email
+        // via the newsletter pop-up or footer, pre-fill it so they don't retype, but
+        // the step still appears and is required so the response gets linked.
+        $('#survey-email').val(capturedEmail || '');
         $('#survey-newsletter-optin').prop('checked', true);
         $('#survey-community-optin').prop('checked', true);
         $('#survey-email-error').text('');
@@ -4092,9 +4105,10 @@
             return;
         }
 
-        // Gate: when email wasn't captured earlier, the user is on Chapter 4 now
-        // and must provide a valid address before we can submit.
-        var needsEmail = !capturedEmail;
+        // Gate: the email step is always shown, so a valid address is always
+        // required before we can submit (this is what links the response to an
+        // email row via the submission id).
+        var needsEmail = true;
         var inlineEmail = $.trim($('#survey-email').val() || '');
         var $emailErr = $('#survey-email-error');
         $emailErr.text('');
@@ -4114,7 +4128,7 @@
         var inlineNewsletterOptin = $('#survey-newsletter-optin').is(':checked');
         var inlineCommunityOptin = $('#survey-community-optin').is(':checked');
         var emailStep = needsEmail
-            ? submitEmailOnly(inlineEmail, inlineNewsletterOptin, 'survey_inline', inlineCommunityOptin).then(function(data) {
+            ? submitEmailOnly(inlineEmail, inlineNewsletterOptin, 'survey_inline', inlineCommunityOptin, sessionId).then(function(data) {
                 if (!data || data.status !== 'ok' || !data.token) {
                     throw new Error('Missing token from email registration');
                 }
@@ -4123,9 +4137,8 @@
                 tokenStore.setItem('tipmDashboardToken', dashboardToken);
                 if (window.tipmAnalytics) {
                     window.tipmAnalytics.identifyEmail(inlineEmail, {
-                        dashboard_optin: true,
-                        newsletter_optin: inlineNewsletterOptin,
-                        community_optin: inlineCommunityOptin,
+                        report_optin: inlineNewsletterOptin,
+                        newsletter_optin: inlineCommunityOptin,
                         source: 'full_survey_inline'
                     });
                 }
