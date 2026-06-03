@@ -3823,8 +3823,12 @@
 
     function writeChipFieldValue(target) {
         var values = chipFieldValues(target);
-        $('#' + target).val(values.join('|'));
-        if (values.length > 0) markFieldFilled(target);
+        // "Other" is only a UI toggle that reveals the custom free-text input — it is
+        // not an answer, so keep it out of the stored value. The full list (with
+        // "Other") is still passed to the conditional sync so the input stays visible.
+        var stored = values.filter(function(v) { return v !== 'Other'; });
+        $('#' + target).val(stored.join('|'));
+        if (stored.length > 0) markFieldFilled(target);
         if (target === 'survey-perks-list') syncPerkConditionals(values);
         if (target === 'survey-top-skills') syncSkillConditionals(values);
         return values;
