@@ -2650,6 +2650,7 @@
     var lastCounter = null;         // populated by renderCounters
     var chipAdvanceTimer = null;
     var surveyWasSubmitted = false;
+    var surveySubmitInProgress = false;
 
     function countFilled() { return fieldsFilled.size; }
 
@@ -3642,6 +3643,7 @@
         modalOpenedAt = Date.now();
         chapterStartedAt = modalOpenedAt;
         surveyWasSubmitted = false;
+        surveySubmitInProgress = false;
 
         // Reset DOM state — clear .is-complete on every field, chip selections, inputs and selects
         $('.survey-field').removeClass('is-complete is-error');
@@ -3657,6 +3659,7 @@
         $('.survey-modal .modal-header').show();
         $('#survey-success').hide();
         $('#survey-submit-btn').prop('disabled', false).text('Submit');
+        $('#survey-finish-btn').prop('disabled', false).html('Get my dashboard <span aria-hidden="true">→</span>');
 
         // Chapter 4 (email) is always shown. If the visitor already gave their email
         // via the newsletter pop-up or footer, pre-fill it so they don't retype, but
@@ -4101,9 +4104,25 @@
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($.trim(value || ''));
     }
 
+    // Re-enable + restore both submit buttons after a failed attempt. Both
+    // #survey-finish-btn ("Get my dashboard") and the hidden #survey-submit-btn
+    // are type=submit inside #full-survey-form, so both must be reset.
+    function resetSurveySubmitButtons() {
+        surveySubmitInProgress = false;
+        $('#survey-submit-btn').prop('disabled', false).text('Submit');
+        $('#survey-finish-btn').prop('disabled', false).html('Get my dashboard <span aria-hidden="true">→</span>');
+    }
+
     $('#full-survey-form').on('submit', function(e) {
         e.preventDefault();
-        var $btn = $('#survey-submit-btn');
+        // Guard against re-entrancy: submitEmailOnly() sends a real capture email
+        // on every call, so without this an impatient user clicking "Get my
+        // dashboard" repeatedly during the network round-trip would trigger a
+        // duplicate email + duplicate Emails-sheet row each time (root cause of
+        // users reporting multiple emails). Both type=submit buttons in the form
+        // are disabled together below.
+        if (surveySubmitInProgress) return;
+        var $btn = $('#survey-submit-btn, #survey-finish-btn');
 
         // Gate: required fields on the current chapter must be filled
         clearChapterErrors(surveyChapter);
@@ -4130,7 +4149,10 @@
             return;
         }
 
-        $btn.prop('disabled', true).text('Submitting...');
+        surveySubmitInProgress = true;
+        $btn.prop('disabled', true);
+        $('#survey-submit-btn').text('Submitting...');
+        $('#survey-finish-btn').text('Submitting...');
 
         var perksList = $('#survey-perks-list').val() || '';
         var hasEquityDerived = perksList.indexOf('Equity (RSUs, stock options...)') !== -1 ? 'Yes' : '';
@@ -4236,11 +4258,11 @@
             $('#hero-counter-pct').text(pctBar + '%');
             lastCounter = nextCount;
         }).catch(function(err) {
-            $btn.prop('disabled', false).text('Submit');
+            resetSurveySubmitButtons();
             alert((err && err.message) ? err.message : 'Something went wrong. Please try again.');
         });
         }).catch(function(err) {
-            $btn.prop('disabled', false).text('Submit');
+            resetSurveySubmitButtons();
             $emailErr.text((err && err.message) ? err.message : 'We could not save your email. Please try again.');
         });
     });
