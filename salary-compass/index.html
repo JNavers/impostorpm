@@ -3446,8 +3446,9 @@
 
     $('#newsletter-popup-form').on('submit', function(e) {
         e.preventDefault();
-        var email = $.trim($('#newsletter-popup-email').val() || '');
         var $button = $('#newsletter-popup-submit');
+        if ($button.prop('disabled')) return; // in-flight guard (repeat Enter / clicks)
+        var email = $.trim($('#newsletter-popup-email').val() || '');
         $('#newsletter-popup-error').text('');
         if (!isValidEmail(email)) {
             $('#newsletter-popup-error').text('Please enter a valid email address.');
@@ -3487,8 +3488,9 @@
     /* Footer newsletter signup — same backend as the pop-up, source 'footer_newsletter' */
     $('#footer-newsletter-form').on('submit', function(e) {
         e.preventDefault();
-        var email = $.trim($('#footer-newsletter-email').val() || '');
         var $button = $('#footer-newsletter-submit');
+        if ($button.prop('disabled')) return; // in-flight guard (repeat Enter / clicks)
+        var email = $.trim($('#footer-newsletter-email').val() || '');
         $('#footer-newsletter-error').text('');
         if (!isValidEmail(email)) {
             $('#footer-newsletter-error').text('Please enter a valid email address.');
@@ -3514,6 +3516,18 @@
                 $('#footer-newsletter-error').text((err && err.message) ? err.message : 'Something went wrong. Please try again.');
                 $button.prop('disabled', false).text('Subscribe');
             });
+    });
+
+    // Enter-to-submit for the email fields. The survey form has many inputs and
+    // two submit buttons, so browsers don't reliably auto-submit it on Enter; the
+    // popup is a single-field form that does. We preventDefault() to suppress any
+    // native submit and fire it exactly once ourselves, so Enter behaves the same
+    // on both without ever double-submitting (which would send a duplicate email).
+    $(document).on('keydown', '#newsletter-popup-email, #survey-email', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            $(this).closest('form').trigger('submit');
+        }
     });
 
     var surveySubStep = 0;
