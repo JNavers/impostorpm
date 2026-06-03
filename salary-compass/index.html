@@ -3998,6 +3998,14 @@
             if ($field.prop('hidden') || $field.hasClass('substep-hidden')) return;
             var fieldId = $field.data('field-id');
             if (!fieldId || OPTIONAL_FIELD_IDS[fieldId]) return;
+            // Strengths is a required multi-select. "Other" on its own is just a UI
+            // toggle (it writes "Other" to the hidden input, so the generic empty
+            // check would pass), so require at least one real strength — a predefined
+            // chip or a typed custom value.
+            if (fieldId === 'survey-top-skills') {
+                if (chipFieldCappedCount('survey-top-skills') < 1) missing.push($field);
+                return;
+            }
             if (fieldValue(fieldId) === '') {
                 missing.push($field);
                 return;
