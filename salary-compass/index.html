@@ -2724,9 +2724,9 @@
     function fetchCounters() {
         if (countersFetched) return;
         countersFetched = true;
-        var isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.hostname) !== -1;
-        if (isLocalhost || TEST_MODE) {
-            // Mock matches production scale so dev reflects the real `surveys` (Full survey = Yes) count.
+        // TEST_MODE uses a fixed mock so flows stay deterministic. Localhost hits the
+        // live endpoint so dev reflects the real `surveys` (Full survey = Yes) count.
+        if (TEST_MODE) {
             renderCounters({ surveys: 10, submissions: 199, emails: 10 });
             return;
         }
@@ -2734,7 +2734,9 @@
         var network = fetch(url, { redirect: 'follow' })
             .then(function(res) { return res.json(); });
         var timeout = new Promise(function(_, reject) {
-            setTimeout(function() { reject(new Error('timeout')); }, 6000);
+            // Apps Script cold starts can take 20s+; 6s was killing the live fetch and
+            // leaving the counter stuck at its placeholder/stale value.
+            setTimeout(function() { reject(new Error('timeout')); }, 20000);
         });
         Promise.race([network, timeout])
             .then(renderCounters)
