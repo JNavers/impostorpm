@@ -4,7 +4,10 @@
     var token = cfg.token || root.TIPM_POSTHOG_KEY || '';
     var apiHost = cfg.apiHost || cfg.api_host || 'https://eu.i.posthog.com';
     var uiHost = cfg.uiHost || cfg.ui_host || 'https://eu.posthog.com';
-    var disabled = cfg.disabled === true || !token;
+    var isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0', ''].indexOf(root.location.hostname) !== -1
+        || /\.local$/i.test(root.location.hostname)
+        || root.location.protocol === 'file:';
+    var disabled = cfg.disabled === true || !token || (isLocalhost && cfg.allowLocalhost !== true);
     var pagePath = root.location.pathname;
     var pageType = pagePath.indexOf('/compensation') !== -1
         ? 'compensation_landing'
