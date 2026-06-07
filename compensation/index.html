@@ -38,6 +38,19 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8cb113e8-f737-4f66-b912-03b02e1b1406.png">
 
+    <!-- PostHog Cloud EU: shared init served from /salary-compass/ (single source of truth).
+         On www only /salary-compass/* and /compensation/* are routed to Cloudflare Pages
+         (/assets/* is not), so we reference the routed copy; the script auto-detects
+         page_type 'compensation_landing' from the path and disables itself on localhost. -->
+    <script>
+        window.TIPM_POSTHOG_CONFIG = window.TIPM_POSTHOG_CONFIG || {
+            token: 'phc_skjv4vgokxx9op9vtFHdjwNWuAA9VZZaPQ6wFguFvFcB',
+            apiHost: 'https://eu.i.posthog.com',
+            uiHost: 'https://eu.posthog.com'
+        };
+    </script>
+    <script src="/salary-compass/posthog-init.js"></script>
+
     <!-- ════════════ JSON-LD ════════════ -->
     <script type="application/ld+json">
     {
