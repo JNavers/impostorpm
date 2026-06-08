@@ -633,6 +633,41 @@
             width: 52px;
         }
 
+        /* ── Email gate (lock results behind email) ── */
+        #results-section.is-gated { filter: blur(7px); pointer-events: none; user-select: none; }
+        .email-gate {
+            position: fixed; inset: 0; z-index: 1050;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.55);
+            -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+        }
+        .email-gate[hidden] { display: none; }
+        .email-gate-card {
+            width: 100%; max-width: 410px;
+            background: var(--white);
+            border: 1px solid #ececec; border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .25);
+            padding: 28px 26px; text-align: center;
+        }
+        .email-gate-card h3 { font-size: 1.4rem; font-weight: 700; color: var(--near-black); margin: 0 0 8px; letter-spacing: -.02em; }
+        .eg-text { font-size: .9rem; color: var(--text-muted); line-height: 1.5; margin: 0 auto 16px; max-width: 320px; }
+        #email-gate-form { display: flex; flex-direction: column; gap: 12px; }
+        .eg-field { position: relative; }
+        .eg-field i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9a9a9a; font-size: 14px; }
+        .eg-field input {
+            width: 100%; padding: 13px 14px 13px 38px;
+            border: 1px solid var(--outline-light); border-radius: 8px;
+            font-family: "Inter", sans-serif; font-size: 14px; color: var(--near-black);
+        }
+        .eg-field input:focus { outline: none; border-color: var(--golden); box-shadow: 0 0 0 .2rem var(--golden-20); }
+        .eg-check { display: flex; align-items: flex-start; gap: 10px; text-align: left; margin: 2px 0; cursor: pointer; }
+        .eg-check input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--golden); flex: 0 0 auto; cursor: pointer; }
+        .eg-check span { font-size: .78rem; color: #444; line-height: 1.45; }
+        .eg-cta { width: 100%; }
+        .eg-disclosure { font-size: .69rem; color: #a0a0a0; line-height: 1.45; margin: 14px auto 0; max-width: 340px; }
+        #email-gate-error { margin-top: 6px; }
+
         .done-loop {
             display: none;
             padding: 2.25rem 0 3rem;
@@ -1787,6 +1822,27 @@
     </div>
 </section>
 
+<!-- ════════════ EMAIL GATE (reveal results) ════════════ -->
+<div id="email-gate" class="email-gate" role="dialog" aria-modal="true" aria-labelledby="email-gate-title" hidden>
+    <div class="email-gate-card">
+        <h3 id="email-gate-title">One last step</h3>
+        <p class="eg-text">Add your email to see your result and access the Portugal PM benchmark.</p>
+        <form id="email-gate-form" novalidate>
+            <div class="eg-field">
+                <i class="fas fa-envelope" aria-hidden="true"></i>
+                <input type="email" id="email-gate-email" placeholder="you@email.com" autocomplete="email" required>
+            </div>
+            <label class="eg-check">
+                <input type="checkbox" id="email-gate-optin" checked>
+                <span>Send me Product Salary Compass reports, plus tools like this, community perks, and Product event updates.</span>
+            </label>
+            <button type="submit" class="btn btn-accent eg-cta" id="email-gate-submit">See my result&nbsp;&rarr;</button>
+        </form>
+        <div class="field-error-msg" id="email-gate-error"></div>
+        <p class="eg-disclosure">You'll get your result by email. Unsubscribe anytime.</p>
+    </div>
+</div>
+
 <!-- ════════════ FOOTER ════════════ -->
 <footer class="footer-site">
     <div class="container">
@@ -2627,7 +2683,37 @@
     var tokenStore = TEST_MODE ? window.sessionStorage : window.localStorage;
     var dashboardToken = (tokenStore.getItem('tipmDashboardToken') || '').replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 100);
     var capturedEmail = '';
+    // Persist the captured email for the browser tab session so a returning user
+    // who already gave their email doesn't get re-gated on the next comparison.
+    try { capturedEmail = window.sessionStorage.getItem('tipmGateEmail') || ''; } catch (e) {}
     var surveyChapter = 0;
+
+    /* ── Deep-link from the result / reminder emails ──
+       URL params: survey=1 opens the full survey directly; sid re-binds this
+       visit to the original submission row so completing the survey marks it
+       done (and stops the reminder sequence); access restores the dashboard
+       token; e pre-fills the captured email so the survey skips re-asking. */
+    var dlParams = new URLSearchParams(window.location.search);
+    (function() {
+        var dlSid = (dlParams.get('sid') || '').replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 100);
+        if (dlSid) { sessionId = dlSid; submissionCreated = true; }
+        var dlToken = (dlParams.get('access') || '').replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 100);
+        if (dlToken) {
+            dashboardToken = dlToken;
+            try { tokenStore.setItem('tipmDashboardToken', dlToken); } catch (e) {}
+        }
+        var dlEmail = (dlParams.get('e') || '').trim().toLowerCase();
+        if (dlEmail && isValidEmail(dlEmail)) {
+            capturedEmail = dlEmail;
+            try { window.sessionStorage.setItem('tipmGateEmail', dlEmail); } catch (e) {}
+        }
+    })();
+    $(function() {
+        if (dlParams.get('survey') === '1') {
+            track('comp_survey_deeplink_open', { has_sid: !!dlParams.get('sid') });
+            $('#filloutModal').modal('show');
+        }
+    });
 
     /* Counter source of truth. Flip to 'submissions' if the survey count is too
        low to motivate (e.g. early days before any full surveys roll in). */
@@ -3263,7 +3349,7 @@
             perception_delta: overallPct - guess
         });
 
-        displayResults({
+        var resultData = {
             salary: salary,
             totalComp: totalComp,
             effectiveComp: effectiveComp,
@@ -3275,7 +3361,14 @@
             guess: guess,
             overallPct: overallPct,
             rolePct: rolePct
-        });
+        };
+        // Gate the reveal behind email — unless this session already captured one.
+        // In test mode the gate always shows so it can be QA'd repeatedly.
+        if (capturedEmail && !TEST_MODE) {
+            displayResults(resultData);
+        } else {
+            openEmailGate(resultData);
+        }
     });
 
     /* ── Display results ── */
@@ -3338,9 +3431,6 @@
 
         // Scroll to results
         $('html, body').animate({ scrollTop: $results.offset().top - 70 }, 600);
-
-        // Newsletter capture pop-up — value first, then ask (~4s after results)
-        setTimeout(maybeShowNewsletterPopup, 4000);
     }
 
     function updateBenchmarkSampleNote() {
@@ -3520,12 +3610,66 @@
             });
     });
 
+    /* ── Email gate — capture email before revealing the results ── */
+    var emailGateData = null;
+
+    function openEmailGate(d) {
+        emailGateData = d;
+        $('#results-section').addClass('is-gated');
+        displayResults(d);                         // render + scroll to results (blurred) behind the gate
+        $('#email-gate-error').text('');
+        $('#email-gate-submit').prop('disabled', false).html('See my result&nbsp;&rarr;');
+        $('#email-gate').removeAttr('hidden');
+        track('comp_email_gate_view', { percentile: d.overallPct });
+        setTimeout(function() { $('#email-gate-email').trigger('focus'); }, 50);
+    }
+
+    function closeEmailGate() {
+        $('#email-gate').attr('hidden', true);
+        $('#results-section').removeClass('is-gated');
+    }
+
+    $('#email-gate-form').on('submit', function(e) {
+        e.preventDefault();
+        var $button = $('#email-gate-submit');
+        if ($button.prop('disabled')) return;      // in-flight guard (repeat Enter / clicks)
+        var email = $.trim($('#email-gate-email').val() || '');
+        var optin = $('#email-gate-optin').is(':checked');
+        $('#email-gate-error').text('');
+        if (!isValidEmail(email)) {
+            $('#email-gate-error').text('Please enter a valid email address.');
+            $('#email-gate-email').trigger('focus');
+            return;
+        }
+        $button.prop('disabled', true).text('Revealing...');
+
+        // Single combined opt-in: the one checkbox covers both the reports and the
+        // general newsletter, so it maps to both columns.
+        submitEmailOnly(email, optin, 'email_gate', optin, sessionId)
+            .then(function(data) {
+                if (!data || data.status !== 'ok' || !data.token) throw new Error('Missing token');
+                capturedEmail = email;
+                dashboardToken = data.token;
+                try { tokenStore.setItem('tipmDashboardToken', dashboardToken); } catch (e) {}
+                try { window.sessionStorage.setItem('tipmGateEmail', email); } catch (e) {}
+                if (window.tipmAnalytics) {
+                    window.tipmAnalytics.identifyEmail(email, { report_optin: optin, newsletter_optin: optin, source: 'email_gate' });
+                }
+                track('comp_email_gate_submit', { optin: optin, percentile: emailGateData ? emailGateData.overallPct : null });
+                closeEmailGate();
+            })
+            .catch(function(err) {
+                $('#email-gate-error').text((err && err.message) ? err.message : 'Something went wrong. Please try again.');
+                $button.prop('disabled', false).html('See my result&nbsp;&rarr;');
+            });
+    });
+
     // Enter-to-submit for the email fields. The survey form has many inputs and
     // two submit buttons, so browsers don't reliably auto-submit it on Enter; the
     // popup is a single-field form that does. We preventDefault() to suppress any
     // native submit and fire it exactly once ourselves, so Enter behaves the same
     // on both without ever double-submitting (which would send a duplicate email).
-    $(document).on('keydown', '#newsletter-popup-email, #survey-email', function(e) {
+    $(document).on('keydown', '#newsletter-popup-email, #survey-email, #email-gate-email', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             $(this).closest('form').trigger('submit');

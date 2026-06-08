@@ -23,7 +23,8 @@ export async function onRequestPost({ request, env }) {
     const email = cleanEmail(data.email);
     const source = cleanSource(data.source);
     const token = cleanToken(data.token);
-    const template = buildEmailTemplate({ source, token });
+    const submissionId = cleanToken(data.submission_id);
+    const template = buildEmailTemplate({ source, token, submissionId, email });
 
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -85,15 +86,16 @@ function cleanEmail(value) {
 
 function cleanSource(value) {
   const source = String(value || '').trim();
-  return /^(dashboard_waitlist|survey_inline|newsletter_popup|footer_newsletter)$/.test(source) ? source : 'dashboard_waitlist';
+  return /^(dashboard_waitlist|survey_inline|newsletter_popup|footer_newsletter|email_gate)$/.test(source) ? source : 'dashboard_waitlist';
 }
 
 function cleanToken(value) {
   return String(value || '').replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 100);
 }
 
-function buildEmailTemplate({ source, token }) {
+function buildEmailTemplate({ source, token, submissionId, email }) {
   const dashboardUrl = token ? SALARY_COMPASS_URL + '?access=' + encodeURIComponent(token) : SALARY_COMPASS_URL;
+  const surveyUrl = surveyDeepLink(token, submissionId, email);
 
   if (source === 'survey_inline') {
     return {
@@ -110,6 +112,21 @@ function buildEmailTemplate({ source, token }) {
     };
   }
 
+  if (source === 'email_gate') {
+    return {
+      subject: 'Your Salary Compass result, and what is still locked',
+      html: wrapEmail(
+        '<p style="margin:0 0 12px 0; font-size:12px; line-height:1.4; letter-spacing:0.14em; text-transform:uppercase; color:#7A7060; font-weight:700;">Product Salary Compass</p>' +
+        '<h1 style="margin:0 0 20px 0; font-size:34px; line-height:1.05; letter-spacing:-0.03em; color:#161616; font-weight:800;">You have seen your number.</h1>' +
+        '<p style="margin:0 0 18px 0; font-size:17px; line-height:1.55; color:#2B2B2B;">You just compared your salary against the Portugal PM benchmark. We saved your result so you can come back to it any time.</p>' +
+        '<p style="margin:0 0 24px 0; font-size:17px; line-height:1.55; color:#2B2B2B;">The full dashboard is still locked: best-paid industries and companies, the adjusted gender pay gap, remote vs office pay and the highest-paid PM skills. Complete the 2-minute survey to open it.</p>' +
+        button('Complete the survey', surveyUrl) +
+        '<p style="margin:28px 0 0 0; font-size:14px; line-height:1.55; color:#6B6B6B;">It is anonymous and takes about two minutes. Every answer makes the benchmark sharper for the whole Portuguese PM community.</p>' +
+        '<p style="margin:24px 0 0 0; font-size:15px; line-height:1.55; color:#161616;">- Javi</p>'
+      )
+    };
+  }
+
   return {
     subject: 'You are on the Salary Compass dashboard list',
     html: wrapEmail(
@@ -117,7 +134,7 @@ function buildEmailTemplate({ source, token }) {
       '<h1 style="margin:0 0 20px 0; font-size:34px; line-height:1.05; letter-spacing:-0.03em; color:#161616; font-weight:800;">You are on the list.</h1>' +
       '<p style="margin:0 0 18px 0; font-size:17px; line-height:1.55; color:#2B2B2B;">We saved your email for the Product Salary Compass dashboard launch.</p>' +
       '<p style="margin:0 0 24px 0; font-size:17px; line-height:1.55; color:#2B2B2B;">The public salary comparison stays free. The dashboard will add deeper cuts across role, seniority, location, industry, remote policy and compensation structure.</p>' +
-      button('Complete the survey', dashboardUrl) +
+      button('Complete the survey', surveyUrl) +
       '<p style="margin:28px 0 0 0; font-size:14px; line-height:1.55; color:#6B6B6B;">Completing the full survey helps us make the benchmark stronger and reserves contributor-level dashboard access.</p>' +
       '<p style="margin:24px 0 0 0; font-size:15px; line-height:1.55; color:#161616;">- Javi</p>'
     )
@@ -134,6 +151,14 @@ function wrapEmail(innerHtml) {
     '<tr><td style="background-color:#FFF8E5; border-radius:14px; padding:36px 32px;">' + innerHtml + '</td></tr>' +
     '<tr><td style="padding:24px 0 0 0; font-size:12px; line-height:1.5; color:#6B6B6B; text-align:center;">You are receiving this because you shared your email on the Product Salary Compass.<br>The Impostor PM - A community for Product Managers.</td></tr>' +
     '</table></td></tr></table></body></html>';
+}
+
+function surveyDeepLink(token, submissionId, email) {
+  let url = SALARY_COMPASS_URL + '?survey=1';
+  if (token) url += '&access=' + encodeURIComponent(token);
+  if (submissionId) url += '&sid=' + encodeURIComponent(submissionId);
+  if (email) url += '&e=' + encodeURIComponent(email);
+  return url;
 }
 
 function button(label, url) {
