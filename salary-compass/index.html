@@ -3374,20 +3374,20 @@
         // In test mode the gate always shows so it can be QA'd repeatedly.
         if (capturedEmail && !TEST_MODE) {
             displayResults(resultData);
+            trackResultsReveal(resultData);   // returning session — results are visible immediately
         } else {
             openEmailGate(resultData);
         }
     });
 
-    /* ── Display results ── */
+    /* ── Display results ──
+       NOTE: this only paints the DOM. It is also called while the results are
+       still blurred behind the email gate, so it must NOT fire "view" events —
+       those belong to trackResultsReveal(), fired only on the actual reveal. */
     function displayResults(d) {
         latestResult = d;
-        track('comp_results_view', { percentile: d.overallPct });
-        track('comp_survey_cta_view', { variant: EXPERIMENTS.surveyCtaVariant });
-        track('comp_share_card_view', { variant: EXPERIMENTS.shareStripVariant, placement: 'below-survey-hero' });
         $('#share-pct').text('p' + d.overallPct);
         $('#dashboard-card').addClass('visible');
-        track('comp_dashboard_card_view', { percentile: d.overallPct });
         $('#post-email-loop').addClass('is-revealing');
         // Salary summary
         $('#result-salary').text(formatEUR(d.effectiveComp) + ' / year');
@@ -3439,6 +3439,17 @@
 
         // Scroll to results
         $('html, body').animate({ scrollTop: $results.offset().top - 70 }, 600);
+    }
+
+    /* ── Results reveal trackers ──
+       Fired only when the results are actually visible to the user: either the
+       email gate was bypassed (returning session) or it was just unlocked. Kept
+       out of displayResults() so blurred/gated renders don't inflate view counts. */
+    function trackResultsReveal(d) {
+        track('comp_results_view', { percentile: d.overallPct });
+        track('comp_survey_cta_view', { variant: EXPERIMENTS.surveyCtaVariant });
+        track('comp_share_card_view', { variant: EXPERIMENTS.shareStripVariant, placement: 'below-survey-hero' });
+        track('comp_dashboard_card_view', { percentile: d.overallPct });
     }
 
     function updateBenchmarkSampleNote() {
@@ -3791,6 +3802,7 @@
                 }
                 track('comp_email_gate_submit', { optin: optin, percentile: emailGateData ? emailGateData.overallPct : null });
                 closeEmailGate();
+                if (emailGateData) trackResultsReveal(emailGateData);   // gate unlocked — results are now visible
             })
             .catch(function(err) {
                 $('#email-gate-error').text((err && err.message) ? err.message : 'Something went wrong. Please try again.');
