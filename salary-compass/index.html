@@ -406,6 +406,7 @@
             display: block; font-size: .875rem; font-weight: 600; color: var(--near-black); margin-bottom: .35rem;
         }
         .survey-field label .req { color: #e74c3c; margin-left: 2px; }
+        .survey-email-confirm-note { font-size: .8125rem; color: var(--text-muted); line-height: 1.5; margin: -.1rem 0 .6rem; }
 
         /* ── "Other" follow-up: visually anchored to its parent field ── */
         .survey-field.is-conditional[data-other-trigger]:not([hidden]),
@@ -726,6 +727,7 @@
         }
         .hero-counter-row { margin: 0 0 1.1rem; }
         .hero-counter-row[hidden] { display: none; }
+        .success-counter-row { max-width: 360px; margin: 1.1rem auto 1.4rem; text-align: left; }
         .hero-counter-eyebrow {
             color: var(--near-black);
             font-size: .82rem;
@@ -1074,9 +1076,8 @@
             .survey-modal .modal-content { border-radius: 0; min-height: 100dvh; }
         }
 
-        /* ── Survey hero — counter row labels ── */
-        .hero-counter-labels strong,
-        #hero-counter-current { font-variant-numeric: tabular-nums; font-weight: 800; }
+        /* ── Counter row labels ── */
+        .hero-counter-labels strong { font-variant-numeric: tabular-nums; font-weight: 800; }
 
         /* ── Modal header v2 — chapter segments + Q counter ── */
         .survey-chapter-segs {
@@ -1164,19 +1165,6 @@
             position: absolute; top: 50%; transform: translateY(-50%);
         }
         .survey-email-wrap .form-control { padding-left: 2.6rem; }
-        /* Golden checkbox with dark tick (matches design) */
-        .survey-newsletter-check input {
-            appearance: none; -webkit-appearance: none;
-            width: 16px; height: 16px; flex-shrink: 0; margin-top: 0;
-            border: 1.5px solid var(--near-black); border-radius: 4px;
-            background: var(--white); cursor: pointer; position: relative;
-        }
-        .survey-newsletter-check input:checked { background: var(--golden); }
-        .survey-newsletter-check input:checked::after {
-            content: ''; position: absolute; left: 5px; top: 1px;
-            width: 4px; height: 8px; border: solid var(--near-black);
-            border-width: 0 2px 2px 0; transform: rotate(45deg);
-        }
         /* Chip overflow — "+N more" collapse for long grids */
         .chip-more-toggle {
             background: var(--surface-low) !important;
@@ -1243,18 +1231,6 @@
             margin-left: .35rem;
             text-transform: none;
         }
-        .survey-modal label.survey-newsletter-check {
-            align-items: center;
-            color: var(--near-black);
-            cursor: pointer;
-            display: flex;
-            font-size: .82rem;
-            font-weight: 400;
-            gap: .55rem;
-            line-height: 1.45;
-            margin: .65rem 0 0;
-        }
-        .survey-modal label.survey-newsletter-check input { margin-top: 0; }
         .survey-email-error {
             color: #b3261e;
             font-size: .82rem;
@@ -1470,10 +1446,6 @@
 
         /* ── Success state v2 — celebratory + in-modal share ── */
         .survey-success-v2 { padding: 2rem 1.25rem 1.75rem; text-align: center; }
-        .success-confetti {
-            color: var(--golden); font-size: 2.25rem; letter-spacing: .55rem;
-            margin-bottom: .4rem;
-        }
         .success-eyebrow {
             color: var(--text-muted); font-size: .7rem; font-weight: 800;
             letter-spacing: .14em; margin-bottom: .4rem; text-transform: uppercase;
@@ -1817,16 +1789,6 @@
                     <h3>Unlock all the insights</h3>
                 </div>
                 <p class="survey-hero-body">Complete the survey to access the full dashboard and advance in your career: best-paid industries, companies, gender pay gap, remote policy, and more.</p>
-                <div class="hero-counter-row" id="hero-counter-row" hidden>
-                    <p class="hero-counter-eyebrow"><strong id="hero-counter-remaining">—</strong> remaining answers to launch the dashboard</p>
-                    <div class="hero-counter-row-bar">
-                        <div class="hero-counter-bar">
-                            <div class="hero-counter-fill" id="hero-counter-fill" style="width:0%;"></div>
-                        </div>
-                        <span class="hero-counter-pct-side" id="hero-counter-pct">—</span>
-                    </div>
-                    <span class="visually-hidden" id="hero-counter-current">—</span>
-                </div>
                 <div class="survey-hero-cta-row">
                     <button type="button" class="btn-cta-dark js-open-survey">Take the survey &rarr;</button>
                     <span class="survey-hero-cta-hint">Only takes 2 minutes</span>
@@ -2537,19 +2499,12 @@
                     <div class="survey-chapter" data-survey-chapter="4">
                         <div class="survey-fieldset">
                             <div class="survey-field" id="survey-email-field" data-field-id="survey-email" data-autoadvance="false">
-                                <label>Your email</label>
+                                <label for="survey-email">Confirm your email</label>
+                                <p class="survey-email-confirm-note">Pop your email in once more so your dashboard lands in the right inbox.</p>
                                 <div class="survey-email-wrap">
                                     <i class="fas fa-envelope survey-email-icon" aria-hidden="true"></i>
                                     <input type="email" class="form-control" id="survey-email" placeholder="you@email.com" autocomplete="email">
                                 </div>
-                                <label class="survey-newsletter-check">
-                                    <input type="checkbox" id="survey-newsletter-optin" checked>
-                                    <span>Send me Product Salary Compass reports periodically.</span>
-                                </label>
-                                <label class="survey-newsletter-check">
-                                    <input type="checkbox" id="survey-community-optin" checked>
-                                    <span>I want to receive tools like this, community perks, and Product event updates.</span>
-                                </label>
                                 <p class="survey-email-error" id="survey-email-error" role="alert"></p>
                             </div>
                             <button type="submit" class="btn-cta survey-finish-cta" id="survey-finish-btn">Get my dashboard <span aria-hidden="true">→</span></button>
@@ -2564,13 +2519,21 @@
             </form>
             <!-- Success state v2 — celebratory + in-modal share -->
             <div id="survey-success" class="survey-success-v2" style="display: none;">
-                <div class="success-confetti" aria-hidden="true">✦ ✦ ✦</div>
                 <div class="success-eyebrow">Contributor #<span id="success-contributor-num">—</span> of 500</div>
                 <h3 class="success-headline">You moved the needle.</h3>
                 <p class="success-impact">
                     Counter just jumped <strong><span id="success-counter-from">—</span> → <span id="success-counter-to">—</span></strong>
                     of 500. Every share gets us closer to publishing the full dashboard.
                 </p>
+                <div class="hero-counter-row success-counter-row" id="success-counter-bar-row">
+                    <p class="hero-counter-eyebrow"><strong id="success-counter-remaining">—</strong> remaining answers to launch the dashboard</p>
+                    <div class="hero-counter-row-bar">
+                        <div class="hero-counter-bar">
+                            <div class="hero-counter-fill" id="success-counter-fill" style="width:0%;"></div>
+                        </div>
+                        <span class="hero-counter-pct-side" id="success-counter-pct">—</span>
+                    </div>
+                </div>
                 <div class="success-share-card" id="success-share-card">
                     <img class="ssc-logo" src="https://impostorpm-huddle.pages.dev/TIPM-horizontal-white-logo.svg" alt="The Impostor PM" crossorigin="anonymous">
                     <div class="ssc-pct" id="success-share-pct">p--</div>
@@ -2726,6 +2689,12 @@
     // Persist the captured email for the browser tab session so a returning user
     // who already gave their email doesn't get re-gated on the next comparison.
     try { capturedEmail = window.sessionStorage.getItem('tipmGateEmail') || ''; } catch (e) {}
+    // Opt-in the visitor gave at the email gate. The survey's final step no longer
+    // asks for consent again (it only confirms the email), so we inherit the gate's
+    // choice when re-recording. Defaults to false for direct-to-survey visitors who
+    // never saw the gate (their email is captured transactionally, no marketing optin).
+    var gateOptin = false;
+    try { gateOptin = window.sessionStorage.getItem('tipmGateOptin') === '1'; } catch (e) {}
     var surveyChapter = 0;
 
     /* ── Deep-link from the result / reminder emails ──
@@ -2876,15 +2845,8 @@
         var capped = Math.min(count, COUNTER_GOAL);
         var pct = Math.max(0, Math.min(100, Math.round((capped / COUNTER_GOAL) * 100)));
         lastCounter = count;
-
-        // Survey hero counter (alongside the post-email loop, shown with results)
-        $('#hero-counter-current').text(count);
-        $('#hero-counter-remaining').text(Math.max(0, COUNTER_GOAL - count));
-        $('#hero-counter-fill').css('width', pct + '%');
-        $('#hero-counter-pct').text(pct + '%');
-        $('#hero-counter-row').prop('hidden', false);
-
-        track('comp_counter_view', { count: count, goal: COUNTER_GOAL, pct: pct, metric: COUNTER_METRIC });
+        // Counter is now revealed only on the post-survey success panel; we just
+        // cache the live count here so the success "from → to" + bar are accurate.
     }
 
     function sendEmailViaApi(payload) {
@@ -3819,9 +3781,11 @@
             .then(function(data) {
                 if (!data || data.status !== 'ok' || !data.token) throw new Error('Missing token');
                 capturedEmail = email;
+                gateOptin = optin;
                 dashboardToken = data.token;
                 try { tokenStore.setItem('tipmDashboardToken', dashboardToken); } catch (e) {}
                 try { window.sessionStorage.setItem('tipmGateEmail', email); } catch (e) {}
+                try { window.sessionStorage.setItem('tipmGateOptin', optin ? '1' : '0'); } catch (e) {}
                 if (window.tipmAnalytics) {
                     window.tipmAnalytics.identifyEmail(email, { report_optin: optin, newsletter_optin: optin, source: 'email_gate' });
                 }
@@ -3906,7 +3870,7 @@
             3: { eyebrow: 'Step 3 / 3', heading: 'Transparency' },
             // Chapter 4 is an extra screen for the email — intentionally not
             // numbered as a step so it reads like a final field, not a 4th step.
-            4: { eyebrow: 'Last step', heading: 'Where should we send your dashboard?' }
+            4: { eyebrow: 'Last step', heading: 'Confirm your email' }
         };
         var subTotal = subCount(surveyChapter);
         var t = titles[surveyChapter] || { eyebrow: '', heading: '' };
@@ -3991,12 +3955,11 @@
         $('#survey-submit-btn').prop('disabled', false).text('Submit');
         $('#survey-finish-btn').prop('disabled', false).html('Get my dashboard <span aria-hidden="true">→</span>');
 
-        // Chapter 4 (email) is always shown. If the visitor already gave their email
-        // via the newsletter pop-up or footer, pre-fill it so they don't retype, but
-        // the step still appears and is required so the response gets linked.
-        $('#survey-email').val(capturedEmail || '');
-        $('#survey-newsletter-optin').prop('checked', true);
-        $('#survey-community-optin').prop('checked', true);
+        // Chapter 4 is a confirmation step: the visitor re-enters their email so we
+        // can be sure the dashboard reaches the right inbox. Consent was already
+        // captured at the gate, so there are no opt-in checkboxes here. Start the
+        // field empty on purpose — a pre-filled value isn't a confirmation.
+        $('#survey-email').val('');
         $('#survey-email-error').text('');
         // Hybrid days frequency defaults to "per week" (a toggle should always have a side selected)
         $('#survey-hybrid-days-frequency').val('per week');
@@ -4489,10 +4452,12 @@
 
         // If we need to register the email now, do that first to get a dashboardToken,
         // then chain into the full-survey submit. Otherwise go straight to the survey submit.
-        var inlineNewsletterOptin = $('#survey-newsletter-optin').is(':checked');
-        var inlineCommunityOptin = $('#survey-community-optin').is(':checked');
+        // Consent is no longer collected here (this step only confirms the email), so we
+        // inherit the opt-in from the gate. Direct-to-survey visitors who never saw the
+        // gate get no marketing opt-in — their email is recorded transactionally only.
+        var inheritedOptin = capturedEmail ? gateOptin : false;
         var emailStep = needsEmail
-            ? submitEmailOnly(inlineEmail, inlineNewsletterOptin, 'survey_inline', inlineCommunityOptin, sessionId).then(function(data) {
+            ? submitEmailOnly(inlineEmail, inheritedOptin, 'survey_inline', inheritedOptin, sessionId).then(function(data) {
                 if (!data || data.status !== 'ok' || !data.token) {
                     throw new Error('Missing token from email registration');
                 }
@@ -4501,8 +4466,8 @@
                 tokenStore.setItem('tipmDashboardToken', dashboardToken);
                 if (window.tipmAnalytics) {
                     window.tipmAnalytics.identifyEmail(inlineEmail, {
-                        report_optin: inlineNewsletterOptin,
-                        newsletter_optin: inlineCommunityOptin,
+                        report_optin: inheritedOptin,
+                        newsletter_optin: inheritedOptin,
                         source: 'full_survey_inline'
                     });
                 }
@@ -4579,13 +4544,12 @@
                 contributor_number: nextCount
             });
 
-            // Optimistic hero counter bump (next page load will reconcile from sheet)
+            // Optimistic success-counter bump (next page load will reconcile from sheet)
             var capped = Math.min(nextCount, COUNTER_GOAL);
             var pctBar = Math.max(0, Math.min(100, Math.round((capped / COUNTER_GOAL) * 100)));
-            $('#hero-counter-current').text(nextCount);
-            $('#hero-counter-remaining').text(Math.max(0, COUNTER_GOAL - nextCount));
-            $('#hero-counter-fill').css('width', pctBar + '%');
-            $('#hero-counter-pct').text(pctBar + '%');
+            $('#success-counter-remaining').text(Math.max(0, COUNTER_GOAL - nextCount));
+            $('#success-counter-fill').css('width', pctBar + '%');
+            $('#success-counter-pct').text(pctBar + '%');
             lastCounter = nextCount;
         }).catch(function(err) {
             resetSurveySubmitButtons();
@@ -5160,14 +5124,9 @@
             clickChip('survey-transparency-career',    preset.transparency);
             clickChip('survey-salary-adequacy',        preset.salaryAdequacy);
             clickChip('survey-negotiation-comfort',    preset.negotiationComfort);
-            // Inline email only renders when the user didn't submit Step 1's email.
+            // Chapter 4 is now an email confirmation step (no opt-in checkboxes).
             var $surveyEmail = document.getElementById('survey-email');
             if ($surveyEmail) setValueAndNotify('survey-email', preset.email);
-            var newsletterEl = document.getElementById('survey-newsletter-optin');
-            if (newsletterEl) {
-                newsletterEl.checked = !!preset.newsletter;
-                newsletterEl.dispatchEvent(new Event('change', { bubbles: true }));
-            }
 
             console.info('[TEST MODE] Full-survey fields populated across all 4 chapters. Use Continue / Submit to advance.');
         });
