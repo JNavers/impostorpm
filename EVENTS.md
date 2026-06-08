@@ -88,3 +88,8 @@ out of `displayResults()` so blurred/gated renders don't inflate view counts.
   the counter is shown as a reward, not a pre-decision barrier.
 - `identifyEmail()` is called (not via `track`) at the email gate and survey
   submit to associate the PostHog person with their email and opt-in flags.
+- `submission_id` is registered as a PostHog super-property (and person property)
+  via `registerSubmissionId()` only once a real Submissions row exists — on
+  compare submit, on the "not a PM" submit, and on a deep-link `sid` rebind. It
+  carries on every subsequent event so PostHog data can be joined back to its
+  Sheets row. The PostHog `distinct_id` is left untouched.

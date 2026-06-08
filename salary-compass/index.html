@@ -2639,6 +2639,18 @@
     // only link an email row to a submission id that actually exists.
     var submissionCreated = false;
 
+    // Register our submission_id as a PostHog super-property so every event can be
+    // joined back to its Submissions row. Called only once a real row exists, so we
+    // never emit submission_ids that point to nothing.
+    function registerSubmissionId() {
+        if (window.posthog && typeof window.posthog.register === 'function') {
+            window.posthog.register({ submission_id: sessionId });
+        }
+        if (window.posthog && typeof window.posthog.setPersonProperties === 'function') {
+            window.posthog.setPersonProperties({ submission_id: sessionId });
+        }
+    }
+
     /* ── Submit to Google Sheets ── */
     function postOpaqueToSheets(data) {
         return fetch(SHEETS_WEBHOOK, {
@@ -2705,7 +2717,7 @@
     var dlParams = new URLSearchParams(window.location.search);
     (function() {
         var dlSid = (dlParams.get('sid') || '').replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 100);
-        if (dlSid) { sessionId = dlSid; submissionCreated = true; }
+        if (dlSid) { sessionId = dlSid; submissionCreated = true; registerSubmissionId(); }
         var dlToken = (dlParams.get('access') || '').replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 100);
         if (dlToken) {
             dashboardToken = dlToken;
@@ -3336,6 +3348,7 @@
             perceptionGuess: guess
         });
         submissionCreated = true;
+        registerSubmissionId();
 
         var roleKey = SALARY_DATA.roleMap[roleRaw];
         /* Compare using total comp (base salary = total comp when no perks) */
@@ -3697,6 +3710,7 @@
             perceptionGuess: ''
         });
         submissionCreated = true;
+        registerSubmissionId();
 
         recordNotAPmEmail(email)
             .then(function(data) {
