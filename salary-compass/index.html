@@ -3610,7 +3610,40 @@
             });
     });
 
-    /* ── Email gate — capture email before revealing the results ── */
+    /* ── Email gate — capture email before revealing the results ──
+       We DO NOT send the result email here. We only record the capture (email,
+       opt-in, percentile, token). We mark resend_via:'email_api' + email_sent:
+       'false' so Apps Script records the row WITHOUT sending an immediate email
+       (it reuses the existing "email already handled by the API" path). Apps
+       Script then sends the real result email ~7 min later, with a survey CTA
+       only if the survey was not completed in the meantime. */
+    function captureEmailDeferred(email, reportOptin, newsletterOptin) {
+        if (!dashboardToken) {
+            dashboardToken = generateDashboardToken();
+            try { tokenStore.setItem('tipmDashboardToken', dashboardToken); } catch (e) {}
+        }
+        var payload = {
+            action: 'email_only',
+            resend_via: 'email_api',
+            email_sent: 'false',
+            email_error: '',
+            submission_id: submissionCreated ? sessionId : '',
+            email: email,
+            source: 'email_gate',
+            report_optin: reportOptin ? 'true' : 'false',
+            newsletter_optin: newsletterOptin ? 'true' : 'false',
+            percentile: latestResult ? String(latestResult.overallPct) : '',
+            token: dashboardToken
+        };
+        if (TEST_MODE) {
+            console.info('[TEST MODE] captureEmailDeferred blocked. Payload:', payload);
+            return Promise.resolve({ status: 'ok', token: dashboardToken });
+        }
+        return postOpaqueToSheets(payload).then(function() {
+            return { status: 'ok', token: dashboardToken };
+        });
+    }
+
     var emailGateData = null;
 
     function openEmailGate(d) {
@@ -3644,8 +3677,9 @@
         $button.prop('disabled', true).text('Revealing...');
 
         // Single combined opt-in: the one checkbox covers both the reports and the
-        // general newsletter, so it maps to both columns.
-        submitEmailOnly(email, optin, 'email_gate', optin, sessionId)
+        // general newsletter, so it maps to both columns. Capture only — the
+        // result email is sent later by Apps Script (deferred + conditional).
+        captureEmailDeferred(email, optin, optin)
             .then(function(data) {
                 if (!data || data.status !== 'ok' || !data.token) throw new Error('Missing token');
                 capturedEmail = email;
