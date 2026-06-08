@@ -668,6 +668,34 @@
         .eg-disclosure { font-size: .69rem; color: #a0a0a0; line-height: 1.45; margin: 14px auto 0; max-width: 340px; }
         #email-gate-error { margin-top: 6px; }
 
+        /* ── "I'm not a PM" mode: hide the salary steps and show an email capture ── */
+        #not-a-pm-block { display: none; }
+        .not-a-pm-mode .form-field-group:not([data-step="2"]),
+        .not-a-pm-mode .form-divider,
+        .not-a-pm-mode .compare-submit-wrap { display: none; }
+        .not-a-pm-mode #not-a-pm-block { display: block; }
+        #not-a-pm-block {
+            margin-top: 1.5rem;
+            background: var(--cream, #FFFBF3);
+            border: 1px solid var(--outline-light);
+            border-radius: 12px;
+            padding: 1.5rem 1.25rem;
+            text-align: center;
+        }
+        #not-a-pm-block h4 { font-size: 1.05rem; font-weight: 700; color: var(--near-black); margin: 0 0 .4rem; letter-spacing: -.01em; }
+        .not-a-pm-text { font-size: .875rem; color: var(--text-muted); line-height: 1.5; margin: 0 auto 1rem; max-width: 360px; }
+        .not-a-pm-input-row { display: flex; flex-wrap: wrap; gap: .5rem; max-width: 380px; margin: 0 auto; }
+        .not-a-pm-input-row input {
+            flex: 1 1 180px; min-width: 0;
+            padding: 12px 14px;
+            border: 1px solid var(--outline-light); border-radius: 8px;
+            font-family: "Inter", sans-serif; font-size: 14px; color: var(--near-black);
+        }
+        .not-a-pm-input-row input:focus { outline: none; border-color: var(--golden); box-shadow: 0 0 0 .2rem var(--golden-20); }
+        .not-a-pm-input-row .btn { flex: 0 0 auto; }
+        #not-a-pm-error { color: #c0392b; font-size: .8rem; margin-top: .6rem; min-height: 1rem; }
+        #not-a-pm-success { color: var(--near-black); font-weight: 600; font-size: .9rem; margin: .25rem 0 0; }
+
         .done-loop {
             display: none;
             padding: 2.25rem 0 3rem;
@@ -1585,6 +1613,7 @@
                     <option value="Lead PM">Lead / Principal PM</option>
                     <option value="Director of Product">Director / Head of Product</option>
                     <option value="VP of Product">VP / CPO</option>
+                    <option value="Not a PM">I'm not a Product Manager</option>
                 </select>
                 <div class="field-error-msg" id="error-role"></div>
             </div>
@@ -1649,7 +1678,18 @@
                 <div class="field-error-msg" id="error-perception"></div>
             </div>
 
-            <div class="text-center" style="margin-top: 1rem;">
+            <div id="not-a-pm-block">
+                <h4>The Compass is PM-only for now</h4>
+                <p class="not-a-pm-text">This benchmark covers Product Manager salaries. Leave your email and we'll let you know when the Compass covers your role.</p>
+                <div class="not-a-pm-input-row">
+                    <input type="email" id="not-a-pm-email" placeholder="you@email.com" autocomplete="email">
+                    <button type="button" class="btn btn-accent" id="not-a-pm-submit">Keep me posted</button>
+                </div>
+                <div id="not-a-pm-error"></div>
+                <p id="not-a-pm-success" hidden>You're in. We'll be in touch when the Compass covers your role.</p>
+            </div>
+
+            <div class="text-center compare-submit-wrap" style="margin-top: 1rem;">
                 <button type="submit" class="btn btn-accent" style="width: 100%; max-width: 320px;">Compare My Salary</button>
                 <p style="font-size: .75rem; color: var(--text-muted); margin-top: .75rem;">*Responses are anonymous and used for statistical purposes only.</p>
             </div>
@@ -3209,6 +3249,12 @@
     $('#compare-form').on('submit', function(e) {
         e.preventDefault();
 
+        // Non-PM path: the salary benchmark doesn't apply — capture email instead.
+        if ($('#input-role').val() === 'Not a PM') {
+            $('#not-a-pm-email').trigger('focus');
+            return;
+        }
+
         clearValidation();
 
         var salaryRaw = $('#input-salary').val();
@@ -3608,6 +3654,96 @@
                 $('#footer-newsletter-error').text((err && err.message) ? err.message : 'Something went wrong. Please try again.');
                 $button.prop('disabled', false).text('Subscribe');
             });
+    });
+
+    /* ── "I'm not a PM" — switch the form to email-capture mode ── */
+    // Record the non-PM email for the newsletter WITHOUT sending any email.
+    // We deliberately skip the Cloudflare email API and post resend_via:'email_api'
+    // + email_sent:'false' so Apps Script records the row but sends nothing — a
+    // non-PM has no salary result and the default capture email carries a
+    // "Complete the survey" CTA that doesn't apply to them.
+    function recordNotAPmEmail(email) {
+        if (!dashboardToken) {
+            dashboardToken = generateDashboardToken();
+            try { tokenStore.setItem('tipmDashboardToken', dashboardToken); } catch (e) {}
+        }
+        var payload = {
+            action: 'email_only',
+            resend_via: 'email_api',
+            email_sent: 'false',
+            email_error: '',
+            submission_id: submissionCreated ? sessionId : '',
+            email: email,
+            source: 'not_a_pm',
+            report_optin: 'false',
+            newsletter_optin: 'true',
+            percentile: '',
+            token: dashboardToken
+        };
+        if (TEST_MODE) {
+            console.info('[TEST MODE] recordNotAPmEmail blocked. Payload:', payload);
+            return Promise.resolve({ status: 'ok', token: dashboardToken });
+        }
+        return postOpaqueToSheets(payload).then(function() {
+            return { status: 'ok', token: dashboardToken };
+        });
+    }
+
+    $('#input-role').on('change', function() {
+        var isNotPm = $(this).val() === 'Not a PM';
+        $('#compare-form').toggleClass('not-a-pm-mode', isNotPm);
+        if (isNotPm) {
+            $('#form-error-banner').removeClass('visible');
+            track('comp_not_a_pm_select', {});
+        }
+    });
+
+    $('#not-a-pm-submit').on('click', function() {
+        var $button = $(this);
+        if ($button.prop('disabled')) return; // in-flight guard
+        var email = $.trim($('#not-a-pm-email').val() || '');
+        $('#not-a-pm-error').text('');
+        if (!isValidEmail(email)) {
+            $('#not-a-pm-error').text('Please enter a valid email address.');
+            $('#not-a-pm-email').trigger('focus');
+            return;
+        }
+        $button.prop('disabled', true).text('Saving...');
+
+        // Record as a Submission with Role "Not a PM" (no salary). The live
+        // benchmark ignores it automatically (percentiles only include base > 0)
+        // and it's filtered out of analysis by Role. Then link the email to it.
+        submitToSheets({
+            action: 'create',
+            id: sessionId,
+            baseSalary: '',
+            totalComp: '',
+            role: 'Not a PM',
+            yoe: '',
+            city: '',
+            perceptionGuess: ''
+        });
+        submissionCreated = true;
+
+        recordNotAPmEmail(email)
+            .then(function(data) {
+                if (!data || data.status !== 'ok') throw new Error('Something went wrong');
+                capturedEmail = email;
+                if (window.tipmAnalytics) {
+                    window.tipmAnalytics.identifyEmail(email, { newsletter_optin: true, source: 'not_a_pm' });
+                }
+                track('comp_not_a_pm_submit', {});
+                $('.not-a-pm-input-row').attr('hidden', true);
+                $('#not-a-pm-success').removeAttr('hidden');
+            })
+            .catch(function(err) {
+                $('#not-a-pm-error').text((err && err.message) ? err.message : 'Something went wrong. Please try again.');
+                $button.prop('disabled', false).text('Keep me posted');
+            });
+    });
+
+    $('#not-a-pm-email').on('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); $('#not-a-pm-submit').trigger('click'); }
     });
 
     /* ── Email gate — capture email before revealing the results ──

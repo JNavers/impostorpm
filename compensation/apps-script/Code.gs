@@ -19,7 +19,8 @@ var ALLOWED_ROLES = {
   'Director of Product': true,
   'Head of Product': true,
   'VP of Product': true,
-  'CPO': true
+  'CPO': true,
+  'Not a PM': true
 };
 
 var ALLOWED_DISTRICTS = {
@@ -244,7 +245,10 @@ function createSubmission_(sheet, data) {
   var city = cleanEnum_(data.city, ALLOWED_DISTRICTS);
   var perceptionGuess = cleanNumber_(data.perceptionGuess, 0, 100);
 
-  if (!role || yoe === '' || !city) throw new Error('Invalid create payload');
+  if (!role) throw new Error('Invalid create payload');
+  // Non-PM leads are recorded for the newsletter with no salary/yoe/city. They are
+  // excluded from the live benchmark automatically (percentiles only include base > 0).
+  if (role !== 'Not a PM' && (yoe === '' || !city)) throw new Error('Invalid create payload');
 
   sheet.appendRow([
     id,
@@ -463,7 +467,7 @@ function saveEmailOnly_(ss, data) {
 function cleanEmailSource_(value) {
   var source = cleanText_(value, 40);
   if (source === 'frame_3') return 'dashboard_waitlist';
-  return /^(dashboard_waitlist|survey_inline|newsletter_popup|footer_newsletter|email_gate)$/.test(source) ? source : 'dashboard_waitlist';
+  return /^(dashboard_waitlist|survey_inline|newsletter_popup|footer_newsletter|email_gate|not_a_pm)$/.test(source) ? source : 'dashboard_waitlist';
 }
 
 function emailDeliveryResultFromPayload_(data) {
