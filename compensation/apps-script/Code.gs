@@ -657,9 +657,13 @@ function computePercentiles() {
     var sData = sub.getDataRange().getValues();
     for (var r = 1; r < sData.length; r++) {
       var row = sData[r];
+      var rawRole = String(row[4]).trim();
+      // "Not a PM" respondents see the full experience but must never count
+      // toward the benchmark or district stats.
+      if (rawRole === 'Not a PM') continue;
       var base = parseSalary(row[2]);
       var total = parseSalary(row[3]);
-      var role = mapSubmissionRole(String(row[4]).trim());
+      var role = mapSubmissionRole(rawRole);
       var yoe = yoeToBucket(row[5]);
       var district = String(row[6] || '').trim();
 
