@@ -1,0 +1,16 @@
+{
+  "name": "impostorpm-site",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "npm run check:softr && astro build",
+    "preview": "astro preview",
+    "check:softr": "node scripts/check-no-softr.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.1.6",
+    "bootstrap": "4.6.2"
+  }
+}

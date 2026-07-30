@@ -1,0 +1,100 @@
+---
+import { SITE, NAV, NAV_CTA } from '../lib/site';
+---
+
+<nav class="navbar navbar-expand-lg navbar-light navbar-site">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <img src={SITE.logo} alt={SITE.name} width="160" height="32" />
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-collapse-target="navMain"
+      aria-controls="navMain"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navMain">
+      <ul class="navbar-nav align-items-lg-center">
+        {NAV.map((item) =>
+          item.children ? (
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-dropdown-toggle
+                aria-expanded="false"
+                aria-haspopup="true"
+              >
+                {item.label}
+              </a>
+              <div class="dropdown-menu">
+                {item.children.map((child) => (
+                  <a class="dropdown-item" href={child.href}>{child.label}</a>
+                ))}
+              </div>
+            </li>
+          ) : (
+            <li class="nav-item">
+              <a class="nav-link" href={item.href}>{item.label}</a>
+            </li>
+          )
+        )}
+        <li class="nav-item ml-lg-3">
+          <a class="btn btn-nav" href={NAV_CTA.href}>{NAV_CTA.label}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Replaces Bootstrap 4's collapse + dropdown plugins, which were the ONLY
+  // reason this site loaded jQuery (3.7.0), Popper (1.16.1) and bootstrap.js —
+  // roughly 130 KB of blocking script for two class toggles. jQuery itself was
+  // called zero times across every migrated page.
+  //
+  // Bootstrap's CSS still supplies the actual show/hide rules
+  // (.collapse.show, .dropdown-menu.show), so toggling `show` is all that is needed.
+
+  const toggler = document.querySelector<HTMLButtonElement>('[data-collapse-target]');
+  const collapse = document.getElementById(toggler?.dataset.collapseTarget ?? '');
+
+  toggler?.addEventListener('click', () => {
+    const open = collapse?.classList.toggle('show') ?? false;
+    toggler.setAttribute('aria-expanded', String(open));
+  });
+
+  const dropdowns = document.querySelectorAll<HTMLAnchorElement>('[data-dropdown-toggle]');
+
+  function closeAll(except?: Element) {
+    dropdowns.forEach((d) => {
+      if (d === except) return;
+      d.nextElementSibling?.classList.remove('show');
+      d.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  dropdowns.forEach((toggle) => {
+    toggle.addEventListener('click', (event) => {
+      event.preventDefault();
+      closeAll(toggle);
+      const open = toggle.nextElementSibling?.classList.toggle('show') ?? false;
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!(event.target as Element)?.closest('.dropdown')) closeAll();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeAll();
+  });
+</script>

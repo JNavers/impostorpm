@@ -1,0 +1,53 @@
+---
+import { SITE } from '../lib/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Absolute or root-relative. Defaults to the site OG image. */
+  image?: string;
+  /** Override only when the canonical must differ from the current URL. */
+  canonical?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = SITE.defaultDescription,
+  image = '/brand/tipm-logo-horizontal-white.png',
+  canonical,
+  noindex = false,
+} = Astro.props;
+
+// Every page gets a canonical. 39 URLs move from client-side Softr rendering to
+// static HTML at cutover and Google re-crawls them all at once; an ambiguous
+// canonical during that window is how duplicates get indexed.
+//
+// `build.format: 'file'` makes Astro.url.pathname "/huddle.html", but the URL
+// Cloudflare serves and Google has indexed is "/huddle". Publishing the .html
+// form would point every canonical at a URL that is not the one being linked.
+function canonicalPath(pathname: string): string {
+  if (pathname === '/index.html') return '/';
+  return pathname.replace(/\.html$/, '') || '/';
+}
+
+const canonicalUrl = canonical ?? new URL(canonicalPath(Astro.url.pathname), SITE.url).href;
+const imageUrl = new URL(image, SITE.url).href;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={imageUrl} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
