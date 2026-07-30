@@ -1,0 +1,184 @@
+/* ============================================================
+   TIPM — Colors & Type tokens
+   Extracted from impostor.pm + huddle + compensation surfaces.
+   ============================================================ */
+
+/* Inter (body + display). Weights 300/400/500/700 used in-site. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+/* Optional — Material Symbols Outlined, used on the compensation page only. */
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
+
+:root {
+  /* ── Neutrals / surface ─────────────────────────────────── */
+  --tipm-white:       #ffffff;
+  --tipm-light-gray:  #f5f5f5;  /* surface-low */
+  --tipm-surface:     #f0f0f0;  /* surface-container */
+  --tipm-border-gray: #eaeff4;
+  --tipm-outline:     #e0e0e0;
+  --tipm-near-black:  #1e1e1e;  /* primary text / dark sections */
+  --tipm-black:       #000000;
+  --tipm-footer-bg:   #2b2b2b;  /* footer only */
+  --tipm-text-muted:  #666666;
+
+  /* ── Accent — golden ─────────────────────────────────────
+     The single, unmistakable TIPM accent. Used for the logo
+     highlight, CTAs, underlines, timeline dots, chart fills. */
+  --tipm-golden:      #ffc600;
+  --tipm-golden-10:   rgba(255, 198, 0, 0.10);
+  --tipm-golden-20:   rgba(255, 198, 0, 0.20);
+  --tipm-golden-40:   rgba(255, 198, 0, 0.40);
+  --tipm-golden-60:   rgba(255, 198, 0, 0.60);
+
+  /* ── Warm yellow — soft accent backgrounds ───────────────
+     Hero washes, section alternations, the "nothing screams"
+     quiet-warm background that defines the brand feel. */
+  --tipm-warm-yellow: #fff3cf;
+  --tipm-warm-soft:   #ffef99;  /* logo highlight stop */
+  --tipm-warm-peach:  #ffae63;  /* logo radial stop — use sparingly */
+
+  /* ── Banner / cookie accent ──────────────────────────────- */
+  --tipm-cookie-yellow: #ffef99; /* from Iubenda banner config */
+
+  /* ── Semantic foreground / background ──────────────────── */
+  --fg-1: var(--tipm-black);           /* primary text */
+  --fg-2: var(--tipm-near-black);      /* near-black, buttons, headings on light */
+  --fg-3: var(--tipm-text-muted);      /* secondary copy, helper text */
+  --fg-inverse:  var(--tipm-white);    /* on dark bg */
+  --fg-accent:   var(--tipm-golden);   /* golden links/underlines */
+
+  --bg-1: var(--tipm-white);
+  --bg-2: var(--tipm-light-gray);
+  --bg-warm: var(--tipm-warm-yellow);
+  --bg-dark: var(--tipm-near-black);
+  --bg-footer: var(--tipm-footer-bg);
+
+  --border-subtle: var(--tipm-outline);
+  --border-soft:   var(--tipm-border-gray);
+
+  /* ── Type foundations ──────────────────────────────────── */
+  --font-sans:    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-icons:   "Material Symbols Outlined", "Font Awesome 6 Free";
+
+  --fw-light:   300; /* body default */
+  --fw-regular: 400;
+  --fw-medium:  500; /* button labels */
+  --fw-bold:    700; /* headings, emphasis */
+
+  /* Fluid-ish scale (matches Softr sw-font-size-* + custom XL) */
+  --fs-xs:   0.6875rem; /* 11px — eyebrows, uppercase labels */
+  --fs-sm:   0.8125rem; /* 13px — footer, fine print */
+  --fs-s:    0.875rem;  /* 14px — nav, small body */
+  --fs-base: 1rem;      /* 16px — body */
+  --fs-m:    1.0625rem; /* 17px — generous body */
+  --fs-l:    1.125rem;  /* 18px — lead body */
+  --fs-xl:   1.25rem;   /* 20px — h4 */
+  --fs-2xl:  1.375rem;  /* 22px — h3 */
+  --fs-3xl:  1.5rem;    /* 24px — h2 sub */
+  --fs-4xl:  2rem;      /* 32px — section h2 */
+  --fs-5xl:  2.25rem;   /* 36px — section h2 large */
+  --fs-6xl:  3rem;      /* 48px — section heading (dark) */
+  --fs-hero: 4.5rem;    /* 72px — hero */
+
+  --lh-tight:  1.05;
+  --lh-snug:   1.2;
+  --lh-body:   1.65;
+  --lh-normal: 1.7;
+
+  --tracking-tight: -0.04em; /* hero */
+  --tracking-normal: 0;
+  --tracking-wide:  0.05em;  /* label small-caps */
+  --tracking-xwide: 0.1em;   /* hero-badge */
+  --tracking-2xwide: 0.2em;  /* chart labels */
+  --tracking-3xwide: 0.3em;  /* insight categories (on dark) */
+
+  /* ── Radii ─────────────────────────────────────────────── */
+  --radius-xs: 0.25rem;  /* 4px — buttons, cards in compensation */
+  --radius-sm: 0.375rem; /* 6px — nav buttons, social icons */
+  --radius-md: 0.5rem;   /* 8px — compact cards */
+  --radius-lg: 0.75rem;  /* 12px — icon-box */
+  --radius-xl: 1rem;     /* 16px — modal containers, featured cards */
+  --radius-2xl: 1.5rem;  /* 24px — huddle-fit-card, pricing-card */
+  --radius-pill: 999px;
+
+  /* ── Shadows ───────────────────────────────────────────── */
+  --shadow-soft:   0 18px 45px rgba(15, 23, 42, 0.08); /* default cards, forms, dropdowns */
+  --shadow-brutal: 8px 8px 0 0 rgba(0, 0, 0, 1);       /* modals, event details, pricing — the "anchored" shadow */
+  --shadow-glow:   0 0 60px var(--tipm-golden-10);     /* insights blob */
+
+  /* ── Motion ────────────────────────────────────────────── */
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out:   cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:      0.15s;
+  --dur-med:       0.2s;
+  --dur-slow:      0.35s;
+}
+
+/* ─── Semantic element styles ────────────────────────────── */
+
+html { font-size: 16px; background: var(--bg-1); scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-light);
+  color: var(--fg-1);
+  background: var(--bg-1);
+  line-height: var(--lh-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  color: var(--fg-1);
+  line-height: var(--lh-snug);
+  margin: 0 0 0.75rem;
+  white-space: pre-line;
+}
+
+h1 { font-size: var(--fs-hero); line-height: var(--lh-tight); letter-spacing: var(--tracking-tight); }
+h2 { font-size: var(--fs-5xl); letter-spacing: var(--tracking-tight); }
+h3 { font-size: var(--fs-2xl); }
+h4 { font-size: var(--fs-xl); }
+h5 { font-size: var(--fs-l); }
+h6 { font-size: var(--fs-base); font-weight: var(--fw-bold); }
+
+p { margin: 0 0 1rem; font-weight: var(--fw-light); line-height: var(--lh-body); white-space: pre-line; }
+
+small { font-size: var(--fs-sm); color: var(--fg-3); }
+code, pre { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em; }
+
+/* Eyebrow / micro-caps label — used all over the site */
+.tipm-eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-2xwide);
+  color: var(--fg-3);
+}
+
+/* Hero badge — golden chip */
+.tipm-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-xs);
+  background: var(--tipm-golden);
+  color: var(--fg-2);
+  font-size: var(--fs-s);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-xwide);
+}
+
+/* Scribble underline — handwritten golden squiggle */
+.tipm-scribble {
+  position: relative;
+  display: inline-block;
+}
+.tipm-scribble::after {
+  content: "";
+  position: absolute;
+  left: -2px; right: -2px; bottom: -6px;
+  height: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' width='100' height='8' viewBox='0 0 100 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 4.5C12 2 28 6.5 45 5C62 3.5 82 1 99.5 4.5' stroke='%23FFC600' stroke-width='3.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
