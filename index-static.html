@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Impostor PM</title>
+    <meta name="description" content="The safe space where Product Managers grow by sharing their pains and learning from others, as a group.">
+
+    <meta name="twitter:title" content="The Impostor Product Manager">
+    <meta property="og:title" content="The Impostor Product Manager">
+    <meta name="twitter:description" content="The safe space where Product Managers grow by sharing their pains.">
+    <meta property="og:description" content="The safe space where Product Managers grow by sharing their pains.">
+    <meta property="og:image" content="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/c2c50dd2-9114-4a82-98d0-e8e753faa95e.png">
+    <meta name="twitter:image" content="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/c2c50dd2-9114-4a82-98d0-e8e753faa95e.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:url" content="https://www.impostor.pm/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Impostor PM">
+    <link rel="canonical" href="https://www.impostor.pm/">
+    <link rel="icon" type="image/x-icon" href="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8cb113e8-f737-4f66-b912-03b02e1b1406.png">
+
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+      crossorigin="anonymous">
+
+    <link href="https://fonts.softr-files.com/google/api/css?family=Inter:100,200,300,400,500,600,700,800,900&display=block" rel="stylesheet">
+    <link href="https://assets.softr-files.com/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* ─── Tokens ─── */
+        :root {
+            --white: #ffffff;
+            --warm-yellow: #fff3cf;
+            --warm-cream: #fffaeb;
+            --golden: #ffc600;
+            --near-black: #1e1e1e;
+            --black: #000000;
+            --text-muted: #6b6b6b;
+            --border-soft: #e6e6e6;
+            --light-gray: #f5f5f5;
+        }
+
+        html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; background-color: var(--white); }
+        body {
+            font-family: "Inter", sans-serif;
+            font-weight: 300;
+            color: var(--black);
+            background-color: var(--white);
+            line-height: 1.5;
+        }
+
+        .container { max-width: 100%; }
+        @media (min-width: 576px) { .container { max-width: 540px; } }
+        @media (min-width: 768px) { .container { max-width: 720px; } }
+        @media (min-width: 992px) { .container { max-width: 960px; } }
+        @media (min-width: 1200px) { .container { max-width: 1140px; } }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: "Inter", sans-serif;
+            font-weight: 700;
+            color: var(--black);
+            white-space: pre-line;
+        }
+        p { white-space: pre-line; }
+
+        .section-warm  { background-color: var(--warm-yellow); }
+        .section-cream { background-color: var(--warm-cream); }
+        .section-dark  { background-color: var(--near-black); color: var(--white); }
+        .section-dark h1, .section-dark h2, .section-dark h3, .section-dark h4 { color: var(--white); }
+        .section-white { background-color: var(--white); }
+        .section-light { background-color: var(--light-gray); }
+        .section-golden { background-color: var(--golden); }
+        .section-pad   { padding: 4rem 0; }
+        .section-pad-lg { padding: 6rem 0; }
+
+        /* ─── Buttons ─── */
+        .btn-outline-custom {
+            background: transparent;
+            color: var(--black);
+            border: 1.5px solid var(--black);
+            border-radius: .25rem;
+            padding: .65rem 1.75rem;
+            font-weight: 400;
+            transition: background .2s, color .2s;
+        }
+        .btn-outline-custom:hover { background: var(--black); color: var(--white); text-decoration: none; }
+
+        .btn-link-custom {
+            color: var(--near-black);
+            font-weight: 500;
+            text-decoration: none;
+            border-bottom: 1.5px solid var(--golden);
+            padding-bottom: 2px;
+            transition: color .2s, border-color .2s;
+        }
+        .btn-link-custom:hover { color: var(--black); border-bottom-color: var(--black); text-decoration: none; }
+
+        /* ─── Navbar ─── */
+        .navbar-site {
+            background-color: var(--black);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 800;
+            border-bottom: 2px solid var(--golden);
+        }
+        .navbar-site .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 56px;
+        }
+        .navbar-site .navbar-brand { padding: 0; margin: 0; display: flex; align-items: center; }
+        .navbar-site .navbar-brand img { height: 2rem; width: auto; }
+        @media (max-width: 576px) { .navbar-site .navbar-brand img { max-width: 10rem; } }
+
+        .navbar-site .nav-link {
+            color: var(--white) !important;
+            font-family: "Inter", sans-serif;
+            font-weight: 300;
+            font-size: .875rem;
+            line-height: 1.25rem;
+            padding: 1rem .875rem !important;
+            opacity: .85;
+            transition: opacity .15s;
+        }
+        .navbar-site .nav-link:hover, .navbar-site .nav-link:focus { opacity: 1; }
+
+        .navbar-site .dropdown-menu {
+            background-color: var(--black);
+            border: 1px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.4);
+            padding: .5rem 0;
+            margin-top: .25rem;
+            min-width: 10rem;
+        }
+        .navbar-site .dropdown-item {
+            font-family: "Inter", sans-serif;
+            font-weight: 300;
+            font-size: .875rem;
+            padding: .5rem 1rem;
+            color: var(--white);
+            opacity: .85;
+        }
+        .navbar-site .dropdown-item:hover, .navbar-site .dropdown-item:focus {
+            background-color: #1a1a1a;
+            color: var(--white);
+            opacity: 1;
+        }
+        .navbar-site .btn-nav {
+            color: var(--black);
+            font-family: "Inter", sans-serif;
+            font-weight: 400;
+            font-size: .875rem;
+            background: var(--white);
+            border: 1px solid var(--white);
+            border-radius: 6px;
+            padding: .4rem 1.1rem;
+            line-height: 1.25rem;
+            transition: opacity .15s;
+        }
+        .navbar-site .btn-nav:hover { opacity: .88; color: var(--black); text-decoration: none; }
+
+        .navbar-site .navbar-toggler { border: none; padding: .25rem; }
+        .navbar-site .navbar-toggler:focus { outline: none; box-shadow: none; }
+        .navbar-site .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            width: 1.25em;
+            height: 1.25em;
+        }
+        .navbar-site .navbar-collapse { background-color: var(--black); }
+        @media (max-width: 991px) {
+            .navbar-site .navbar-collapse { padding: .5rem 0 1rem; }
+            .navbar-site .btn-nav { display: inline-block; margin: .5rem 0 .25rem .875rem; }
+        }
+
+        /* ─── Hero ─── */
+        .hero { padding: 5rem 0 5.5rem; }
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.5;
+            letter-spacing: -.01em;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .hero .hero-intro {
+            font-size: 1.0625rem;
+            color: #1e1e1e;
+            line-height: 1.6;
+            margin: 0 0 1.5rem;
+            max-width: 32rem;
+            white-space: normal;
+        }
+        .hero .hero-body {
+            font-size: 1.0625rem;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 2.25rem;
+            max-width: 32rem;
+            white-space: normal;
+        }
+        /* ─── Canonical CTA (golden primary, site-wide) ─── */
+        .btn-cta {
+            background-color: var(--golden);
+            color: var(--near-black);
+            font-family: "Inter", sans-serif;
+            font-weight: 500;
+            font-size: .9375rem;
+            line-height: 1.4;
+            border: none;
+            border-radius: .5rem;
+            padding: .65rem 1.25rem;
+            transition: opacity .2s;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+        .btn-cta:hover { opacity: .88; color: var(--near-black); text-decoration: none; }
+
+        /* Dark variant — same proportions, inverted colors */
+        .btn-cta-dark {
+            background-color: var(--near-black);
+            color: var(--white);
+            font-family: "Inter", sans-serif;
+            font-weight: 500;
+            font-size: .9375rem;
+            line-height: 1.4;
+            border: none;
+            border-radius: .5rem;
+            padding: .65rem 1.25rem;
+            transition: opacity .2s;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+        .btn-cta-dark:hover { opacity: .88; color: var(--white); text-decoration: none; }
+        .hero-art {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-art img {
+            max-width: 100%;
+            height: auto;
+            max-height: 440px;
+        }
+        @media (max-width: 991px) {
+            .hero { padding: 3rem 0 3.5rem; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero-art { margin-top: 2rem; }
+        }
+
+        /* ─── Feature Grid (What we do) ─── */
+        .feature-card {
+            text-align: center;
+            padding: 1.5rem 1rem;
+        }
+        .feature-card .feature-icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            margin: 0 auto 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .feature-card .feature-icon img { max-width: 100%; max-height: 100%; }
+        .feature-card h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: .75rem;
+        }
+        .feature-card p {
+            font-size: .9375rem;
+            color: #555;
+            line-height: 1.55;
+            margin-bottom: 1rem;
+        }
+
+        /* ─── Mental Health (dark) ─── */
+        .mh-section {
+            background-color: var(--near-black);
+            color: var(--white);
+            padding: 5rem 0;
+        }
+        .mh-section h2 { color: var(--white); font-size: 2.25rem; margin-bottom: 1.25rem; font-weight: 700; }
+        .mh-section p { color: #d4d4d4; font-size: 1.0625rem; line-height: 1.65; margin-bottom: 1.75rem; }
+        .mh-section img {
+            width: 100%;
+            height: auto;
+            border-radius: .75rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,.35);
+        }
+
+        /* ─── Gallery marquee ─── */
+        .gallery-marquee {
+            overflow: hidden;
+            padding: 2rem 0;
+            position: relative;
+            background: var(--white);
+        }
+        .gallery-track {
+            display: flex;
+            gap: 1rem;
+            width: max-content;
+            animation: gallery-scroll 60s linear infinite;
+        }
+        .gallery-track img {
+            height: 240px;
+            width: auto;
+            border-radius: .5rem;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        @keyframes gallery-scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        .gallery-marquee:hover .gallery-track { animation-play-state: paused; }
+        @media (max-width: 768px) {
+            .gallery-track img { height: 160px; }
+        }
+
+        /* ─── Compensation CTA (golden bg) ─── */
+        .cta-golden {
+            background-color: var(--golden);
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .cta-golden .eyebrow {
+            font-size: .75rem;
+            font-weight: 600;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--near-black);
+            opacity: .75;
+            margin-bottom: .5rem;
+        }
+        .cta-golden h2 {
+            font-size: 1.875rem;
+            color: var(--near-black);
+            font-weight: 700;
+            margin-bottom: 1.75rem;
+        }
+
+        /* ─── Support mission CTA ─── */
+        .cta-support {
+            background-color: var(--warm-cream);
+            padding: 3.5rem 0;
+        }
+        .cta-support h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: .5rem; }
+        .cta-support p { color: #555; margin-bottom: 0; }
+
+        /* ─── Partners ─── */
+        .partner-section { padding: 4.5rem 0 5rem; text-align: center; }
+        .partner-section h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: .5rem; }
+        .partner-section p { color: #666; margin-bottom: 2.5rem; }
+        .partner-marquee { overflow: hidden; position: relative; }
+        .partner-track {
+            display: flex;
+            gap: 3.5rem;
+            width: max-content;
+            align-items: center;
+            animation: partner-scroll 45s linear infinite;
+        }
+        .partner-track img {
+            height: 56px;
+            width: auto;
+            filter: grayscale(100%);
+            opacity: .75;
+            transition: opacity .25s, filter .25s;
+        }
+        .partner-track img:hover { filter: grayscale(0%); opacity: 1; }
+        @keyframes partner-scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* ─── Footer ─── */
+        .footer-site {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 4rem 0 2.5rem;
+        }
+        .footer-site h6 {
+            color: var(--white);
+            font-size: .875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-bottom: 1rem;
+        }
+        .footer-links { list-style: none; padding: 0; margin: 0; }
+        .footer-links li { margin-bottom: .5rem; }
+        .footer-links a {
+            color: #bbb;
+            font-size: .875rem;
+            font-weight: 300;
+            text-decoration: none;
+            transition: color .2s;
+        }
+        .footer-links a:hover { color: var(--white); text-decoration: none; }
+        .footer-logo { height: 1.75rem; width: auto; margin-bottom: 1rem; }
+        .footer-copyright { color: #888; font-size: .8125rem; margin-bottom: 1rem; }
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            line-height: 1;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            border: 1px solid #333;
+            color: var(--white);
+            margin-right: .5rem;
+            transition: background .2s, border-color .2s;
+            text-decoration: none;
+        }
+        .social-icon > i,
+        .social-icon > svg { display: block; line-height: 1; }
+        .social-icon:hover { background: var(--golden); border-color: var(--golden); color: var(--black); }
+        .social-icon svg { width: 1.125rem; height: 1.125rem; fill: currentColor; }
+
+        /* ═══════════════════ UPCOMING EVENTS SECTION ═══════════════════ */
+        .ue-section {
+            background-color: var(--warm-yellow);
+            padding: 5rem 0 4.5rem;
+        }
+        .ue-container { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
+        .ue-eyebrow {
+            font-family: "Inter", sans-serif;
+            font-size: .75rem;
+            font-weight: 500;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: .5rem;
+        }
+        .ue-title {
+            font-family: "Inter", sans-serif;
+            font-weight: 700;
+            font-size: 2.25rem;
+            line-height: 1.1;
+            letter-spacing: -.01em;
+            color: var(--black);
+            margin: 0 0 2.5rem;
+        }
+        .ue-list { display: flex; flex-direction: column; gap: 1.75rem; }
+        .ue-item {
+            display: grid;
+            grid-template-columns: 140px 1fr auto;
+            gap: 1.75rem;
+            align-items: center;
+            padding: 1.5rem 1.75rem;
+            background-color: var(--white);
+            border: 2px solid var(--black);
+            border-radius: 1rem;
+            box-shadow: 8px 8px 0 0 var(--black);
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .ue-item:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 10px 10px 0 0 var(--black);
+        }
+        .ue-date {
+            text-align: center;
+            color: var(--black);
+            line-height: 1;
+            position: relative;
+            padding-right: 1.5rem;
+        }
+        .ue-date::after {
+            content: "";
+            position: absolute;
+            right: 0; top: 50%;
+            transform: translateY(-50%);
+            height: 70%;
+            border-right: 2px dotted rgba(0,0,0,.35);
+        }
+        .ue-date-month {
+            display: block;
+            font-size: .75rem;
+            font-weight: 600;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: .25rem;
+        }
+        .ue-date-day {
+            display: block;
+            font-family: "Inter", sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            line-height: 1;
+            letter-spacing: -.02em;
+            color: var(--black);
+        }
+        .ue-date-time {
+            display: block;
+            font-size: .75rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: .35rem;
+        }
+        .ue-body { min-width: 0; }
+        .ue-tags {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .5rem;
+            margin-bottom: .6rem;
+        }
+        .ue-tag {
+            display: inline-flex;
+            align-items: center;
+            font-size: .6875rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: .28rem .55rem;
+            border-radius: 3px;
+            white-space: nowrap;
+            line-height: 1;
+        }
+        .ue-tag-category { background-color: var(--golden); color: var(--black); }
+        .ue-tag-format { background-color: transparent; color: var(--black); border: 1px solid var(--black); }
+        .ue-tag-location {
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: .12em;
+            padding-left: .25rem;
+        }
+        .ue-item-title {
+            font-family: "Inter", sans-serif;
+            font-weight: 600;
+            font-size: 1.125rem;
+            line-height: 1.3;
+            letter-spacing: -.005em;
+            color: var(--black);
+            margin: 0 0 .35rem;
+        }
+        .ue-item-desc {
+            font-size: .875rem;
+            font-weight: 300;
+            line-height: 1.45;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        .ue-action { display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; }
+        .ue-rsvp {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            background-color: var(--near-black);
+            color: var(--white);
+            font-weight: 500;
+            font-size: .875rem;
+            letter-spacing: .02em;
+            padding: .65rem 1.1rem;
+            border-radius: 4px;
+            border: none;
+            text-decoration: none;
+            transition: opacity .2s;
+            white-space: nowrap;
+        }
+        .ue-rsvp:hover { opacity: .85; color: var(--white); text-decoration: none; }
+        .ue-rsvp i { font-size: .75rem; }
+        .ue-meta { font-size: .6875rem; color: var(--text-muted); }
+        .ue-footer-link { display: flex; justify-content: flex-end; margin-top: 1.5rem; }
+        .ue-footer-link a {
+            font-size: .9375rem;
+            color: var(--black);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: opacity .2s;
+        }
+        .ue-footer-link a:hover { opacity: .7; text-decoration: none; color: var(--black); }
+        .ue-footer-link a > span {
+            position: relative;
+            display: inline-block;
+            padding-bottom: .35rem;
+        }
+        .ue-footer-link a > span::after {
+            content: "";
+            position: absolute;
+            left: 0; bottom: 0;
+            width: 100%; height: 7px;
+            background-image: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 0 100 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3.5C15 1.5 30 5.5 50 4C70 2.5 85 5 100 3' stroke='%23FFC600' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+        .ue-footer-link i { margin-left: .5rem; font-size: .75rem; }
+
+        @media (max-width: 768px) {
+            .ue-section { padding: 3.5rem 0 3rem; }
+            .ue-title { font-size: 1.75rem; margin-bottom: 1.75rem; }
+            .ue-list { gap: 1.25rem; }
+            .ue-item {
+                grid-template-columns: 80px 1fr;
+                grid-template-rows: auto auto;
+                gap: 1rem 1.25rem;
+                padding: 1.25rem 1.25rem;
+                box-shadow: 6px 6px 0 0 var(--black);
+            }
+            .ue-item:hover { box-shadow: 8px 8px 0 0 var(--black); }
+            .ue-date { padding-right: 1rem; }
+            .ue-date::after { height: 80%; }
+            .ue-action {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                justify-content: flex-end;
+                align-items: center;
+                margin-top: .25rem;
+            }
+            .ue-date-day { font-size: 2rem; }
+            .ue-item-title { font-size: 1rem; }
+        }
+        @media (max-width: 480px) {
+            .ue-title { font-size: 1.5rem; }
+            .ue-item { grid-template-columns: 70px 1fr; gap: .85rem 1rem; padding: 1rem 1rem; }
+            .ue-date { padding-right: .75rem; }
+            .ue-date-day { font-size: 1.75rem; }
+            .ue-tag { font-size: .625rem; padding: .25rem .45rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════════ NAVBAR ════════════ -->
+<nav class="navbar navbar-expand-lg navbar-light navbar-site">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="https://impostorpm-huddle.pages.dev/TIPM-horizontal-white-logo.svg" alt="The Impostor PM">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navMain">
+            <ul class="navbar-nav align-items-lg-center">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="eventsDropdown" role="button" data-toggle="dropdown" aria-expanded="false">Our events</a>
+                    <div class="dropdown-menu" aria-labelledby="eventsDropdown">
+                        <a class="dropdown-item" href="/club">Club</a>
+                        <a class="dropdown-item" href="/product-talks">Product Talks</a>
+                        <a class="dropdown-item" href="https://www.impostor.pm/huddle/">Huddle</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/benefits">Benefits</a>
+                </li>
+                <li class="nav-item ml-lg-3">
+                    <a class="btn btn-nav" href="/bring-the-club-to-my-city">Bring to my city</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ════════════ HERO ════════════ -->
+<header class="hero section-warm">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1>Is the Impostor Syndrome hitting hard?</h1>
+                <p class="hero-intro">&mdash; Others feel the same.</p>
+                <p class="hero-body">Our community is that safe space where Product Managers grow by sharing their pains and learning from others, as a group.</p>
+                <a href="https://theimpostorpm.fillout.com/t/dT7U9NSoghus" target="_blank" rel="noreferrer" class="btn-cta">Join the Community</a>
+            </div>
+            <div class="col-lg-6 hero-art">
+                <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/5ae70aa4-74b9-4e4f-b14a-8f9b28d4138e.png" alt="Product Managers in conversation">
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ════════════ WHAT WE DO ════════════ -->
+<section class="section-white section-pad-lg">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 style="font-size:2.25rem; font-weight:700;">What we do</h2>
+            <p style="font-size:1.0625rem; color:#666; max-width:48rem; margin: 1rem auto 0;">Gain quick advice from other PMs, engage in discussions on hot topics, and meet other professionals willing to share their experiences. Whatever you need, this is your place:</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8fcc3720-1851-4374-bf71-b331cdec8ed4.png" alt="Product Talks">
+                    </div>
+                    <h3>Product Talks</h3>
+                    <p>An interactive webinar series where we sit down with real experts to have honest, practical conversations about their craft.</p>
+                    <a href="/product-talks" class="btn-link-custom">Learn more</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/d3207af9-393e-4059-97ba-7ba041bffcda.png" alt="The Club">
+                    </div>
+                    <h3>The Club</h3>
+                    <p>These in-person community events will enable you to have meaningful discussions about the latest trends in the industry.</p>
+                    <a href="/club" class="btn-link-custom">Learn More</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/69d5c730-1a47-48f2-81a0-c275899aa4f8.svg" alt="Huddle">
+                    </div>
+                    <h3>Huddle</h3>
+                    <p>An intimate, expert-led mentoring session where Product Managers bring real challenges and leave with clarity.</p>
+                    <a href="https://www.impostor.pm/huddle/" class="btn-link-custom">Learn more</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════ UPCOMING EVENTS ════════════ -->
+<section class="ue-section" aria-labelledby="ue-heading">
+    <div class="ue-container">
+        <h2 class="ue-title" id="ue-heading">Upcoming events</h2>
+
+        <div class="ue-list">
+            <article class="ue-item">
+                <div class="ue-date">
+                    <span class="ue-date-month">Apr</span>
+                    <span class="ue-date-day">24</span>
+                </div>
+                <div class="ue-body">
+                    <div class="ue-tags">
+                        <span class="ue-tag ue-tag-category">The Club</span>
+                        <span class="ue-tag ue-tag-format">Lisbon</span>
+                    </div>
+                    <h3 class="ue-item-title">Club night: Roadmaps we regret</h3>
+                    <p class="ue-item-desc">Dinner for 12 PMs. One topic, no slides &mdash; the calls that didn&rsquo;t survive contact with reality.</p>
+                </div>
+                <div class="ue-action">
+                    <a href="#" class="ue-rsvp">Register <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="ue-item">
+                <div class="ue-date">
+                    <span class="ue-date-month">May</span>
+                    <span class="ue-date-day">06</span>
+                </div>
+                <div class="ue-body">
+                    <div class="ue-tags">
+                        <span class="ue-tag ue-tag-category">Product Talks</span>
+                        <span class="ue-tag ue-tag-format">Online</span>
+                    </div>
+                    <h3 class="ue-item-title">&ldquo;I killed my own feature&rdquo; &mdash; 3 PMs, 3 stories</h3>
+                    <p class="ue-item-desc">Short real-world talks from PMs about the things they pulled, paused, or quietly shelved.</p>
+                </div>
+                <div class="ue-action">
+                    <a href="#" class="ue-rsvp">Register <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="ue-item">
+                <div class="ue-date">
+                    <span class="ue-date-month">May</span>
+                    <span class="ue-date-day">15</span>
+                </div>
+                <div class="ue-body">
+                    <div class="ue-tags">
+                        <span class="ue-tag ue-tag-category">Huddle</span>
+                        <span class="ue-tag ue-tag-format">Berlin</span>
+                    </div>
+                    <h3 class="ue-item-title">Huddle Berlin: stakeholder chaos</h3>
+                    <p class="ue-item-desc">Huddle-style: 20 PMs, small tables, rotating energy. Bring the mess you&rsquo;re in.</p>
+                </div>
+                <div class="ue-action">
+                    <a href="#" class="ue-rsvp">Register <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="ue-item">
+                <div class="ue-date">
+                    <span class="ue-date-month">May</span>
+                    <span class="ue-date-day">28</span>
+                </div>
+                <div class="ue-body">
+                    <div class="ue-tags">
+                        <span class="ue-tag ue-tag-category">The Club</span>
+                        <span class="ue-tag ue-tag-format">Amsterdam</span>
+                    </div>
+                    <h3 class="ue-item-title">Club night: Saying no to your CEO</h3>
+                    <p class="ue-item-desc">Dinner for 12 PMs. How you push back &mdash; and what happens when you don&rsquo;t.</p>
+                </div>
+                <div class="ue-action">
+                    <a href="#" class="ue-rsvp">Register <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </article>
+        </div>
+
+        <div class="ue-footer-link">
+            <a href="/events"><span>See the full calendar</span> <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════ MENTAL HEALTH ════════════ -->
+<section class="mh-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 order-2 order-lg-1">
+                <h2>Let&rsquo;s speak about Mental Health</h2>
+                <p>Being a Product Manager isn&rsquo;t always easy. It can feel isolating at times, and often comes with a fair share of stress. That&rsquo;s why, in our Product Talks, we regularly create space to talk about it openly, sharing experiences, strategies, and support to help you face it.</p>
+                <a href="/product-talks" class="btn-cta">Learn More</a>
+            </div>
+            <div class="col-lg-6 order-1 order-lg-2 mb-4 mb-lg-0">
+                <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/e04da44a-b0b0-4e8f-b41a-28299d729241.png" alt="Mental health conversation">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════ GALLERY MARQUEE ════════════ -->
+<section class="gallery-marquee" aria-label="Community moments">
+    <div class="gallery-track">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/b708b77b-f566-4e65-98b9-0a3e85f62bf0.jpeg" alt="">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/eb9ce009-b1d8-4d2d-9432-7cb412305530.jpeg" alt="">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/167df795-b0b1-427b-9c23-f618047742f5.jpeg" alt="">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/a5cffae9-7a5e-4323-be72-bcd685d75659.jpeg" alt="">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8fe3d258-0efa-4a5b-8a83-085636eeee63.jpeg" alt="">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/5addaeac-48d0-47c6-aa76-b23cf341aec1.jpeg" alt="">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/0beef04e-66c5-4ad1-b795-d077071808a5.jpeg" alt="">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/76c27053-5a89-4a7f-961e-045948a585a6.jpeg" alt="">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/9165c82a-c448-4a77-aa71-b7887fc83a36.jpeg" alt="">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/31adec29-e759-45f4-a72c-ad5d44f94d87.jpeg" alt="">
+        <!-- duplicate for infinite loop -->
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/b708b77b-f566-4e65-98b9-0a3e85f62bf0.jpeg" alt="" aria-hidden="true">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/eb9ce009-b1d8-4d2d-9432-7cb412305530.jpeg" alt="" aria-hidden="true">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/167df795-b0b1-427b-9c23-f618047742f5.jpeg" alt="" aria-hidden="true">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/a5cffae9-7a5e-4323-be72-bcd685d75659.jpeg" alt="" aria-hidden="true">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8fe3d258-0efa-4a5b-8a83-085636eeee63.jpeg" alt="" aria-hidden="true">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/5addaeac-48d0-47c6-aa76-b23cf341aec1.jpeg" alt="" aria-hidden="true">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/0beef04e-66c5-4ad1-b795-d077071808a5.jpeg" alt="" aria-hidden="true">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/76c27053-5a89-4a7f-961e-045948a585a6.jpeg" alt="" aria-hidden="true">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/9165c82a-c448-4a77-aa71-b7887fc83a36.jpeg" alt="" aria-hidden="true">
+        <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/31adec29-e759-45f4-a72c-ad5d44f94d87.jpeg" alt="" aria-hidden="true">
+    </div>
+</section>
+
+<!-- ════════════ COMPENSATION CTA ════════════ -->
+<section class="cta-golden">
+    <div class="container">
+        <div class="eyebrow">The State of Product Compensation</div>
+        <h2>Do you want to learn more about pay in Product?</h2>
+        <a href="/compensation" class="btn-cta-dark">Learn more</a>
+    </div>
+</section>
+
+<!-- ════════════ TESTIMONIALS (Senja) ════════════ -->
+<section class="section-white section-pad">
+    <div class="container">
+        <script src="https://widget.senja.io/widget/0e45a7a8-f5b1-4a72-8ca2-2b198d0d400f/platform.js" type="text/javascript" async></script>
+        <div class="senja-embed" data-id="0e45a7a8-f5b1-4a72-8ca2-2b198d0d400f" data-mode="shadow" data-lazyload="false" style="display: block; width: 100%;"></div>
+    </div>
+</section>
+
+<!-- ════════════ SUPPORT MISSION CTA ════════════ -->
+<section class="cta-support">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8 mb-3 mb-md-0">
+                <h2>Do you want to support our Mission?</h2>
+                <p>All of our initiatives are free of charge for our Community. But we still have costs, so if you want to support us, why not buy us a Coffee?</p>
+            </div>
+            <div class="col-md-4 text-md-right">
+                <a href="https://ko-fi.com/impostorpm" target="_blank" rel="noreferrer" class="btn-cta">Buy us a &#9749;&#65039;!</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════ PARTNERS ════════════ -->
+<section class="partner-section">
+    <div class="container">
+        <h2>Where product conversations came to life</h2>
+        <p>Thank you for making space for Product Managers to grow.</p>
+    </div>
+    <div class="partner-marquee">
+        <div class="partner-track">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/22462e06-988f-4cf9-9427-ef86c514f286.png" alt="Partner">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/4b40c7d9-6577-49e0-8bc3-2142d95de1bf.png" alt="Partner">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/f4c9a7db-e8fc-4bee-9eba-860cd47adc39.png" alt="Partner">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/7601f511-b878-4d0e-af5e-d567447da3f2.png" alt="Partner">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/12831db3-1ac9-4493-ac62-7850a18ec05f.png" alt="Partner">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/6660ca58-e6d9-48cd-af11-f3df8bb0f076.png" alt="Partner">
+            <!-- duplicate -->
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/22462e06-988f-4cf9-9427-ef86c514f286.png" alt="" aria-hidden="true">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/4b40c7d9-6577-49e0-8bc3-2142d95de1bf.png" alt="" aria-hidden="true">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/f4c9a7db-e8fc-4bee-9eba-860cd47adc39.png" alt="" aria-hidden="true">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/7601f511-b878-4d0e-af5e-d567447da3f2.png" alt="" aria-hidden="true">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/12831db3-1ac9-4493-ac62-7850a18ec05f.png" alt="" aria-hidden="true">
+            <img src="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/6660ca58-e6d9-48cd-af11-f3df8bb0f076.png" alt="" aria-hidden="true">
+        </div>
+    </div>
+</section>
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer class="footer-site">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 mb-5 mb-lg-0">
+                <a href="/">
+                    <img src="https://impostorpm-huddle.pages.dev/TIPM-horizontal-white-logo.svg" alt="The Impostor PM" class="footer-logo">
+                </a>
+                <p class="footer-copyright">&copy; 2026 The Impostor PM. All rights reserved.</p>
+                <div>
+                    <a href="https://www.linkedin.com/company/impostorpm/" target="_blank" rel="noreferrer" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://tally.so/r/w2X0de" target="_blank" rel="noreferrer" class="social-icon" aria-label="Slack"><i class="fab fa-slack"></i></a>
+                    <a href="https://luma.com/impostorpm" target="_blank" rel="noreferrer" class="social-icon" aria-label="Luma calendar">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                            <path d="M12 1 Q12 12 23 12 Q12 12 12 23 Q12 12 1 12 Q12 12 12 1 Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="col-4 col-lg-2 offset-lg-1">
+                <h6>This is Us</h6>
+                <ul class="footer-links">
+                    <li><a href="/club">What is a Club?</a></li>
+                    <li><a href="/product-talks">Product Talks</a></li>
+                    <li><a href="/group">Slack Group</a></li>
+                    <li><a href="/compensation">Salary Compass</a></li>
+                    <li><a href="https://www.impostor.pm/huddle/">Huddle</a></li>
+                    <li><a href="/about">About us</a></li>
+                </ul>
+            </div>
+            <div class="col-4 col-lg-2">
+                <h6>Our Clubs</h6>
+                <ul class="footer-links">
+                    <li><a href="/club/hamburg">Hamburg</a></li>
+                    <li><a href="/club/lisbon">Lisbon</a></li>
+                    <li><a href="/club/braga">Braga</a></li>
+                    <li><a href="/club/porto">Porto</a></li>
+                    <li><a href="/club/coimbra">Coimbra</a></li>
+                    <li><a href="/bring-the-club-to-my-city">Host a Club!</a></li>
+                </ul>
+            </div>
+            <div class="col-4 col-lg-2">
+                <h6>Benefits</h6>
+                <ul class="footer-links">
+                    <li><a href="/product-buildcamp">Product Buildcamp</a></li>
+                    <li><a href="/productized">Productized</a></li>
+                    <li><a href="/tekya">Tekya</a></li>
+                    <li><a href="/nextlevelhub">Next Level Hub</a></li>
+                    <li><a href="/productweekend">Product Circle</a></li>
+                    <li><a href="/builderscamp">Builders Camp</a></li>
+                    <li><a href="/partner-with-us">Partner with us</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ════════════ JS ════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
+  integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
+  crossorigin="anonymous"></script>
+
+</body>
+</html>
