@@ -1,3 +1,12 @@
-/compensation/compare-salary    /salary-compass  301
-/compensation/compare-salary/   /salary-compass  301
-/compensation/compare-salary/*  /salary-compass  301
+# Targets keep their trailing slash on purpose. /salary-compass/ is a directory
+# index in public/, so pointing at /salary-compass makes Pages 308 to the slashed
+# form — turning every one of these into two hops for no reason.
+#
+# Only redirects whose destination exists in THIS project belong here. The rest
+# of the retirement map (the ~12 junk sitemap URLs: /home-copy, /test-page12345,
+# /club/*-v1-deprecated, /porto-template, ...) lands in Phase 4, once the club
+# and partner pages they point at actually exist — a 301 to a 404 is worse than
+# the 404 it replaces.
+/compensation/compare-salary    /salary-compass/  301
+/compensation/compare-salary/   /salary-compass/  301
+/compensation/compare-salary/*  /salary-compass/  301
