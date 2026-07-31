@@ -1,0 +1,169 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import EventList from '../../components/EventList.astro';
+
+// The city list comes from the clubs collection, so adding a city is one .md
+// file rather than an edit here, an edit to the footer and a new page.
+const clubs = (await getCollection('clubs', ({ data }) => data.status !== 'deprecated')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const FLAGS: Record<string, string> = {
+  Portugal: '🇵🇹',
+  Germany: '🇩🇪',
+};
+
+const expectations = [
+  {
+    title: 'Join the Circle',
+    body: 'Walk into a relaxed space, meet a reduced group of PMs, and feel the "safe room" vibe. Find people like you who are ready to share honestly.',
+  },
+  {
+    title: 'Real Conversations',
+    body: 'The session will revolve around a different topic each time. You only need to listen and share (if you want), about real challenges.',
+  },
+  {
+    title: 'A Safe Space',
+    body: 'By the end, you leave with new perspectives, practical takeaways, and the feeling that you are not alone in your struggles.',
+  },
+  {
+    title: 'We are 100% free',
+    body: 'Because a real sense of community is priceless.',
+  },
+];
+---
+
+<Base
+  title="TIPM - Join the circle. Leave with value that works."
+  description="In-person Clubs for Product Managers across Porto, Lisbon, Braga, Coimbra and Hamburg. Peer-to-peer, slide-free, and free to attend."
+>
+  <header class="section-warm clubidx-hero">
+    <div class="container">
+      <h1>Join the circle. Leave with <span class="scribble-underline">value that works.</span></h1>
+      <p class="clubidx-lede">
+        Discover a safe space to share experiences and grow together with peers.
+      </p>
+      <a href="#upcoming" class="btn-cta">Discover</a>
+    </div>
+  </header>
+
+  <section class="section-white section-pad-lg">
+    <div class="container clubidx-body">
+      <h2>We know that feeling</h2>
+      <p>
+        You show up at events hoping to learn something real, but instead you get pitch decks and someone trying to sell their book.
+      </p>
+      <p>Hundreds of slides. Zero applicability. Zero connections.</p>
+      <p class="clubidx-emphasis">
+        We don't have a magic recipe. But we do have a rare safe space for PMs to learn, share, and connect.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-warm section-pad-lg">
+    <div class="container clubidx-body">
+      <h2>What to expect</h2>
+      <p>
+        If you like to actively share and discuss ideas in a peer-to-peer, slide-free space, the Club is your place.
+      </p>
+      <div class="clubidx-grid">
+        {expectations.map((item) => (
+          <div class="clubidx-card">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="ue-section" id="upcoming" aria-labelledby="clubidx-upcoming">
+    <div class="ue-container">
+      <h2 class="ue-title" id="clubidx-upcoming">Upcoming Clubs</h2>
+      <EventList
+        period="future"
+        limit={8}
+        emptyMessage="No Club scheduled right now. New ones go up on Luma first — and the waiting list for your city will let you know."
+      />
+    </div>
+  </section>
+
+  <section class="section-white section-pad-lg">
+    <div class="container clubidx-body">
+      <h2>Most events focus on content. We focus on people.</h2>
+      <p>
+        From down-to-earth insights to build meaningful connections. Here's how we impact the community:
+      </p>
+      <p class="clubidx-stat">50+ Clubs and counting</p>
+      <p>Explore the cities we're already in — yours might be next.</p>
+
+      <ul class="clubidx-cities">
+        {clubs.map((club) => (
+          <li>
+            <a href={`/club/${club.id}`}>
+              <span aria-hidden="true">{FLAGS[club.data.country] ?? '📍'}</span> {club.data.city}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-golden section-pad">
+    <div class="container clubidx-cta">
+      <h2>Not finding your City?</h2>
+      <p>No worries. You're one step closer to creating genuine connections.</p>
+      <a href="/bring-the-club-to-my-city" class="btn-cta-dark">Learn more</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .clubidx-hero { padding: 4.5rem 0 3.5rem; }
+  .clubidx-hero h1 { font-size: 3rem; line-height: 1.1; letter-spacing: -0.04em; max-width: 18ch; margin-bottom: 1.25rem; }
+  .clubidx-lede { font-size: 1.125rem; color: var(--tipm-text-muted); max-width: 50ch; margin-bottom: 1.75rem; }
+
+  .clubidx-body { max-width: 52rem; }
+  .clubidx-body h2 { font-size: 2rem; margin-bottom: 1rem; letter-spacing: -0.02em; }
+  .clubidx-body > p { color: var(--tipm-text-muted); font-size: 1.0625rem; max-width: 60ch; }
+  .clubidx-emphasis { color: var(--tipm-black) !important; font-weight: 600; font-size: 1.125rem !important; }
+  .clubidx-stat { font-size: 1.5rem; font-weight: 700; color: var(--tipm-black) !important; margin-top: 2rem; }
+
+  .clubidx-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .clubidx-card {
+    background: var(--tipm-white);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    border: 1px solid var(--tipm-outline);
+  }
+  .clubidx-card h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+  .clubidx-card p { color: var(--tipm-text-muted); font-size: 0.9375rem; margin: 0; }
+
+  .clubidx-cities { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
+  .clubidx-cities a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--tipm-black);
+    border-radius: var(--radius-pill);
+    color: var(--tipm-black);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background var(--dur-med), color var(--dur-med);
+  }
+  .clubidx-cities a:hover { background: var(--tipm-black); color: var(--tipm-white); text-decoration: none; }
+
+  .clubidx-cta { max-width: 46rem; text-align: center; }
+  .clubidx-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .clubidx-cta p { margin-bottom: 1.5rem; }
+
+  @media (max-width: 768px) {
+    .clubidx-hero h1 { font-size: 2.25rem; }
+  }
+</style>

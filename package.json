@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run check:softr && astro build",
+    "build": "npm run check:softr && astro build && node scripts/fix-directory-shadowing.mjs",
     "preview": "astro preview",
     "check:softr": "node scripts/check-no-softr.mjs"
   },

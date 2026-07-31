@@ -69,7 +69,16 @@ that script; they may only go down.
 existed nowhere, so shares rendered with no preview. A purpose-made card would
 be better.
 
-### Route shadowing — do not undo this
+### Route shadowing — handled by the build, do not undo
+
+`scripts/fix-directory-shadowing.mjs` runs after every build and writes
+`<name>/index.html` next to `<name>.html` wherever a directory of the same name
+exists. /club hit this structurally — it needs both the index and five child
+pages — and Cloudflare Pages resolves the directory first, so /club 404'd on the
+deployment while every city page worked. `astro preview` serves it fine, so this
+only ever shows up once deployed.
+
+The original instance:
 
 `build.format: 'file'` emits `dist/compensation.html`. Putting assets in
 `public/compensation/` also created `dist/compensation/`, and **Cloudflare Pages
@@ -90,7 +99,6 @@ Migrated: the 5 club city pages, the 6 partner pages, `/about`, `/benefits`,
 `/group`, `/product-talks`. 19 pages build; all verified 200 on the deployment.
 
 **Still on Softr:**
-`/club` (linked from the nav AND footer — do this one first)
 `/club/how-we-select` · `/bring-the-club-to-my-city` · `/partner-with-us`
 `/mentalhealth` · `/boost` · `/boost-agenda` · `/landcowork` · `/landcowork-book-a-seat`
 `/nextlevelhub-booking` · `/product-talks-link-to-the-talk`
