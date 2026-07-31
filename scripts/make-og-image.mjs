@@ -45,7 +45,7 @@ await sharp({
     },
   ])
   .png({ compressionLevel: 9 })
-  .toFile(`${REPO}/public/compensation/og.png`);
+  .toFile(`${REPO}/public/compensation-og.png`);
 
-const out = await sharp(`${REPO}/public/compensation/og.png`).metadata();
+const out = await sharp(`${REPO}/public/compensation-og.png`).metadata();
 console.log(`og.png  ${out.width}x${out.height}  ${out.size} bytes`);
