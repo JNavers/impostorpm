@@ -81,3 +81,35 @@ The assets are therefore `public/compensation-og.png` and
 `public/compensation-logo.svg`: still matched by a `/compensation*` prefix rule,
 but no directory to shadow the page. Never create a `public/<name>/` directory
 with the same name as a page.
+
+## Phase 4 — in progress
+
+Done: the 5 club city pages (`src/pages/club/[slug].astro` + `src/content/clubs/*.md`).
+
+Still on Softr, not yet migrated:
+`/club` · `/club/how-we-select` · `/about` · `/benefits` · `/group` · `/product-talks`
+`/bring-the-club-to-my-city` · `/partner-with-us` · `/mentalhealth` · `/boost` · `/landcowork`
+and the 7 partner pages (`/tekya`, `/productized`, `/product-buildcamp`,
+`/nextlevelhub`, `/builderscamp`, `/productweekend`).
+
+The `partners` collection schema is written; the pages are not.
+
+### Bugs found on the live Softr site while extracting
+
+1. **`/club/braga` renders Hamburg's content.** URL and `<title>` say Braga, but
+   the hero reads "Hamburg has a Club waiting for you!" and the waitlist says
+   "Join the Hamburg waiting list". `og:title` says *Porto*. Only the past-Clubs
+   list is actually Braga's. Reproduced twice with a render-stability wait, so
+   it is not a capture artifact. Fixed by the migration.
+2. **`/club/porto` and `/club/coimbra` advertise expired events as upcoming** —
+   25 and 30 June, still shown as the next Club on 31 July, because the block is
+   fed by a table nobody prunes. Reading the Luma calendar means an event stops
+   being upcoming on its own.
+3. `/compensation`'s `og:image` pointed at a file that never existed (Phase 2).
+4. The `/huddle` nav linked to `/boost-2nd`, a 404 (Phase 1).
+
+### Softr rate-limits automated extraction
+
+Roughly a dozen rapid page loads in a row got the connection closed
+(`ERR_CONNECTION_CLOSED`) for about a minute. Pace the remaining extraction:
+one page per navigation, 8s render wait, and do not batch more than two.

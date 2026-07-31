@@ -35,13 +35,20 @@ const clubs = defineCollection({
       imageAlt: z.string().default(''),
     }),
 
-    /** Shown only when the club has no upcoming Luma event. */
+    /**
+     * Shown only when the club has no upcoming Luma event.
+     *
+     * ctaUrl is optional because the cities genuinely differ on Softr: Hamburg
+     * offers a waiting list ("we'll email you as soon as the next Club goes
+     * live"), while Lisbon just says "There's currently no Club planned in your
+     * city. We'll be back soon!" with nothing to click.
+     */
     waitlist: z.object({
       enabled: z.boolean().default(true),
       eyebrow: z.string().default("No upcoming Club? Don't worry."),
       body: z.string(),
       ctaLabel: z.string().default('Join Waiting List'),
-      ctaUrl: z.string().url(),
+      ctaUrl: z.string().url().optional(),
     }),
 
     pastClubs: z.object({
