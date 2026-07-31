@@ -1,0 +1,137 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const clubs = (await getCollection('clubs', ({ data }) => data.status !== 'deprecated')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const FLAGS: Record<string, string> = { Portugal: '🇵🇹', Germany: '🇩🇪' };
+
+// Softr routes both the hero CTA and the closing one at the same Tally form.
+const APPLY_URL = 'https://tally.so/r/n0ByXP';
+
+const lookingFor = [
+  'Are naturally curious and proactive',
+  'Enjoy connecting with people',
+  'Want to expand your network',
+];
+
+const expect = [
+  'Step by Step plan',
+  'Playbook of best practices',
+  'A support network of other Club hosters',
+];
+---
+
+<Base
+  title="TIPM - Bring the Club to your local community"
+  description="Are you looking for a local thriving community of Product Managers with whom you can learn and grow together? We did with success and we'd love to help you do the same in your city!"
+>
+  <header class="section-warm host-hero">
+    <div class="container">
+      <h1>Bring the Club to your city</h1>
+      <p class="host-lede">
+        Missing a local community of Product Managers to connect and learn with? Take the first step and we'll help you succeed.
+      </p>
+      <a href={APPLY_URL} target="_blank" rel="noreferrer" class="btn-cta">Join us</a>
+    </div>
+  </header>
+
+  <section class="section-white section-pad-lg">
+    <div class="container host-body">
+      <div class="host-cols">
+        <div>
+          <h2>What are we looking for?</h2>
+          <p>
+            People who genuinely enjoy connecting with others and bringing value to their local community.
+          </p>
+          <ul class="host-list">
+            {lookingFor.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div>
+          <h2>What can you expect?</h2>
+          <p>Running a Club should be easy, so we've got you covered with resources to help you.</p>
+          <ul class="host-list">
+            {expect.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-warm section-pad-lg">
+    <div class="container host-body">
+      <h2>50+ Clubs and counting</h2>
+      <p>Check out the cities we're already in — yours might be next.</p>
+      <ul class="host-cities">
+        {clubs.map((club) => (
+          <li>
+            <a href={`/club/${club.id}`}>
+              <span aria-hidden="true">{FLAGS[club.data.country] ?? '📍'}</span> {club.data.city}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-golden section-pad">
+    <div class="container host-cta">
+      <h2>Let's create a safe space?</h2>
+      <p>You're not alone. Let's work together and make it happen!</p>
+      <a href={APPLY_URL} target="_blank" rel="noreferrer" class="btn-cta-dark">Reach out</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .host-hero { padding: 4.5rem 0 3.5rem; }
+  .host-hero h1 { font-size: 3rem; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 1rem; }
+  .host-lede { font-size: 1.125rem; color: var(--tipm-text-muted); max-width: 52ch; margin-bottom: 1.75rem; }
+
+  .host-body { max-width: 52rem; }
+  .host-body h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }
+  .host-body p { color: var(--tipm-text-muted); font-size: 1.0625rem; }
+
+  .host-cols { display: grid; gap: 2.5rem; }
+  @media (min-width: 768px) { .host-cols { grid-template-columns: 1fr 1fr; } }
+
+  .host-list { list-style: none; padding: 0; margin-top: 1.25rem; }
+  .host-list li {
+    position: relative;
+    padding-left: 1.75rem;
+    margin-bottom: 0.75rem;
+    color: var(--tipm-text-muted);
+  }
+  .host-list li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0.55rem;
+    width: 0.6rem; height: 0.6rem;
+    border-radius: 50%;
+    background: var(--tipm-golden);
+  }
+
+  .host-cities { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
+  .host-cities a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--tipm-black);
+    border-radius: var(--radius-pill);
+    color: var(--tipm-black);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background var(--dur-med), color var(--dur-med);
+  }
+  .host-cities a:hover { background: var(--tipm-black); color: var(--tipm-white); text-decoration: none; }
+
+  .host-cta { max-width: 46rem; text-align: center; }
+  .host-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .host-cta p { margin-bottom: 1.5rem; }
+
+  @media (max-width: 768px) {
+    .host-hero h1 { font-size: 2.25rem; }
+  }
+</style>

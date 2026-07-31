@@ -98,6 +98,19 @@ Done: the 5 club city pages (`src/pages/club/[slug].astro` + `src/content/clubs/
 Migrated: the 5 club city pages, the 6 partner pages, `/about`, `/benefits`,
 `/group`, `/product-talks`. 19 pages build; all verified 200 on the deployment.
 
+### Needs a secret before /partner-with-us works
+
+`RESEND_API_KEY` is not set on the `impostorpm-site` Pages project. The endpoint
+correctly returns **503 "Email is not configured on this deployment"** rather
+than pretending to succeed, and the page shows a mailto fallback — but no
+enquiry will actually be delivered until the secret exists:
+
+```
+wrangler pages secret put RESEND_API_KEY --project-name=impostorpm-site
+```
+
+The same key is already set on `salary-compass-pages`.
+
 **Still on Softr:**
 `/club/how-we-select` · `/bring-the-club-to-my-city` · `/partner-with-us`
 `/mentalhealth` · `/boost` · `/boost-agenda` · `/landcowork` · `/landcowork-book-a-seat`
