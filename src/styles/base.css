@@ -16,13 +16,18 @@
    inline in several places, so these names have to keep resolving. New code
    should use the --tipm-* tokens directly. */
 :root {
-  --white:       var(--tipm-white);
-  --warm-yellow: var(--tipm-warm-yellow);
-  --golden:      var(--tipm-golden);
-  --near-black:  var(--tipm-near-black);
-  --black:       var(--tipm-black);
-  --light-gray:  var(--tipm-light-gray);
-  --border-gray: var(--tipm-border-gray);
+  --white:         var(--tipm-white);
+  --warm-yellow:   var(--tipm-warm-yellow);
+  --golden:        var(--tipm-golden);
+  --golden-10:     var(--tipm-golden-10);
+  --golden-20:     var(--tipm-golden-20);
+  --golden-40:     var(--tipm-golden-40);
+  --near-black:    var(--tipm-near-black);
+  --black:         var(--tipm-black);
+  --light-gray:    var(--tipm-light-gray);
+  --border-gray:   var(--tipm-border-gray);
+  --text-muted:    var(--tipm-text-muted);
+  --outline-light: var(--tipm-outline);
 }
 
 /* ── Base ── */
@@ -63,8 +68,34 @@ p { white-space: pre-line; }
 .section-dark h3 { color: var(--tipm-white); }
 .section-white  { background-color: var(--tipm-white); }
 .section-light  { background-color: var(--tipm-light-gray); }
+.section-golden { background-color: var(--tipm-golden); }
 .section-pad    { padding: 4rem 0; }
 .section-pad-lg { padding: 6rem 0; }
+
+/* ── Primary CTA ──
+   The canonical site CTA: 15px / .65rem 1.25rem / 8px radius. Lives here
+   rather than in a page because every new CTA on the site is supposed to use
+   it; leaving it scoped to /compensation is how the next page ends up with a
+   fourth, slightly different button. */
+.btn-cta,
+.btn-cta-dark {
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: .65rem 1.25rem;
+  text-decoration: none;
+  transition: opacity var(--dur-med), background-color var(--dur-med);
+}
+.btn-cta { background: var(--tipm-golden); color: var(--tipm-near-black); }
+.btn-cta:hover, .btn-cta:focus { color: var(--tipm-near-black); opacity: .88; text-decoration: none; }
+.btn-cta-dark { background: var(--tipm-near-black); color: var(--tipm-white); }
+.btn-cta-dark:hover, .btn-cta-dark:focus { color: var(--tipm-white); opacity: .88; text-decoration: none; }
 
 /* ── Buttons ── */
 .btn-accent {

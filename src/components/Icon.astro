@@ -20,6 +20,11 @@ export type IconName =
   | 'people-group'
   | 'comments'
   | 'bolt'
+  | 'chevron-down'
+  | 'user-shield'
+  | 'filter'
+  | 'chart-simple'
+  | 'globe'
   | 'linkedin'
   | 'slack'
   | 'luma';
@@ -42,6 +47,7 @@ const { name, class: className, size = '1em', label } = Astro.props;
 
 const STROKE = new Set<IconName>([
   'arrow-down', 'users', 'lock', 'award', 'target', 'eye', 'people-group', 'comments', 'bolt',
+  'chevron-down', 'user-shield', 'filter', 'chart-simple', 'globe',
 ]);
 const stroked = STROKE.has(name);
 
@@ -110,6 +116,27 @@ const a11y = label
   </>}
 
   {name === 'bolt' && <path d="M13.5 2.5 4.75 13.6h5.9L10.5 21.5l8.75-11.1h-5.9l.15-7.9Z" />}
+
+  {name === 'chevron-down' && <path d="m5.5 9 6.5 6.5L18.5 9" />}
+
+  {name === 'user-shield' && <>
+    <path d="M12 2.75 4.75 5.5v5.4c0 4.6 3 8.3 7.25 10.35 4.25-2.05 7.25-5.75 7.25-10.35V5.5L12 2.75Z" />
+    <circle cx="12" cy="10" r="2.4" />
+    <path d="M8.3 16.6a4 4 0 0 1 7.4 0" />
+  </>}
+
+  {name === 'filter' && <path d="M3.25 5.25h17.5l-6.85 8v6l-3.8 1.9v-7.9l-6.85-8Z" />}
+
+  {name === 'chart-simple' && <>
+    <path d="M3.75 20.25h16.5" />
+    <path d="M6.75 20.25v-6" /><path d="M12 20.25V4.5" /><path d="M17.25 20.25v-9.5" />
+  </>}
+
+  {name === 'globe' && <>
+    <circle cx="12" cy="12" r="9.25" />
+    <path d="M2.9 12h18.2" />
+    <path d="M12 2.75c2.3 2.5 3.6 5.8 3.6 9.25S14.3 18.75 12 21.25c-2.3-2.5-3.6-5.8-3.6-9.25S9.7 5.25 12 2.75Z" />
+  </>}
 
   {name === 'linkedin' && (
     <path d="M4.98 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5ZM2.75 21h4.46V9.5H2.75V21Zm7.06 0h4.46v-6.05c0-1.6.6-2.55 1.98-2.55 1.28 0 1.83.87 1.83 2.55V21h4.46v-6.7c0-3.5-1.87-5.2-4.47-5.2-2.1 0-3.05 1.16-3.58 1.98V9.5H9.81c.06 1.15 0 11.5 0 11.5Z" />
