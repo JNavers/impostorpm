@@ -86,13 +86,17 @@ with the same name as a page.
 
 Done: the 5 club city pages (`src/pages/club/[slug].astro` + `src/content/clubs/*.md`).
 
-Still on Softr, not yet migrated:
-`/club` · `/club/how-we-select` · `/about` · `/benefits` · `/group` · `/product-talks`
-`/bring-the-club-to-my-city` · `/partner-with-us` · `/mentalhealth` · `/boost` · `/landcowork`
-and the 7 partner pages (`/tekya`, `/productized`, `/product-buildcamp`,
-`/nextlevelhub`, `/builderscamp`, `/productweekend`).
+Migrated: the 5 club city pages, the 6 partner pages, `/about`, `/benefits`,
+`/group`, `/product-talks`. 19 pages build; all verified 200 on the deployment.
 
-The `partners` collection schema is written; the pages are not.
+**Still on Softr:**
+`/club` (linked from the nav AND footer — do this one first)
+`/club/how-we-select` · `/bring-the-club-to-my-city` · `/partner-with-us`
+`/mentalhealth` · `/boost` · `/boost-agenda` · `/landcowork` · `/landcowork-book-a-seat`
+`/nextlevelhub-booking` · `/product-talks-link-to-the-talk`
+
+`/benefits` is generated from the partners collection, so a new perk is one .md
+file and it appears on its own page, on /benefits, and nowhere else needs editing.
 
 ### Bugs found on the live Softr site while extracting
 

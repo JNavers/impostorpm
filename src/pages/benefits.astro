@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+// Generated from the partners collection rather than authored, so adding a
+// perk is one .md file and it appears here, on its own page, and in the footer
+// without three separate edits drifting apart.
+const partners = (await getCollection('partners', ({ data }) => data.listed)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+
+<Base
+  title="Community Benefits — The Impostor PM"
+  description="Discounts and perks for the Impostor PM community: conferences, training, coaching and mental health support."
+>
+  <header class="section-warm benefits-hero">
+    <div class="container">
+      <h1>Community Benefits</h1>
+      <p class="benefits-lede">
+        Partners who offer something real to the Impostor PM community — discounts on training, conferences and support, negotiated for members.
+      </p>
+    </div>
+  </header>
+
+  <section class="section-white section-pad-lg">
+    <div class="container">
+      <div class="benefits-grid">
+        {partners.map((partner) => (
+          <a class="benefit-card" href={`/${partner.id}`}>
+            <p class="tipm-eyebrow">{partner.data.kind === 'partner' ? 'Partner' : 'Benefit'}</p>
+            <h2>{partner.data.name}</h2>
+            <p class="benefit-tagline">{partner.data.tagline}</p>
+            <span class="benefit-more">See the benefit →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-golden section-pad">
+    <div class="container benefits-cta">
+      <h2>Want to partner with us?</h2>
+      <p>If you run something Product Managers would genuinely benefit from, we'd like to hear about it.</p>
+      <a href="/partner-with-us" class="btn-cta-dark">Partner with us</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .benefits-hero { padding: 4.5rem 0 3rem; }
+  .benefits-hero h1 { font-size: 3rem; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 1rem; }
+  .benefits-lede { font-size: 1.0625rem; color: var(--tipm-text-muted); max-width: 52ch; margin: 0; }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 1.5rem;
+  }
+  .benefit-card {
+    display: block;
+    padding: 1.75rem;
+    border: 1px solid var(--tipm-outline);
+    border-radius: var(--radius-xl);
+    background: var(--tipm-white);
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow var(--dur-med), transform var(--dur-med);
+  }
+  .benefit-card:hover {
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-2px);
+  }
+  .benefit-card h2 { font-size: 1.375rem; margin: 0.5rem 0 0.5rem; }
+  .benefit-tagline { color: var(--tipm-text-muted); font-size: 0.9375rem; margin-bottom: 1rem; }
+  .benefit-more { font-weight: 600; font-size: 0.875rem; }
+
+  .benefits-cta { max-width: 46rem; text-align: center; }
+  .benefits-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .benefits-cta p { margin-bottom: 1.5rem; }
+
+  @media (max-width: 768px) {
+    .benefits-hero h1 { font-size: 2.25rem; }
+  }
+</style>

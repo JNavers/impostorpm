@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+
+// Like /group, this page's <title> on Softr is the literal string "about" and
+// its description is Softr's boilerplate. Both fixed here.
+---
+
+<Base
+  title="About — The Impostor PM"
+  description="A community created by and for Product Managers of all backgrounds: a safe space to share experiences openly and without fear of judgement."
+>
+  <header class="section-warm about-hero">
+    <div class="container">
+      <h1>We're The Impostor Product Managers</h1>
+      <p class="about-lede">
+        In our community we value open and transparent communication. We believe that through shared successes and failures, we'll become stronger together.
+      </p>
+    </div>
+  </header>
+
+  <section class="section-white section-pad-lg">
+    <div class="container about-body">
+      <h2>Our Mission</h2>
+      <p>
+        The Impostor Product Manager is a community created by and for product managers of all backgrounds. Our goal is to provide a safe space where you can share your experiences openly and without fear of judgement. We believe in the power of learning from one another, and envision a world where mistakes are embraced as opportunities for growth.
+      </p>
+      <p>
+        Originally formed as a means of coping with Impostor Syndrome, our community has since evolved into a platform for sharing our insights and experiences with the broader product community. We're passionate about connecting diverse individuals.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-golden section-pad">
+    <div class="container about-cta">
+      <h2>Come and say hi.</h2>
+      <p>The Slack group is free, and the Clubs are where most people start.</p>
+      <div class="about-cta-row">
+        <a href="/group" class="btn-cta-dark">Join the Slack group</a>
+        <a href="/club" class="btn-cta-dark">Find a Club</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about-hero { padding: 4.5rem 0 3.5rem; }
+  .about-hero h1 { font-size: 3rem; line-height: 1.05; letter-spacing: -0.04em; max-width: 18ch; margin-bottom: 1rem; }
+  .about-lede { font-size: 1.125rem; color: var(--tipm-text-muted); max-width: 54ch; margin: 0; }
+
+  .about-body { max-width: 46rem; }
+  .about-body h2 { font-size: 1.75rem; margin-bottom: 1rem; }
+  .about-body p { color: var(--tipm-text-muted); font-size: 1.0625rem; }
+
+  .about-cta { max-width: 46rem; text-align: center; }
+  .about-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .about-cta p { margin-bottom: 1.5rem; }
+  .about-cta-row { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+  @media (max-width: 768px) {
+    .about-hero h1 { font-size: 2.25rem; }
+  }
+</style>
