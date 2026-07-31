@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import EventList from '../components/EventList.astro';
+import { LUMA_CALENDAR_URL, LUMA_ICS_URL } from '../lib/events';
+
+// Net-new page. /events is a 404 on Softr today, yet the rebuilt homepage links
+// to it as "See the full calendar" — so this also fixes a dead link.
+---
+
+<Base
+  title="Upcoming events — The Impostor PM"
+  description="Every upcoming Impostor PM event: Clubs, Product Talks, Huddles and meetups across Porto, Lisbon, Braga, Coimbra and beyond."
+>
+  <header class="section-warm" style="padding: 4.5rem 0 3rem;">
+    <div class="ue-container">
+      <p class="ue-eyebrow">What's on</p>
+      <h1 class="events-title">Upcoming events</h1>
+      <p class="events-lede">
+        Clubs, Product Talks and Huddles. Free unless stated otherwise, and always run by working Product Managers.
+      </p>
+      <div class="events-actions">
+        <a href={LUMA_CALENDAR_URL} target="_blank" rel="noreferrer" class="btn-cta">See them on Luma</a>
+        <a href={LUMA_ICS_URL} class="btn-cta-dark">Subscribe to the calendar</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="ue-section" style="padding-top: 3rem;" aria-labelledby="upcoming">
+    <div class="ue-container">
+      <h2 class="ue-title" id="upcoming">Next up</h2>
+      <EventList
+        period="future"
+        limit={50}
+        emptyMessage="Nothing on the calendar right now. New events go up on Luma first — subscribe above and you'll see them as they land."
+      />
+    </div>
+  </section>
+
+  <section class="section-white section-pad" aria-labelledby="past">
+    <div class="ue-container">
+      <h2 class="ue-title" id="past">Past events</h2>
+      <EventList period="past" limit={24} emptyMessage="No past events on record yet." />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .events-title {
+    font-size: 3rem;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin-bottom: 1rem;
+  }
+  .events-lede {
+    font-size: 1.0625rem;
+    color: var(--tipm-text-muted);
+    max-width: 46ch;
+    margin-bottom: 1.75rem;
+  }
+  .events-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  @media (max-width: 768px) {
+    .events-title { font-size: 2.25rem; }
+  }
+</style>

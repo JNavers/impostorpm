@@ -1,0 +1,399 @@
+---
+import {
+  fetchEventsAtBuild,
+  formatMonth,
+  formatDay,
+  formatTime,
+  locationLabel,
+  type TipmEvent,
+} from '../lib/events';
+
+interface Props {
+  period?: 'future' | 'past';
+  limit?: number;
+  /** Luma city aliases to filter by. Empty means the whole calendar. */
+  cities?: string[];
+  /** Shown when there are no events at all. */
+  emptyMessage?: string;
+  /** Fail the build when the Luma fetch fails, rather than shipping empty cards. */
+  requireAtBuild?: boolean;
+}
+
+const {
+  period = 'future',
+  limit = 12,
+  cities = [],
+  emptyMessage = 'No events scheduled right now. New ones go up on Luma first.',
+  requireAtBuild = false,
+} = Astro.props;
+
+// Rendered at build so the page has real content with no JS and no layout shift;
+// the island below re-fetches and swaps it so a new Luma event appears without a
+// deploy. Never worse than one deploy stale.
+let initial: TipmEvent[] = [];
+let buildFailed = false;
+try {
+  const all = await fetchEventsAtBuild(period, 100);
+  initial = filterByCities(all, cities).slice(0, limit);
+} catch (error) {
+  buildFailed = true;
+  if (requireAtBuild) throw error;
+  console.warn(`[EventList] Luma fetch failed at build (period=${period}):`, error);
+}
+
+function fold(value: string | null | undefined): string {
+  return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function filterByCities(events: TipmEvent[], list: string[]): TipmEvent[] {
+  if (!list.length) return events;
+  const needles = list.map(fold).filter(Boolean);
+  return events.filter((event) => {
+    const city = fold(event.city);
+    const region = fold(event.region);
+    const address = fold(event.address);
+    return needles.some(
+      (needle) =>
+        city === needle || region === needle || (!city && !region && address.includes(needle))
+    );
+  });
+}
+
+const endpoint = `/api/events?period=${period}&limit=${limit}${
+  cities.length ? `&cities=${encodeURIComponent(cities.join(','))}` : ''
+}`;
+---
+
+<div
+  class="ue-list"
+  data-events
+  data-endpoint={endpoint}
+  data-empty={emptyMessage}
+  data-build-failed={buildFailed ? 'true' : undefined}
+>
+  {initial.length === 0 && <p class="ue-empty">{emptyMessage}</p>}
+
+  {initial.map((event) => (
+    <article class="ue-item">
+      <div class="ue-date">
+        <span class="ue-date-month">{formatMonth(event.start_at, event.timezone)}</span>
+        <span class="ue-date-day">{formatDay(event.start_at, event.timezone)}</span>
+      </div>
+      <div class="ue-body">
+        <div class="ue-tags">
+          <span class="ue-tag ue-tag-format">{locationLabel(event)}</span>
+          <span class="ue-tag ue-tag-time">{formatTime(event.start_at, event.timezone)}</span>
+        </div>
+        <h3 class="ue-item-title">{event.name}</h3>
+      </div>
+      <div class="ue-action">
+        <a href={event.url} target="_blank" rel="noreferrer" class="ue-rsvp">
+          {period === 'past' ? 'Recap' : 'Register'} <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </article>
+  ))}
+</div>
+
+<script>
+  // Refreshes the build-time markup from /api/events so a Luma event created
+  // after the last deploy still shows up. The Function never returns a 5xx, so
+  // the only failure mode handled here is the network itself.
+  type Ev = {
+    id: string; name: string; url: string; start_at: string; timezone: string;
+    city: string | null; region: string | null; location_type: string | null;
+  };
+
+  const fmt = (iso: string, tz: string, opts: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat('en-GB', { ...opts, timeZone: tz }).format(new Date(iso));
+
+  const where = (e: Ev) =>
+    e.location_type === 'online' ? 'Online' : e.city || e.region || 'TBA';
+
+  function card(e: Ev, period: string) {
+    const el = document.createElement('article');
+    el.className = 'ue-item';
+    el.innerHTML = `
+      <div class="ue-date">
+        <span class="ue-date-month"></span>
+        <span class="ue-date-day"></span>
+      </div>
+      <div class="ue-body">
+        <div class="ue-tags">
+          <span class="ue-tag ue-tag-format"></span>
+          <span class="ue-tag ue-tag-time"></span>
+        </div>
+        <h3 class="ue-item-title"></h3>
+      </div>
+      <div class="ue-action">
+        <a class="ue-rsvp" target="_blank" rel="noreferrer"></a>
+      </div>`;
+    // textContent throughout: event names come from Luma, so they are third-party
+    // strings and must never be interpolated as HTML.
+    el.querySelector('.ue-date-month')!.textContent = fmt(e.start_at, e.timezone, { month: 'short' });
+    el.querySelector('.ue-date-day')!.textContent = fmt(e.start_at, e.timezone, { day: '2-digit' });
+    el.querySelector('.ue-tag-format')!.textContent = where(e);
+    el.querySelector('.ue-tag-time')!.textContent = fmt(e.start_at, e.timezone, {
+      hour: '2-digit', minute: '2-digit', hour12: false,
+    });
+    el.querySelector('.ue-item-title')!.textContent = e.name;
+    const link = el.querySelector('.ue-rsvp') as HTMLAnchorElement;
+    link.href = e.url;
+    link.textContent = period === 'past' ? 'Recap →' : 'Register →';
+    return el;
+  }
+
+  for (const host of document.querySelectorAll<HTMLElement>('[data-events]')) {
+    const endpoint = host.dataset.endpoint;
+    if (!endpoint) continue;
+
+    fetch(endpoint)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((data: { events?: Ev[]; period?: string }) => {
+        if (!Array.isArray(data.events)) return;
+        // Only replace once we have something to replace it WITH: a transient
+        // upstream blip should leave the build-time list on screen, not blank it.
+        if (data.events.length === 0 && host.querySelector('.ue-item')) return;
+
+        host.textContent = '';
+        if (data.events.length === 0) {
+          const p = document.createElement('p');
+          p.className = 'ue-empty';
+          p.textContent = host.dataset.empty ?? 'No events scheduled right now.';
+          host.append(p);
+          return;
+        }
+        for (const e of data.events) host.append(card(e, data.period ?? 'future'));
+      })
+      .catch(() => {
+        /* keep whatever the build rendered */
+      });
+  }
+</script>
+
+<style is:global>
+  /* Global rather than scoped: the island rebuilds these cards in the DOM
+     after render, and Astro's scoping attribute is only stamped on markup
+     that exists at build time. Scoped, the refreshed list would lose all
+     styling the moment it swapped in. */
+  .ue-section {
+      background-color: var(--warm-yellow);
+      padding: 5rem 0 4.5rem;
+  }
+  .ue-container { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
+  .ue-eyebrow {
+      font-family: "Inter", sans-serif;
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: .5rem;
+  }
+  .ue-title {
+      font-family: "Inter", sans-serif;
+      font-weight: 700;
+      font-size: 2.25rem;
+      line-height: 1.1;
+      letter-spacing: -.01em;
+      color: var(--black);
+      margin: 0 0 2.5rem;
+  }
+  .ue-list { display: flex; flex-direction: column; gap: 1.75rem; }
+  .ue-item {
+      display: grid;
+      grid-template-columns: 140px 1fr auto;
+      gap: 1.75rem;
+      align-items: center;
+      padding: 1.5rem 1.75rem;
+      background-color: var(--white);
+      border: 2px solid var(--black);
+      border-radius: 1rem;
+      box-shadow: 8px 8px 0 0 var(--black);
+      transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .ue-item:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 10px 10px 0 0 var(--black);
+  }
+  .ue-date {
+      text-align: center;
+      color: var(--black);
+      line-height: 1;
+      position: relative;
+      padding-right: 1.5rem;
+  }
+  .ue-date::after {
+      content: "";
+      position: absolute;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      height: 70%;
+      border-right: 2px dotted rgba(0,0,0,.35);
+  }
+  .ue-date-month {
+      display: block;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: .25rem;
+  }
+  .ue-date-day {
+      display: block;
+      font-family: "Inter", sans-serif;
+      font-weight: 700;
+      font-size: 2.5rem;
+      line-height: 1;
+      letter-spacing: -.02em;
+      color: var(--black);
+  }
+  .ue-date-time {
+      display: block;
+      font-size: .75rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: .35rem;
+  }
+  .ue-body { min-width: 0; }
+  .ue-tags {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: .6rem;
+  }
+  .ue-tag {
+      display: inline-flex;
+      align-items: center;
+      font-size: .6875rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .28rem .55rem;
+      border-radius: 3px;
+      white-space: nowrap;
+      line-height: 1;
+  }
+  .ue-tag-category { background-color: var(--golden); color: var(--black); }
+  .ue-tag-format { background-color: transparent; color: var(--black); border: 1px solid var(--black); }
+  .ue-tag-location {
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: .12em;
+      padding-left: .25rem;
+  }
+  .ue-item-title {
+      font-family: "Inter", sans-serif;
+      font-weight: 600;
+      font-size: 1.125rem;
+      line-height: 1.3;
+      letter-spacing: -.005em;
+      color: var(--black);
+      margin: 0 0 .35rem;
+  }
+  .ue-item-desc {
+      font-size: .875rem;
+      font-weight: 300;
+      line-height: 1.45;
+      color: var(--text-muted);
+      margin: 0;
+  }
+  .ue-action { display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; }
+  .ue-rsvp {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background-color: var(--near-black);
+      color: var(--white);
+      font-weight: 500;
+      font-size: .875rem;
+      letter-spacing: .02em;
+      padding: .65rem 1.1rem;
+      border-radius: 4px;
+      border: none;
+      text-decoration: none;
+      transition: opacity .2s;
+      white-space: nowrap;
+  }
+  .ue-rsvp:hover { opacity: .85; color: var(--white); text-decoration: none; }
+  .ue-rsvp span { font-size: .75rem; }
+  .ue-meta { font-size: .6875rem; color: var(--text-muted); }
+  .ue-footer-link { display: flex; justify-content: flex-end; margin-top: 1.5rem; }
+  .ue-footer-link a {
+      font-size: .9375rem;
+      color: var(--black);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: opacity .2s;
+  }
+  .ue-footer-link a:hover { opacity: .7; text-decoration: none; color: var(--black); }
+  .ue-footer-link a > span {
+      position: relative;
+      display: inline-block;
+      padding-bottom: .35rem;
+  }
+  .ue-footer-link a > span::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 100%; height: 7px;
+      background-image: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 0 100 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3.5C15 1.5 30 5.5 50 4C70 2.5 85 5 100 3' stroke='%23FFC600' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+  }
+  .ue-footer-link span[aria-hidden] { margin-left: .5rem; font-size: .75rem; }
+
+  @media (max-width: 768px) {
+      .ue-section { padding: 3.5rem 0 3rem; }
+      .ue-title { font-size: 1.75rem; margin-bottom: 1.75rem; }
+      .ue-list { gap: 1.25rem; }
+      .ue-item {
+          grid-template-columns: 80px 1fr;
+          grid-template-rows: auto auto;
+          gap: 1rem 1.25rem;
+          padding: 1.25rem 1.25rem;
+          box-shadow: 6px 6px 0 0 var(--black);
+      }
+      .ue-item:hover { box-shadow: 8px 8px 0 0 var(--black); }
+      .ue-date { padding-right: 1rem; }
+      .ue-date::after { height: 80%; }
+      .ue-action {
+          grid-column: 1 / -1;
+          flex-direction: row;
+          justify-content: flex-end;
+          align-items: center;
+          margin-top: .25rem;
+      }
+      .ue-date-day { font-size: 2rem; }
+      .ue-item-title { font-size: 1rem; }
+  }
+  @media (max-width: 480px) {
+      .ue-title { font-size: 1.5rem; }
+      .ue-item { grid-template-columns: 70px 1fr; gap: .85rem 1rem; padding: 1rem 1rem; }
+      .ue-date { padding-right: .75rem; }
+      .ue-date-day { font-size: 1.75rem; }
+      .ue-tag { font-size: .625rem; padding: .25rem .45rem; }
+  }
+  /* Added by the component: a time chip beside the location, and the empty state.
+     The original markup had a hardcoded category tag and a description line that
+     Luma does not provide, so neither is rendered. */
+  .ue-tag-time {
+      background-color: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--outline-light);
+  }
+  .ue-empty {
+      margin: 0;
+      padding: 2rem 0;
+      color: var(--text-muted);
+      font-size: .9375rem;
+  }
+
+</style>
