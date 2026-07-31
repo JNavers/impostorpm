@@ -113,3 +113,23 @@ The `partners` collection schema is written; the pages are not.
 Roughly a dozen rapid page loads in a row got the connection closed
 (`ERR_CONNECTION_CLOSED`) for about a minute. Pace the remaining extraction:
 one page per navigation, 8s render wait, and do not batch more than two.
+
+### Partner pages
+
+Six migrated. Two of them (`tekya`, `builderscamp`) ship **without an About
+section on purpose**:
+
+- `/tekya` on Softr has Lorem ipsum as its About copy, and `og:description` is
+  literally "Ipsum Lorem".
+- `/builderscamp` never renders its content at all — the page loads the nav and
+  stops at "Loading…" (465 characters total). Two attempts, 8s and 10s waits.
+
+Copying either across would migrate the defect rather than the page. The
+template hides the About heading when the body is empty, so writing the copy
+into the `.md` file is all that is needed.
+
+**`og:description` is "Ipsum Lorem" on every partner page on Softr**, including
+the ones with real content. The migrated pages have proper descriptions.
+
+Also stale on Softr: `/productized` still describes the "Productized Conference
+**2024**".

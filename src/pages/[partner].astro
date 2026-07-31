@@ -1,0 +1,134 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+// Root-level dynamic route so the partner URLs stay exactly as Softr has them
+// (/tekya, /productized, …) rather than moving under a /partners/ prefix.
+// Safe next to the static pages: Astro gives static routes priority, and with
+// output: 'static' only the slugs returned here are ever emitted.
+export async function getStaticPaths() {
+  const partners = await getCollection('partners');
+  return partners.map((partner) => ({ params: { partner: partner.id }, props: { partner } }));
+}
+
+const { partner } = Astro.props;
+const { data } = partner;
+const { Content } = await render(partner);
+
+const expired = data.offer.expiresAt ? data.offer.expiresAt < new Date() : false;
+
+// Two partners have no body, on purpose. On Softr, /tekya's About section is
+// Lorem ipsum and /builderscamp never renders its content at all — so there is
+// nothing to migrate, and copying a placeholder across would migrate the defect
+// rather than the page. The heading is skipped rather than left empty; write
+// the copy into the .md file and it appears.
+const hasBody = partner.body != null && partner.body.trim().length > 0;
+---
+
+<Base title={data.seo.title} description={data.seo.description} image={data.seo.ogImage}>
+  <header class="section-warm partner-hero">
+    <div class="container">
+      <p class="tipm-eyebrow">{data.kind === 'partner' ? 'Partner' : 'Benefit'}</p>
+      <h1>{data.name}</h1>
+      <p class="partner-tagline">{data.tagline}</p>
+    </div>
+  </header>
+
+  {hasBody && (
+    <section class="section-white section-pad">
+      <div class="container partner-prose">
+        <h2>About</h2>
+        <Content />
+      </div>
+    </section>
+  )}
+
+  <section class="section-warm section-pad">
+    <div class="container partner-offer">
+      <h2>What we offer</h2>
+      <p class="partner-offer-headline">{data.offer.headline}</p>
+      {data.offer.body && <p>{data.offer.body}</p>}
+
+      {data.offer.bullets.length > 0 && (
+        <ul class="partner-bullets">
+          {data.offer.bullets.map((bullet) => <li>{bullet}</li>)}
+        </ul>
+      )}
+
+      {data.offer.code && (
+        <p class="partner-code">
+          Use the code <code>{data.offer.code}</code> at checkout.
+        </p>
+      )}
+
+      {expired ? (
+        <p class="partner-expired">
+          This offer has expired. <a href="/benefits">See the current benefits</a>.
+        </p>
+      ) : (
+        <a href={data.offer.ctaUrl} target="_blank" rel="noreferrer" class="btn-cta">
+          {data.offer.ctaLabel}
+        </a>
+      )}
+    </div>
+  </section>
+
+  {data.faq.length > 0 && (
+    <section class="section-white section-pad">
+      <div class="container partner-prose">
+        <h2>Questions</h2>
+        {data.faq.map((item) => (
+          <>
+            <h3>{item.q}</h3>
+            <p>{item.a}</p>
+          </>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="section-white section-pad">
+    <div class="container partner-help">
+      <h2>Need assistance?</h2>
+      <p>
+        Broken link? Questions about the benefit? Would you prefer a different benefit? Contact us at
+        <a href="mailto:general@impostor.pm">general@impostor.pm</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .partner-hero { padding: 4rem 0 3rem; }
+  .partner-hero h1 { font-size: 3rem; line-height: 1.05; letter-spacing: -0.04em; margin: 0.5rem 0 0.75rem; }
+  .partner-tagline { font-size: 1.25rem; color: var(--tipm-text-muted); max-width: 48ch; margin: 0; }
+
+  .partner-prose, .partner-offer, .partner-help { max-width: 46rem; }
+  .partner-prose h2, .partner-offer h2, .partner-help h2 { font-size: 1.75rem; margin-bottom: 1rem; }
+  .partner-prose h3 { font-size: 1.125rem; margin-top: 1.75rem; }
+  .partner-prose p, .partner-offer p, .partner-help p { color: var(--tipm-text-muted); font-size: 1.0625rem; }
+  .partner-prose a, .partner-help a {
+    color: var(--tipm-black);
+    text-decoration: underline;
+    text-decoration-color: var(--tipm-golden);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+  }
+
+  .partner-offer-headline { font-size: 1.25rem; font-weight: 600; color: var(--tipm-black) !important; }
+  .partner-bullets { color: var(--tipm-text-muted); padding-left: 1.25rem; margin-bottom: 1.25rem; }
+  .partner-bullets li { margin-bottom: 0.5rem; }
+  .partner-code code {
+    background: var(--tipm-warm-yellow);
+    border: 1px solid var(--tipm-golden);
+    border-radius: var(--radius-xs);
+    padding: 0.15rem 0.5rem;
+    font-weight: 700;
+    color: var(--tipm-black);
+  }
+  .partner-expired { color: var(--tipm-text-muted); font-style: italic; }
+
+  @media (max-width: 768px) {
+    .partner-hero h1 { font-size: 2.25rem; }
+  }
+</style>
