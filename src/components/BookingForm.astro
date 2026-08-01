@@ -1,0 +1,136 @@
+---
+/**
+ * The booking form shared by /landcowork-book-a-seat and /nextlevelhub-booking.
+ *
+ * Both were native Softr forms with the same four fields, so they are one
+ * component here. `kind` selects the recipient from a whitelist inside the
+ * Function — the page never names an address, which is what stops the endpoint
+ * being an open relay.
+ */
+interface Props {
+  /** Must match a key in DESTINATIONS in functions/api/partner-enquiry.js */
+  kind: 'landcowork-booking' | 'nextlevelhub-booking';
+  submitLabel?: string;
+  successMessage?: string;
+}
+
+const {
+  kind,
+  submitLabel = 'Send my request',
+  successMessage = "Thanks — your request is on its way. You'll hear back shortly.",
+} = Astro.props;
+---
+
+<form class="booking-form" data-kind={kind} data-success={successMessage} novalidate>
+  <div class="booking-row">
+    <label>
+      <span>First name <abbr title="required">*</abbr></span>
+      <input type="text" name="firstName" required autocomplete="given-name" />
+    </label>
+    <label>
+      <span>Last name <abbr title="required">*</abbr></span>
+      <input type="text" name="lastName" required autocomplete="family-name" />
+    </label>
+  </div>
+
+  <label>
+    <span>Email <abbr title="required">*</abbr></span>
+    <input type="email" name="email" required autocomplete="email" />
+  </label>
+
+  <label>
+    <span>Message <abbr title="required">*</abbr></span>
+    <textarea name="message" rows="5" required></textarea>
+  </label>
+
+  <button type="submit" class="btn-cta">{submitLabel}</button>
+  <p class="booking-status" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  const MAILTO = 'general@impostor.pm';
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('.booking-form')) {
+    const status = form.querySelector('.booking-status') as HTMLElement;
+    const button = form.querySelector('button[type=submit]') as HTMLButtonElement;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const raw = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+      const name = `${raw.firstName ?? ''} ${raw.lastName ?? ''}`.trim();
+
+      if (!name || !raw.email || !raw.message) {
+        status.dataset.state = 'error';
+        status.textContent = 'Please fill in your name, email and message.';
+        return;
+      }
+
+      button.disabled = true;
+      status.dataset.state = 'pending';
+      status.textContent = 'Sending…';
+
+      try {
+        const response = await fetch('/api/partner-enquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kind: form.dataset.kind, name, email: raw.email, message: raw.message }),
+        });
+        const body = await response.json().catch(() => ({}));
+
+        if (response.ok && body.status === 'ok') {
+          form.reset();
+          status.dataset.state = 'ok';
+          status.textContent = form.dataset.success ?? 'Sent.';
+        } else {
+          throw new Error(body.message ?? `HTTP ${response.status}`);
+        }
+      } catch (error) {
+        // Say so rather than showing a success state we cannot back up. A
+        // booking that vanishes silently is worse than one that tells you to
+        // send an email instead.
+        status.dataset.state = 'error';
+        status.innerHTML =
+          `That didn't go through (${String((error as Error).message).slice(0, 80)}). ` +
+          `Please email us at <a href="mailto:${MAILTO}">${MAILTO}</a>.`;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style is:global>
+  .booking-form { display: grid; gap: 1.25rem; max-width: 34rem; }
+  .booking-row { display: grid; gap: 1.25rem; }
+  @media (min-width: 560px) { .booking-row { grid-template-columns: 1fr 1fr; } }
+
+  .booking-form label { display: grid; gap: 0.4rem; }
+  .booking-form label > span { font-weight: 600; font-size: 0.9375rem; }
+  .booking-form abbr { color: var(--tipm-golden); text-decoration: none; }
+
+  .booking-form input,
+  .booking-form textarea {
+    font: inherit;
+    font-weight: 400;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--tipm-outline);
+    border-radius: var(--radius-md);
+    background: var(--tipm-white);
+    color: var(--tipm-black);
+    width: 100%;
+  }
+  .booking-form input:focus,
+  .booking-form textarea:focus {
+    outline: 2px solid var(--tipm-golden);
+    outline-offset: 1px;
+    border-color: transparent;
+  }
+  .booking-form textarea { resize: vertical; }
+  .booking-form button[type='submit'] { justify-self: start; }
+  .booking-form button[disabled] { opacity: 0.6; cursor: progress; }
+
+  .booking-status { margin: 0; font-size: 0.9375rem; min-height: 1.4em; }
+  .booking-status[data-state='ok'] { color: #1a7f37; font-weight: 600; }
+  .booking-status[data-state='error'] { color: #a4262c; }
+  .booking-status[data-state='pending'] { color: var(--tipm-text-muted); }
+</style>

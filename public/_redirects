@@ -10,3 +10,8 @@
 /compensation/compare-salary    /salary-compass/  301
 /compensation/compare-salary/   /salary-compass/  301
 /compensation/compare-salary/*  /salary-compass/  301
+
+# The Mental Health Series became Product Talks — /mentalhealth on Softr is
+# already a byte-for-byte duplicate of /product-talks, and its own <title> says
+# "Mental Health Series is now: Product Talks". A 301 instead of a second copy.
+/mentalhealth                   /product-talks    301

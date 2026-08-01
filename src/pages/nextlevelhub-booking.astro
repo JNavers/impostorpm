@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import BookingForm from '../components/BookingForm.astro';
+---
+
+<Base
+  title="Book your session with Next Level Hub — The Impostor PM"
+  description="Schedule a 1-on-1 session with the Next Level Hub team and get 10% off your first two sessions as a member of The Impostor PM community."
+>
+  <header class="section-warm booking-hero">
+    <div class="container">
+      <h1>Book your Session with Next Level Hub</h1>
+      <p class="booking-lede">
+        Looking to boost your mental well-being and leadership skills? Fill out this form to schedule your 1-on-1 session with the Next Level Hub team today.
+      </p>
+      <p class="booking-perk">Enjoy a 10% discount on your first two sessions by submitting this form.</p>
+    </div>
+  </header>
+
+  <section class="section-white section-pad-lg">
+    <div class="container">
+      <BookingForm kind="nextlevelhub-booking" successMessage="Thanks — we've passed your request to Next Level Hub. They'll be in touch to arrange a time." />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .booking-hero { padding: 4.5rem 0 3rem; }
+  .booking-hero h1 { font-size: 2.75rem; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 1rem; }
+  .booking-lede { font-size: 1.0625rem; color: var(--tipm-text-muted); max-width: 56ch; margin-bottom: 0.75rem; }
+  .booking-perk { font-weight: 600; color: var(--tipm-black); max-width: 56ch; margin: 0; }
+  @media (max-width: 768px) { .booking-hero h1 { font-size: 2rem; } }
+</style>

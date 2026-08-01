@@ -100,7 +100,13 @@ const partners = defineCollection({
       bullets: z.array(z.string()).default([]),
       code: z.string().optional(),
       ctaLabel: z.string(),
-      ctaUrl: z.string().url(),
+      /**
+       * Absolute for a partner's own site, or a site-relative path when the CTA
+       * points at one of our own pages (the Land Cowork booking form). An
+       * absolute www.impostor.pm URL would work in production but sends you off
+       * the preview deployment mid-test.
+       */
+      ctaUrl: z.union([z.string().url(), z.string().startsWith('/')]),
       /** So a dead perk is detectable instead of quietly wrong. */
       expiresAt: z.coerce.date().optional(),
     }),

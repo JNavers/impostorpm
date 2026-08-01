@@ -111,10 +111,13 @@ wrangler pages secret put RESEND_API_KEY --project-name=impostorpm-site
 
 The same key is already set on `salary-compass-pages`.
 
-**Still on Softr:**
-`/club/how-we-select` · `/bring-the-club-to-my-city` · `/partner-with-us`
-`/mentalhealth` · `/boost` · `/boost-agenda` · `/landcowork` · `/landcowork-book-a-seat`
-`/nextlevelhub-booking` · `/product-talks-link-to-the-talk`
+**Nothing left on Softr.** Every page in the sitemap is either migrated or
+intentionally redirected. Softr can be cancelled once the routing cutover
+(Phase 5) is done and the soak period passes.
+
+`/mentalhealth` is a 301 to `/product-talks` rather than a page: on Softr it is
+already a duplicate of Product Talks, and its own `<title>` reads "Mental Health
+Series is now: Product Talks".
 
 `/benefits` is generated from the partners collection, so a new perk is one .md
 file and it appears on its own page, on /benefits, and nowhere else needs editing.

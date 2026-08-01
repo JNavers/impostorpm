@@ -12,9 +12,32 @@
  * is never quietly lost.
  */
 
-const TO = 'general@impostor.pm';
 const FROM = 'The Impostor PM <noreply@impostor.pm>';
 const MAX_FIELD = 2000;
+
+/**
+ * Recipients are a fixed whitelist keyed by `kind`, never taken from the
+ * request. Letting the caller name a destination would turn this into an open
+ * relay — anyone could POST arbitrary text to any address, from our domain.
+ *
+ * The two booking forms went to Softr's own form backend, which dies with the
+ * subscription, so both pages needed this endpoint to exist at all.
+ */
+const DESTINATIONS = {
+  partner: {
+    to: ['general@impostor.pm'],
+    subject: (name, company) => `Partnership enquiry — ${name}${company ? ` (${company})` : ''}`,
+  },
+  'landcowork-booking': {
+    to: ['info@landwork.pt'],
+    cc: ['general@impostor.pm'],
+    subject: (name) => `Land Cowork seat request — ${name} (via The Impostor PM)`,
+  },
+  'nextlevelhub-booking': {
+    to: ['general@impostor.pm'],
+    subject: (name) => `Next Level Hub session request — ${name}`,
+  },
+};
 
 export async function onRequestPost(context) {
   let data;
@@ -22,6 +45,12 @@ export async function onRequestPost(context) {
     data = await context.request.json();
   } catch {
     return json({ status: 'error', message: 'Expected JSON' }, 400);
+  }
+
+  const kind = typeof data.kind === 'string' ? data.kind : 'partner';
+  const destination = DESTINATIONS[kind];
+  if (!destination) {
+    return json({ status: 'error', message: 'Unknown form' }, 400);
   }
 
   const name = clean(data.name);
@@ -48,15 +77,16 @@ export async function onRequestPost(context) {
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: FROM,
-      to: [TO],
+      to: destination.to,
+      ...(destination.cc ? { cc: destination.cc } : {}),
       reply_to: email,
-      subject: `Partnership enquiry — ${name}${company ? ` (${company})` : ''}`,
+      subject: destination.subject(name, company),
       text: [
         `Name:    ${name}`,
         `Email:   ${email}`,
         `Company: ${company || '—'}`,
         '',
-        'How they would like to collaborate:',
+        'Message:',
         message,
       ].join('\n'),
     }),

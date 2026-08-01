@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+
+/**
+ * The "join the session" page handed out during a live Product Talk.
+ *
+ * This is the one page on the site whose content is per-event: on Softr it
+ * hardcoded a single LinkedIn event URL, so it was already wrong the moment the
+ * next Talk came round. Both values live here at the top for exactly that
+ * reason — update these two lines per session, nothing else.
+ */
+const NEXT_TALK = {
+  joinUrl:
+    'https://www.linkedin.com/events/producttalkwithchristophsteinle7382088061217554433/theater/',
+  title: "We often build what's asked — not what's needed.",
+  body: "Join us for a conversation with Christoph Steinlehner, founder of Mapper Club, where we'll explore how to shift the conversation from features to outcomes and how to rethink product discovery as an ongoing negotiation between value, effort, and constraints.",
+};
+---
+
+<Base
+  title="Product Talks — Join the talk"
+  description="Access link for the next Product Talk by The Impostor PM."
+  noindex
+>
+  <header class="section-warm join-hero">
+    <div class="container">
+      <p class="tipm-eyebrow">Access</p>
+      <h1>Join the session here</h1>
+      <a href={NEXT_TALK.joinUrl} target="_blank" rel="noreferrer" class="btn-cta join-cta">
+        Open the session
+      </a>
+    </div>
+  </header>
+
+  <section class="section-white section-pad-lg">
+    <div class="container join-body">
+      <h2>Next Product Talk</h2>
+      <p class="join-topic">{NEXT_TALK.title}</p>
+      <p>{NEXT_TALK.body}</p>
+
+      <h2 class="join-what">What is Product Talks?</h2>
+      <p>
+        Product Talks is an interactive webinar series by The Impostor PM, where we sit down with product experts (and sometimes people outside of product) to have honest, practical conversations about their craft.
+      </p>
+      <p><a href="/product-talks">See the whole series →</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .join-hero { padding: 4.5rem 0 3.5rem; }
+  .join-hero h1 { font-size: 2.75rem; line-height: 1.05; letter-spacing: -0.04em; margin: 0.5rem 0 1.5rem; }
+  .join-cta { font-size: 1.0625rem; padding: 0.85rem 1.75rem; }
+
+  .join-body { max-width: 46rem; }
+  .join-body h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }
+  .join-what { margin-top: 2.5rem; }
+  .join-topic { font-size: 1.25rem; font-weight: 600; color: var(--tipm-black) !important; }
+  .join-body p { color: var(--tipm-text-muted); font-size: 1.0625rem; }
+  .join-body a { color: var(--tipm-black); text-decoration: underline; text-decoration-color: var(--tipm-golden); text-underline-offset: 4px; text-decoration-thickness: 2px; }
+
+  @media (max-width: 768px) { .join-hero h1 { font-size: 2rem; } }
+</style>
