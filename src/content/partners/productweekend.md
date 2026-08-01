@@ -13,6 +13,7 @@ offer:
   ctaLabel: Grab your spot!
   ctaUrl: https://www.productcircle.co/
 seo:
+  ogImage: /img/og/productweekend.webp
   title: Product Weekend 💛 The Impostor PM
   description: >-
     Impostor PM members get 10% off all Product Circle events.

@@ -12,6 +12,7 @@ offer:
   ctaLabel: Learn more
   ctaUrl: https://www.nextlevelhub.pt/
 seo:
+  ogImage: /img/og/nextlevelhub.webp
   title: Next Level Hub 💛 The Impostor PM
   description: >-
     Mental health, well-being and leadership programs for Product Managers,

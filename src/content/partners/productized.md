@@ -12,6 +12,7 @@ offer:
   ctaLabel: Get your ticket
   ctaUrl: https://productized.co/
 seo:
+  ogImage: /img/og/productized.webp
   title: Productized 💛 The Impostor PM
   description: >-
     Impostor PM members get 20% off tickets to the Productized Conference.

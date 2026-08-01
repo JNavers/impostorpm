@@ -9,6 +9,7 @@ hero:
   subtitle: >-
     The Impostor PM Club is a space where you'll be able to share
     experiences and learn from your peers
+illustration: /img/pages/city-hamburg.webp
 waitlist:
   enabled: true
   eyebrow: "No upcoming Club? Don't worry."
@@ -46,6 +47,7 @@ faq:
   - q: Is this a paid event?
     a: "No. Just no. :)"
 seo:
+  ogImage: /img/og/club-hamburg.webp
   title: TIPM - Your Club in Hamburg
   description: >-
     The Impostor PM Club is in Hamburg. Meet peers, and learn from them

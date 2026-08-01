@@ -35,6 +35,9 @@ const clubs = defineCollection({
       imageAlt: z.string().default(''),
     }),
 
+    /** Line drawing of the city's landmark, used on the /club city grid. */
+    illustration: z.string().optional(),
+
     /**
      * Shown only when the club has no upcoming Luma event.
      *

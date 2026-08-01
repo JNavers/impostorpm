@@ -179,6 +179,37 @@ decorating.
 Two sections were missing from the first pass and are now in: **"Do you want to
 contact us?"** on /about, and the **sponsors strip** on /boost.
 
-Still text-only, correctly: `/benefits` and the partner pages carry no
-illustrations on Softr either (`/tekya` has no images at all), and /compensation
-has its own art already.
+### Finding the assets: DOM scraping was the wrong tool
+
+The first image pass walked the rendered DOM for `<img>` elements and missed
+roughly two thirds of them, because Softr uses `background-image` for hero
+photos and for the whole city grid, and because anything below the fold had not
+lazy-loaded yet when the page was read.
+
+**Read the asset URLs out of the HTML shell instead.** Softr embeds them in the
+page config, so a plain `curl` finds every asset on a page — backgrounds, below
+the fold, all of it — with no browser and no scrolling:
+
+```
+curl -sL -A "<browser UA>" https://www.impostor.pm/<page> \
+  | grep -oE 'https://(assets\.softr-files\.com/applications/[^"'"'"']+|i\.postimg\.cc/[^"'"'"']+)'
+```
+
+That turned 27 assets into **61**. All are archived in
+`content-source/raw-assets/` — deliberately outside `public/`, so unused ones
+are kept for reference without shipping in the deploy.
+
+Note some assets are on **postimg.cc**, not Softr — the city illustrations
+among them. Those survive cancelling Softr, but they are now self-hosted anyway.
+
+### What /club actually needed
+
+The text-only version was missing a full-bleed hero photo, a dark "We are 100%
+free" band, the Senja testimonials (same widget id as the homepage), and the
+city grid with its per-city landmark line drawings. All in.
+
+Per-city and per-partner **social cards** were also found and wired to
+`seo.ogImage`, and the partner cards double as the hero banner on their page.
+
+Still text-only, correctly: `/benefits` carries no illustrations on Softr either,
+`/tekya` has no images at all, and /compensation has its own art already.

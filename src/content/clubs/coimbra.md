@@ -9,6 +9,7 @@ hero:
   subtitle: >-
     The Impostor PM Club is a space where you'll be able to share
     experiences and learn from your peers
+illustration: /img/pages/city-coimbra.webp
 waitlist:
   enabled: true
   eyebrow: "No upcoming Club? Don't worry."

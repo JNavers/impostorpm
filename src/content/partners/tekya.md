@@ -13,6 +13,7 @@ offer:
   ctaLabel: Learn more
   ctaUrl: https://tekya.io/
 seo:
+  ogImage: /img/og/tekya.webp
   title: Tekya 💛 The Impostor PM
   description: From zero to hero, break into tech — a benefit for the Impostor PM community.
 ---
