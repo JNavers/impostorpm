@@ -16,14 +16,17 @@ const FLAGS: Record<string, string> = {
 
 const expectations = [
   {
+    image: '/img/pages/club-expect-1.webp',
     title: 'Join the Circle',
     body: 'Walk into a relaxed space, meet a reduced group of PMs, and feel the "safe room" vibe. Find people like you who are ready to share honestly.',
   },
   {
+    image: '/img/pages/club-expect-2.webp',
     title: 'Real Conversations',
     body: 'The session will revolve around a different topic each time. You only need to listen and share (if you want), about real challenges.',
   },
   {
+    image: '/img/pages/club-expect-3.webp',
     title: 'A Safe Space',
     body: 'By the end, you leave with new perspectives, practical takeaways, and the feeling that you are not alone in your struggles.',
   },
@@ -50,14 +53,19 @@ const expectations = [
 
   <section class="section-white section-pad-lg">
     <div class="container clubidx-body">
-      <h2>We know that feeling</h2>
-      <p>
-        You show up at events hoping to learn something real, but instead you get pitch decks and someone trying to sell their book.
-      </p>
-      <p>Hundreds of slides. Zero applicability. Zero connections.</p>
-      <p class="clubidx-emphasis">
-        We don't have a magic recipe. But we do have a rare safe space for PMs to learn, share, and connect.
-      </p>
+      <div class="clubidx-split">
+        <div>
+          <h2>We know that feeling</h2>
+          <p>
+            You show up at events hoping to learn something real, but instead you get pitch decks and someone trying to sell their book.
+          </p>
+          <p>Hundreds of slides. Zero applicability. Zero connections.</p>
+          <p class="clubidx-emphasis">
+            We don't have a magic recipe. But we do have a rare safe space for PMs to learn, share, and connect.
+          </p>
+        </div>
+        <img src="/img/pages/club-hero.webp" alt="" width="366" height="326" loading="lazy" decoding="async" class="clubidx-art" />
+      </div>
     </div>
   </section>
 
@@ -70,6 +78,7 @@ const expectations = [
       <div class="clubidx-grid">
         {expectations.map((item) => (
           <div class="clubidx-card">
+            {item.image && <img src={item.image} alt="" width="160" height="112" loading="lazy" decoding="async" class="clubidx-icon" />}
             <h3>{item.title}</h3>
             <p>{item.body}</p>
           </div>
@@ -142,6 +151,10 @@ const expectations = [
     padding: 1.5rem;
     border: 1px solid var(--tipm-outline);
   }
+  .clubidx-icon { display: block; height: 7rem; width: auto; margin-bottom: 1rem; }
+  .clubidx-split { display: grid; gap: 2.5rem; align-items: center; }
+  .clubidx-art { width: 100%; max-width: 22rem; height: auto; justify-self: center; }
+  @media (min-width: 900px) { .clubidx-split { grid-template-columns: 1fr 22rem; } }
   .clubidx-card h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
   .clubidx-card p { color: var(--tipm-text-muted); font-size: 0.9375rem; margin: 0; }
 

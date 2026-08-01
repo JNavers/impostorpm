@@ -45,8 +45,19 @@ try {
 <Base title={data.seo.title} description={data.seo.description} image={data.seo.ogImage}>
   <header class="section-warm club-hero">
     <div class="container">
-      <h1>{data.hero.title}</h1>
-      <p class="club-hero-sub">{data.hero.subtitle}</p>
+      <div class="club-hero-split">
+        <div>
+          <h1>{data.hero.title}</h1>
+          <p class="club-hero-sub">{data.hero.subtitle}</p>
+        </div>
+        <img
+          src={data.hero.image ?? '/img/pages/club-forme.webp'}
+          alt={data.hero.imageAlt}
+          width="488"
+          height="325"
+          class="club-hero-art"
+        />
+      </div>
     </div>
   </header>
 
@@ -163,6 +174,9 @@ try {
   .club-hero { padding: 4.5rem 0 3.5rem; }
   .club-hero h1 { font-size: 3rem; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 1rem; }
   .club-hero-sub { font-size: 1.125rem; color: var(--tipm-text-muted); max-width: 52ch; margin: 0; }
+  .club-hero-split { display: grid; gap: 2.5rem; align-items: center; }
+  .club-hero-art { width: 100%; max-width: 26rem; height: auto; border-radius: var(--radius-xl); justify-self: center; }
+  @media (min-width: 900px) { .club-hero-split { grid-template-columns: 1fr 26rem; } }
 
   .club-waitlist { max-width: 46rem; }
   .club-waitlist h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }

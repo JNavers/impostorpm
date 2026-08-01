@@ -40,11 +40,16 @@ const JOIN_URL = 'https://tally.so/r/w2X0de';
 >
   <header class="section-warm group-hero">
     <div class="container">
-      <h1>You are not alone. Join our Slack group today and unleash your potential.</h1>
-      <p class="group-lede">
-        Are you a Product Manager who struggles with impostor syndrome? Do you wish you had others to share your daily difficulties with? If yes, then our support group is for you.
-      </p>
-      <a href={JOIN_URL} target="_blank" rel="noreferrer" class="btn-cta">Join the Community</a>
+      <div class="group-split">
+        <div>
+          <h1>You are not alone. Join our Slack group today and unleash your potential.</h1>
+          <p class="group-lede">
+            Are you a Product Manager who struggles with impostor syndrome? Do you wish you had others to share your daily difficulties with? If yes, then our support group is for you.
+          </p>
+          <a href={JOIN_URL} target="_blank" rel="noreferrer" class="btn-cta">Join the Community</a>
+        </div>
+        <img src="/img/pages/group-hero.svg" alt="" width="585" height="400" class="group-art" />
+      </div>
     </div>
   </header>
 
@@ -79,6 +84,10 @@ const JOIN_URL = 'https://tally.so/r/w2X0de';
   .group-hero { padding: 4.5rem 0 3.5rem; }
   .group-hero h1 { font-size: 2.75rem; line-height: 1.1; letter-spacing: -0.03em; max-width: 20ch; margin-bottom: 1rem; }
   .group-lede { font-size: 1.0625rem; color: var(--tipm-text-muted); max-width: 54ch; margin-bottom: 1.75rem; }
+
+  .group-split { display: grid; gap: 2.5rem; align-items: center; }
+  .group-art { width: 100%; max-width: 30rem; height: auto; justify-self: center; }
+  @media (min-width: 900px) { .group-split { grid-template-columns: 1fr 30rem; } }
 
   .group-body { max-width: 52rem; }
   .group-body h2 { font-size: 1.75rem; margin-bottom: 1rem; }

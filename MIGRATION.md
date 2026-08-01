@@ -161,3 +161,24 @@ the ones with real content. The migrated pages have proper descriptions.
 
 Also stale on Softr: `/productized` still describes the "Productized Conference
 **2024**".
+
+## Illustrations
+
+The first pass migrated text only, which left the pages reading flat next to the
+homepage and /compensation — the Softr illustrations are doing layout work, not
+decorating.
+
+- `scripts/fetch-page-illustrations.mjs` pulls them by `name|url` so files land
+  as `club-hero.webp`, not a UUID. 20 assets, **36 MB → 2.2 MB**. SVG stays
+  vector.
+- Event cards now render Luma's `cover_url`. That was already in the API
+  response and simply not used — it gives /events, /club/*, /product-talks and
+  the homepage real photography that stays current on its own, with no asset to
+  maintain. Fixed intrinsic size so lazy loading cannot shift the layout.
+
+Two sections were missing from the first pass and are now in: **"Do you want to
+contact us?"** on /about, and the **sponsors strip** on /boost.
+
+Still text-only, correctly: `/benefits` and the partner pages carry no
+illustrations on Softr either (`/tekya` has no images at all), and /compensation
+has its own art already.

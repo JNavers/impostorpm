@@ -21,10 +21,12 @@ const speakers = [
 
 const tracks = [
   {
+    image: null,
     title: 'Big failures in successful careers',
     body: "In such an ambiguous career as Product Management, we all have and will continue to fail. To strip away all the guilt and embarrassment, let's start the day with a very special interactive roundtable where great product leaders expose their career failures.",
   },
   {
+    image: '/img/pages/boost-products.webp',
     title: 'Great Products always fail',
     body: "As inevitable as an individual career failure is a failure in our product. Let's debate and learn from the missteps of industry giants and how they turned failures into opportunities!",
   },
@@ -37,19 +39,29 @@ const tracks = [
 >
   <header class="section-warm boost-hero">
     <div class="container">
-      <h1>Embrace Failure to <span class="scribble-underline">Boost Success</span></h1>
-      <p class="boost-lede">
-        A dynamic event where our community celebrates failure as a stepping stone to success. The tool to boost our careers to new heights!
-      </p>
-      <a href="/boost-agenda" class="btn-cta">Agenda</a>
+      <div class="boost-split">
+        <div>
+          <h1>Embrace Failure to <span class="scribble-underline">Boost Success</span></h1>
+          <p class="boost-lede">
+            A dynamic event where our community celebrates failure as a stepping stone to success. The tool to boost our careers to new heights!
+          </p>
+          <a href="/boost-agenda" class="btn-cta">Agenda</a>
+        </div>
+        <img src="/img/pages/boost-hero.svg" alt="" width="439" height="360" class="boost-art" />
+      </div>
     </div>
   </header>
 
   {tracks.map((track) => (
     <section class="section-white section-pad-lg">
       <div class="container boost-body">
-        <h2>{track.title}</h2>
-        <p>{track.body}</p>
+        <div class="boost-track">
+          <div>
+            <h2>{track.title}</h2>
+            <p>{track.body}</p>
+          </div>
+          {track.image && <img src={track.image} alt="" width="366" height="290" loading="lazy" decoding="async" class="boost-track-art" />}
+        </div>
       </div>
     </section>
   ))}
@@ -69,6 +81,31 @@ const tracks = [
     </div>
   </section>
 
+  <section class="section-white section-pad-lg">
+    <div class="container boost-body">
+      <div class="boost-track">
+        <div>
+          <h2>Failing towards Greatness</h2>
+          <p>
+            We'll deconstruct the societal notion that failure is always negative, and explore through reflective exercises and group dynamics how to turn setbacks into stepping stones.
+          </p>
+        </div>
+        <img src="/img/pages/boost-greatness.webp" alt="" width="366" height="290" loading="lazy" decoding="async" class="boost-track-art" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section-warm section-pad">
+    <div class="container boost-body">
+      <h2>With the support from…</h2>
+      <ul class="boost-sponsors">
+        <li><img src="/img/pages/boost-sponsor-1.webp" alt="" width="192" height="64" loading="lazy" decoding="async" /></li>
+        <li><img src="/img/pages/boost-sponsor-2.webp" alt="" width="192" height="64" loading="lazy" decoding="async" /></li>
+        <li><img src="/img/pages/boost-sponsor-3.webp" alt="" width="192" height="64" loading="lazy" decoding="async" /></li>
+      </ul>
+    </div>
+  </section>
+
   <section class="section-golden section-pad">
     <div class="container boost-cta">
       <h2>See the full day</h2>
@@ -82,6 +119,17 @@ const tracks = [
   .boost-hero { padding: 4.5rem 0 3.5rem; }
   .boost-hero h1 { font-size: 3rem; line-height: 1.1; letter-spacing: -0.04em; max-width: 18ch; margin-bottom: 1.25rem; }
   .boost-lede { font-size: 1.0625rem; color: var(--tipm-text-muted); max-width: 56ch; margin-bottom: 1.75rem; }
+
+  .boost-split { display: grid; gap: 2.5rem; align-items: center; }
+  .boost-art { width: 100%; max-width: 24rem; height: auto; justify-self: center; }
+  @media (min-width: 900px) { .boost-split { grid-template-columns: 1fr 24rem; } }
+
+  .boost-track { display: grid; gap: 2rem; align-items: center; }
+  .boost-track-art { width: 100%; max-width: 22rem; height: auto; border-radius: var(--radius-xl); justify-self: center; }
+  @media (min-width: 860px) { .boost-track { grid-template-columns: 1fr 22rem; } }
+
+  .boost-sponsors { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: center; margin-top: 1.5rem; }
+  .boost-sponsors img { height: 3rem; width: auto; opacity: 0.75; }
 
   .boost-body { max-width: 52rem; }
   .boost-body h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }
