@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+
+/**
+ * The "50+ Clubs and counting" grid.
+ *
+ * Appears on both /club and /bring-the-club-to-my-city with identical markup on
+ * Softr, so it lives here rather than being written twice and drifting. The
+ * cities come from the clubs collection, so adding one is a single .md file.
+ */
+interface Props {
+  title?: string;
+  lede?: string;
+}
+
+const {
+  title = '50+ Clubs and counting',
+  lede = "Check out the cities we're already in — yours might be next.",
+} = Astro.props;
+
+const clubs = (await getCollection('clubs', ({ data }) => data.status !== 'deprecated')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const FLAGS: Record<string, string> = { Portugal: '🇵🇹', Germany: '🇩🇪' };
+---
+
+<h2>{title}</h2>
+<p>{lede}</p>
+
+<ul class="city-grid">
+  {clubs.map((club) => (
+    <li class="city-card">
+      <a href={`/club/${club.id}`}>
+        <span class="city-tag">{FLAGS[club.data.country] ?? '📍'} {club.data.city}</span>
+        {club.data.illustration && (
+          <img src={club.data.illustration} alt="" width="480" height="480" loading="lazy" decoding="async" />
+        )}
+      </a>
+    </li>
+  ))}
+  <li class="city-card city-card-soon">
+    {/* The artwork already has "COMING SOON" set into it — a text layer here
+        renders the words twice. */}
+    <img src="/img/pages/city-coming-soon.webp" alt="Coming soon — your city could be next" width="480" height="480" loading="lazy" decoding="async" />
+  </li>
+</ul>
+
+<style is:global>
+  .city-grid {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.75rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1.25rem;
+  }
+  .city-card > a,
+  .city-card-soon {
+    position: relative;
+    display: block;
+    border-radius: var(--radius-xl);
+    background: var(--tipm-warm-yellow);
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform var(--dur-med), box-shadow var(--dur-med);
+  }
+  .city-card > a:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); text-decoration: none; }
+  .city-card img { display: block; width: 100%; height: auto; }
+  .city-tag {
+    position: absolute;
+    top: 0.75rem; right: 0.75rem;
+    z-index: 1;
+    background: var(--tipm-golden);
+    color: var(--tipm-black);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+  }
+  .city-card-soon { background: var(--tipm-near-black); }
+
+  /* On a warm section the cards need to separate from the background. */
+  .section-warm .city-card > a { background: var(--tipm-white); }
+</style>

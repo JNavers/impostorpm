@@ -44,3 +44,32 @@ function bgOf(el){let n=el;for(let i=0;i<10&&n;i++){
 
 Before shipping a migrated page, run the snippet above against the Softr original
 and diff it against the built page.
+
+## Background is not the only thing to measure
+
+`/bring-the-club-to-my-city` matched on colour and still did not match the page.
+Two more things have to be checked per section:
+
+**Which side the image is on.** The original alternates — hero right, "What are
+we looking for?" **left**, "What can you expect?" right. I had put every image on
+the right, which made two consecutive sections read as the same block twice.
+
+```js
+// per section: is the image left or right of the heading?
+for (const h of document.querySelectorAll('h1,h2')) {
+  let box = h; for (let i=0;i<7;i++){ if (box.parentElement && box.parentElement.innerText.length < 900) box = box.parentElement; else break; }
+  const img = box.querySelector('img'); if (!img) continue;
+  console.log(h.textContent.trim(), img.getBoundingClientRect().left > h.getBoundingClientRect().left ? 'RIGHT' : 'LEFT');
+}
+```
+
+**Whether a list is really a list.** The city grid here is the same six landmark
+illustrations as on `/club`, not text chips — and they are `background-image`, so
+they never appear in an `<img>` scrape. Shared as `src/components/CityGrid.astro`
+so the two pages cannot drift.
+
+### Comparing the copy
+
+`DOMParser` does not do layout, so `innerText` on a parsed document runs block
+elements together and the word diff comes back full of joins like `succeed.Join`.
+Append a space to every block element before comparing, or the diff is noise.

@@ -1,11 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import CityGrid from '../components/CityGrid.astro';
 
-const clubs = (await getCollection('clubs', ({ data }) => data.status !== 'deprecated')).sort(
-  (a, b) => a.data.order - b.data.order
-);
-const FLAGS: Record<string, string> = { Portugal: '🇵🇹', Germany: '🇩🇪' };
 
 // Softr routes both the hero CTA and the closing one at the same Tally form.
 const APPLY_URL = 'https://tally.so/r/n0ByXP';
@@ -44,7 +40,11 @@ const expect = [
 
   <section class="section-white section-pad-lg">
     <div class="container host-body">
-      <div class="host-split">
+      {/* Image on the LEFT here and on the right in the next section — the
+          original alternates sides, and collapsing that to one side is what
+          made these two read as the same block twice. */}
+      <div class="host-split host-split-reverse">
+        <img src="/img/pages/host-looking.webp" alt="" width="317" height="240" loading="lazy" decoding="async" class="host-art host-art-sm" />
         <div>
           <h2>What are we looking for?</h2>
           <p>
@@ -54,7 +54,6 @@ const expect = [
             {lookingFor.map((item) => <li>{item}</li>)}
           </ul>
         </div>
-        <img src="/img/pages/host-looking.webp" alt="" width="317" height="240" loading="lazy" decoding="async" class="host-art" />
       </div>
     </div>
   </section>
@@ -76,17 +75,7 @@ const expect = [
 
   <section class="section-white section-pad-lg">
     <div class="container host-body">
-      <h2>50+ Clubs and counting</h2>
-      <p>Check out the cities we're already in — yours might be next.</p>
-      <ul class="host-cities">
-        {clubs.map((club) => (
-          <li>
-            <a href={`/club/${club.id}`}>
-              <span aria-hidden="true">{FLAGS[club.data.country] ?? '📍'}</span> {club.data.city}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <CityGrid />
     </div>
   </section>
 
@@ -106,8 +95,11 @@ const expect = [
 
   .host-split { display: grid; gap: 2.5rem; align-items: center; }
   .host-art { width: 100%; max-width: 26rem; height: auto; justify-self: center; }
-  @media (min-width: 900px) { .host-split { grid-template-columns: 1fr 26rem; } }
-  .host-icon { display: block; width: 100%; max-width: 15rem; height: auto; margin-bottom: 1.25rem; }
+  .host-art-sm { max-width: 18rem; }
+  @media (min-width: 900px) {
+    .host-split { grid-template-columns: 1fr 26rem; }
+    .host-split-reverse { grid-template-columns: 18rem 1fr; }
+  }
 
   .host-body { max-width: 52rem; }
   .host-body h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }
@@ -132,19 +124,6 @@ const expect = [
     background: var(--tipm-golden);
   }
 
-  .host-cities { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
-  .host-cities a {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--tipm-black);
-    border-radius: var(--radius-pill);
-    color: var(--tipm-black);
-    font-size: 0.9375rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: background var(--dur-med), color var(--dur-med);
-  }
-  .host-cities a:hover { background: var(--tipm-black); color: var(--tipm-white); text-decoration: none; }
 
   .host-cta { max-width: 46rem; text-align: center; }
   .host-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }

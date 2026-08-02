@@ -1,17 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import CityGrid from '../../components/CityGrid.astro';
 
 // The city list comes from the clubs collection, so adding a city is one .md
 // file rather than an edit here, an edit to the footer and a new page.
 const clubs = (await getCollection('clubs', ({ data }) => data.status !== 'deprecated')).sort(
   (a, b) => a.data.order - b.data.order
 );
-
-const FLAGS: Record<string, string> = {
-  Portugal: '🇵🇹',
-  Germany: '🇩🇪',
-};
 
 const expectations = [
   {
@@ -107,26 +103,7 @@ const expectations = [
 
   <section class="section-white section-pad-lg">
     <div class="container clubidx-body">
-      <h2>50+ Clubs and counting</h2>
-      <p>Explore the cities we're already in — yours might be next.</p>
-
-      <ul class="clubidx-cities">
-        {clubs.map((club) => (
-          <li class="clubidx-city">
-            <a href={`/club/${club.id}`}>
-              <span class="clubidx-city-tag">{FLAGS[club.data.country] ?? '📍'} {club.data.city}</span>
-              {club.data.illustration && (
-                <img src={club.data.illustration} alt="" width="480" height="480" loading="lazy" decoding="async" />
-              )}
-            </a>
-          </li>
-        ))}
-        <li class="clubidx-city clubidx-city-soon">
-          {/* The artwork already has "COMING SOON" set into it, so there is no
-              text layer here — adding one renders the words twice. */}
-          <img src="/img/pages/city-coming-soon.webp" alt="Coming soon — your city could be next" width="480" height="480" loading="lazy" decoding="async" />
-        </li>
-      </ul>
+      <CityGrid />
     </div>
   </section>
 
@@ -200,42 +177,6 @@ const expectations = [
   .clubidx-card h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
   .clubidx-card p { color: var(--tipm-text-muted); font-size: 0.9375rem; margin: 0; }
 
-  /* One card per city, each with its own landmark line drawing — the thing that
-     made this section worth having on Softr and the piece the text-only pass
-     dropped. */
-  .clubidx-cities {
-    list-style: none;
-    padding: 0;
-    margin-top: 1.75rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: 1.25rem;
-  }
-  .clubidx-city { position: relative; }
-  .clubidx-city > a,
-  .clubidx-city-soon {
-    position: relative;
-    display: block;
-    border-radius: var(--radius-xl);
-    background: var(--tipm-warm-yellow);
-    overflow: hidden;
-    text-decoration: none;
-    transition: transform var(--dur-med), box-shadow var(--dur-med);
-  }
-  .clubidx-city > a:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); text-decoration: none; }
-  .clubidx-city img { display: block; width: 100%; height: auto; }
-  .clubidx-city-tag {
-    position: absolute;
-    top: 0.75rem; right: 0.75rem;
-    z-index: 1;
-    background: var(--tipm-golden);
-    color: var(--tipm-black);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    padding: 0.25rem 0.6rem;
-    border-radius: var(--radius-sm);
-  }
-  .clubidx-city-soon { background: var(--tipm-near-black); }
 
   .clubidx-cta { max-width: 46rem; text-align: center; }
   .clubidx-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }
