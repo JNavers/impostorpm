@@ -24,6 +24,7 @@
   --golden-40:     var(--tipm-golden-40);
   --near-black:    var(--tipm-near-black);
   --black:         var(--tipm-black);
+  --cream:         var(--tipm-cream);
   --light-gray:    var(--tipm-light-gray);
   --border-gray:   var(--tipm-border-gray);
   --text-muted:    var(--tipm-text-muted);
@@ -69,6 +70,10 @@ p { white-space: pre-line; }
 .section-white  { background-color: var(--tipm-white); }
 .section-light  { background-color: var(--tipm-light-gray); }
 .section-golden { background-color: var(--tipm-golden); }
+/* A fifth wash, measured off /product-talks — that page is entirely #f1efe7,
+   not white. Section background is part of the design, not a default: check it
+   against the original page before shipping one. */
+.section-cream  { background-color: var(--tipm-cream); }
 .section-pad    { padding: 4rem 0; }
 .section-pad-lg { padding: 6rem 0; }
 

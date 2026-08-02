@@ -44,9 +44,8 @@ const expect = [
 
   <section class="section-white section-pad-lg">
     <div class="container host-body">
-      <div class="host-cols">
+      <div class="host-split">
         <div>
-          <img src="/img/pages/host-looking.webp" alt="" width="317" height="240" loading="lazy" decoding="async" class="host-icon" />
           <h2>What are we looking for?</h2>
           <p>
             People who genuinely enjoy connecting with others and bringing value to their local community.
@@ -55,19 +54,27 @@ const expect = [
             {lookingFor.map((item) => <li>{item}</li>)}
           </ul>
         </div>
+        <img src="/img/pages/host-looking.webp" alt="" width="317" height="240" loading="lazy" decoding="async" class="host-art" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section-warm section-pad-lg">
+    <div class="container host-body">
+      <div class="host-split">
         <div>
-          <img src="/img/pages/host-expect.webp" alt="" width="317" height="240" loading="lazy" decoding="async" class="host-icon" />
           <h2>What can you expect?</h2>
           <p>Running a Club should be easy, so we've got you covered with resources to help you.</p>
           <ul class="host-list">
             {expect.map((item) => <li>{item}</li>)}
           </ul>
         </div>
+        <img src="/img/pages/host-expect.webp" alt="" width="317" height="240" loading="lazy" decoding="async" class="host-art" />
       </div>
     </div>
   </section>
 
-  <section class="section-warm section-pad-lg">
+  <section class="section-white section-pad-lg">
     <div class="container host-body">
       <h2>50+ Clubs and counting</h2>
       <p>Check out the cities we're already in — yours might be next.</p>

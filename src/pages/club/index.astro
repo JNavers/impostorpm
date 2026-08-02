@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import EventList from '../../components/EventList.astro';
 
 // The city list comes from the clubs collection, so adding a city is one .md
 // file rather than an edit here, an edit to the footer and a new page.
@@ -43,11 +42,11 @@ const expectations = [
       <p class="clubidx-lede">
         Discover a safe space to share experiences and grow together with peers.
       </p>
-      <a href="#upcoming" class="btn-cta">Discover</a>
+      <a href="#what-to-expect" class="btn-cta">Discover</a>
     </div>
   </header>
 
-  <section class="section-white section-pad-lg">
+  <section class="section-warm section-pad-lg">
     <div class="container clubidx-body">
       <div class="clubidx-split">
         <div>
@@ -65,7 +64,7 @@ const expectations = [
     </div>
   </section>
 
-  <section class="section-warm section-pad-lg">
+  <section class="section-white section-pad-lg" id="what-to-expect">
     <div class="container clubidx-body">
       <h2>What to expect</h2>
       <p>
@@ -89,22 +88,11 @@ const expectations = [
         <h2>We are 100% free</h2>
         <p>Because a real sense of community is priceless.</p>
       </div>
-      <a href="#upcoming" class="btn-cta">Upcoming Clubs</a>
+      <a href="/events" class="btn-cta">Upcoming Clubs</a>
     </div>
   </section>
 
-  <section class="ue-section" id="upcoming" aria-labelledby="clubidx-upcoming">
-    <div class="ue-container">
-      <h2 class="ue-title" id="clubidx-upcoming">Upcoming Clubs</h2>
-      <EventList
-        period="future"
-        limit={8}
-        emptyMessage="No Club scheduled right now. New ones go up on Luma first — and the waiting list for your city will let you know."
-      />
-    </div>
-  </section>
-
-  <section class="section-white section-pad-lg">
+  <section class="section-warm section-pad-lg">
     <div class="container clubidx-body">
       <h2>Most events focus on content. We focus on people.</h2>
       <p>
@@ -117,7 +105,7 @@ const expectations = [
     </div>
   </section>
 
-  <section class="section-warm section-pad-lg">
+  <section class="section-white section-pad-lg">
     <div class="container clubidx-body">
       <h2>50+ Clubs and counting</h2>
       <p>Explore the cities we're already in — yours might be next.</p>

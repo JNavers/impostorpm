@@ -33,6 +33,7 @@
   /* ── Warm yellow — soft accent backgrounds ───────────────
      Hero washes, section alternations, the "nothing screams"
      quiet-warm background that defines the brand feel. */
+  --tipm-cream:       #f1efe7;  /* whole-page wash on /product-talks */
   --tipm-warm-yellow: #fff3cf;
   --tipm-warm-soft:   #ffef99;  /* logo highlight stop */
   --tipm-warm-peach:  #ffae63;  /* logo radial stop — use sparingly */

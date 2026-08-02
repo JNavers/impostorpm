@@ -43,7 +43,7 @@ try {
 ---
 
 <Base title={data.seo.title} description={data.seo.description} image={data.seo.ogImage}>
-  <header class="section-warm club-hero">
+  <header class="section-white club-hero">
     <div class="container">
       <div class="club-hero-split">
         <div>
@@ -61,19 +61,17 @@ try {
     </div>
   </header>
 
-  <section class="section-white section-pad" aria-labelledby="club-next">
-    <div class="ue-container">
-      <h2 class="ue-title" id="club-next">
-        {hasUpcoming ? `Next Club in ${data.city}` : 'Upcoming Clubs'}
-      </h2>
-      <EventList
-        period="future"
-        limit={4}
-        cities={data.lumaCities}
-        emptyMessage={`No Club scheduled in ${data.city} right now.`}
-      />
-    </div>
-  </section>
+  {/* The original shows EITHER the next event OR the waiting list, never both,
+      and both sit in the same warm slot. Rendering the two together is what
+      produced a second warm band and a redundant empty state. */}
+  {hasUpcoming && (
+    <section class="section-warm section-pad" aria-labelledby="club-next">
+      <div class="ue-container">
+        <h2 class="ue-title" id="club-next">Next Club in {data.city}</h2>
+        <EventList period="future" limit={4} cities={data.lumaCities} />
+      </div>
+    </section>
+  )}
 
   {data.waitlist.enabled && !hasUpcoming && (
     <section class="section-warm section-pad" aria-labelledby="club-waitlist">
@@ -89,7 +87,7 @@ try {
     </section>
   )}
 
-  <section class="section-white section-pad">
+  <section class="section-dark section-pad">
     <div class="container club-prose">
       <Content />
     </div>
@@ -104,7 +102,7 @@ try {
     </section>
   ))}
 
-  <section class="section-white section-pad" aria-labelledby="club-past">
+  <section class="section-warm section-pad" aria-labelledby="club-past">
     <div class="ue-container">
       <h2 class="ue-title" id="club-past">{data.pastClubs.title}</h2>
       {data.pastClubs.source === 'luma' ? (
@@ -182,10 +180,12 @@ try {
   .club-waitlist h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }
   .club-waitlist p { color: var(--tipm-text-muted); margin-bottom: 1.5rem; }
 
+  /* This block sits on section-dark, matching the original — so its copy and
+     link colours cannot inherit the light-background defaults. */
   .club-prose { max-width: 46rem; }
-  .club-prose h2 { font-size: 1.75rem; margin-bottom: 1rem; }
-  .club-prose p { color: var(--tipm-text-muted); font-size: 1.0625rem; }
-  .club-prose a { color: var(--tipm-black); text-decoration: underline; text-decoration-color: var(--tipm-golden); text-underline-offset: 4px; text-decoration-thickness: 2px; }
+  .club-prose h2 { font-size: 1.75rem; margin-bottom: 1rem; color: var(--tipm-white); }
+  .club-prose p { color: #ccc; font-size: 1.0625rem; }
+  .club-prose a { color: var(--tipm-white); text-decoration: underline; text-decoration-color: var(--tipm-golden); text-underline-offset: 4px; text-decoration-thickness: 2px; }
 
   .club-past-manual { list-style: none; padding: 0; }
   .club-past-manual li { margin-bottom: 0.75rem; }
