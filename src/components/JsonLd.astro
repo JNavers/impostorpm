@@ -1,0 +1,18 @@
+---
+/**
+ * Emits one JSON-LD block. Takes an object rather than a string so the data
+ * cannot drift from what the page renders and cannot be malformed by hand.
+ *
+ * `set:html` with JSON.stringify is deliberate: Astro would otherwise HTML-escape
+ * the quotes and produce a script body that no parser accepts. The `<` escape
+ * below is the standard guard against a value closing the script tag early.
+ */
+interface Props {
+  data: Record<string, unknown>;
+}
+
+const { data } = Astro.props;
+const json = JSON.stringify(data).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" is:inline set:html={json} />

@@ -74,7 +74,7 @@ const LEGACY_URLS = readFileSync(join(ROOT, 'scripts/legacy-sitemap-urls.txt'), 
  *  last Softr CDN dependencies were cut out of it — deliberately, and the only
  *  edit to this file since the subtree. Any other change to this number means
  *  something modified the page that should not have. */
-const SALARY_COMPASS_BYTES = 276897;
+const SALARY_COMPASS_BYTES = 274203;
 
 console.log(`\nValidating: ${HOSTS.join('  ')}\n`);
 
@@ -174,6 +174,29 @@ for (const host of HOSTS) {
     }
   });
 
+  await check('structured data is present and parses', async () => {
+    // Emitted from the same data the page renders. Invalid JSON here is silent:
+    // the page looks perfect and Google discards the block.
+    const pages = ['/', '/events', '/club/porto', '/compensation'];
+    let blocks = 0;
+    for (const path of pages) {
+      const { body } = await getText(host + path);
+      const found = [...body.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)];
+      assert(found.length > 0, `${path} has no JSON-LD`);
+      for (const [, raw] of found) {
+        let parsed;
+        try {
+          parsed = JSON.parse(raw);
+        } catch (e) {
+          throw new Error(`${path} has unparseable JSON-LD: ${e.message}`);
+        }
+        assert(parsed['@context'], `${path} has a block with no @context`);
+        blocks++;
+      }
+    }
+    return `${blocks} blocks across ${pages.length} pages`;
+  });
+
   // ── Analytics ─────────────────────────────────────────────────────────────
   group('analytics');
   await check('PostHog and GA4 load, opted out by default', async () => {
@@ -188,8 +211,15 @@ for (const host of HOSTS) {
 
   await check('consent banner ships with a way to change the answer', async () => {
     const { body } = await getText(`${host}/`);
-    assert(body.includes('tipm-consent'), 'banner missing');
+    assert(body.includes('/shared/consent.js'), 'banner script missing');
     assert(body.includes('data-consent-reopen'), 'no reopen control in the footer');
+
+    // The banner injects its own markup, so the only way to know it is intact is
+    // to fetch it and look for the parts the analytics contract depends on.
+    const script = (await getText(`${host}/shared/consent.js`)).body;
+    for (const token of ['tipm_consent', 'tipm:consent-granted', 'tipm:consent-revoked', 'data-consent-reopen']) {
+      assert(script.includes(token), `consent.js is missing ${token}`);
+    }
   });
 
   await check('salary-compass gates capture on consent too', async () => {
@@ -202,7 +232,7 @@ for (const host of HOSTS) {
       'posthog-init.js captures without waiting for consent'
     );
     const page = (await getText(`${host}/salary-compass/`)).body;
-    assert(page.includes('tipm-consent'), 'no consent banner on salary-compass');
+    assert(page.includes('/shared/consent.js'), 'no consent banner on salary-compass');
   });
 
   await check('salary-compass is not initialised twice', async () => {

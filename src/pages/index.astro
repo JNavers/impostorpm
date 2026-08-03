@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import EventList from '../components/EventList.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { organisation, webSite } from '../lib/schema';
 
 // Built from index-static.html, the homepage that was rebuilt by hand months ago
 // and never deployed — the tracked index.html is still the raw Softr dump.
@@ -14,6 +16,13 @@ import EventList from '../components/EventList.astro';
   title="The Impostor PM — a community for Product Managers"
   description="Clubs, Product Talks, Huddles and live salary data for Product Managers. Real-world practice over performance."
 >
+  {/* The publisher identity for the whole site. The other pages' blocks point at
+      its @id rather than repeating it, so the name, logo and social profiles
+      have one definition. */}
+  <Fragment slot="head">
+    <JsonLd data={organisation()} />
+    <JsonLd data={webSite()} />
+  </Fragment>
   <!-- ════════════ HERO ════════════ -->
   <header class="hero section-warm">
       <div class="container">

@@ -3,7 +3,9 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import EventList from '../../components/EventList.astro';
 import Icon from '../../components/Icon.astro';
-import { fetchEventsAtBuild } from '../../lib/events';
+import { fetchEventsAtBuild, type TipmEvent } from '../../lib/events';
+import JsonLd from '../../components/JsonLd.astro';
+import { event as eventSchema, faqPage, breadcrumbs } from '../../lib/schema';
 
 export async function getStaticPaths() {
   const clubs = await getCollection('clubs', ({ data }) => data.status !== 'deprecated');
@@ -23,11 +25,13 @@ const { Content } = await render(club);
 // /club/coimbra were still advertising 25 and 30 June as "upcoming" on 31 July,
 // because the block is fed by a table nobody prunes. Reading the calendar means
 // an event stops being upcoming on its own.
-let hasUpcoming = false;
+// The matching events are kept rather than counted: they also feed the Event
+// structured data below, which has to describe the same events the page shows.
+let cityEvents: TipmEvent[] = [];
 try {
   const upcoming = await fetchEventsAtBuild('future', 100);
   const needles = data.lumaCities.map((c) => c.toLowerCase());
-  hasUpcoming = upcoming.some((event) => {
+  cityEvents = upcoming.filter((event) => {
     const city = (event.city ?? '').toLowerCase();
     const region = (event.region ?? '').toLowerCase();
     const address = (event.address ?? '').toLowerCase();
@@ -38,11 +42,27 @@ try {
 } catch {
   // Falling back to "show the waitlist" is the safe direction: it never claims
   // an event exists when we could not check.
-  hasUpcoming = false;
+  cityEvents = [];
 }
+const hasUpcoming = cityEvents.length > 0;
 ---
 
 <Base title={data.seo.title} description={data.seo.description} image={data.seo.ogImage}>
+  {/* Structured data, all of it derived from what this page already renders:
+      the events come from the same Luma fetch that decides the waitlist block,
+      and the FAQs are the ones printed below. Google discards FAQPage whose
+      answers are not visible on the page. */}
+  <Fragment slot="head">
+    {cityEvents.map((item) => <JsonLd data={eventSchema(item)} />)}
+    {data.faq.length > 0 && <JsonLd data={faqPage(data.faq)} />}
+    <JsonLd
+      data={breadcrumbs([
+        { name: 'Home', path: '/' },
+        { name: 'Club', path: '/club' },
+        { name: data.city, path: `/club/${club.id}` },
+      ])}
+    />
+  </Fragment>
   <header class="section-white club-hero">
     <div class="container">
       <div class="club-hero-split">

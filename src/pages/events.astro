@@ -1,7 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
 import EventList from '../components/EventList.astro';
-import { LUMA_CALENDAR_URL, LUMA_ICS_URL } from '../lib/events';
+import { LUMA_CALENDAR_URL, LUMA_ICS_URL, fetchEventsAtBuild } from '../lib/events';
+import JsonLd from '../components/JsonLd.astro';
+import { event as eventSchema } from '../lib/schema';
+
+// Structured data for the same events the page lists. A Luma outage must not
+// fail the build, so this degrades to no blocks rather than throwing.
+let upcoming = [];
+try { upcoming = await fetchEventsAtBuild('future', 50); } catch { upcoming = []; }
 
 // Net-new page. /events is a 404 on Softr today, yet the rebuilt homepage links
 // to it as "See the full calendar" — so this also fixes a dead link.
@@ -11,6 +18,9 @@ import { LUMA_CALENDAR_URL, LUMA_ICS_URL } from '../lib/events';
   title="Upcoming events — The Impostor PM"
   description="Every upcoming Impostor PM event: Clubs, Product Talks, Huddles and meetups across Porto, Lisbon, Braga, Coimbra and beyond."
 >
+  <Fragment slot="head">
+    {upcoming.map((item) => <JsonLd data={eventSchema(item)} />)}
+  </Fragment>
   <header class="section-warm" style="padding: 4.5rem 0 3rem;">
     <div class="ue-container">
       <p class="ue-eyebrow">What's on</p>

@@ -5072,55 +5072,8 @@
 })();
 </script>
 
-<!-- Cookie consent. Kept byte-for-byte in behaviour with the shared Astro
-     component (src/components/ConsentBanner.astro): same localStorage key, same
-     two events, same wording. Duplicated rather than imported because this page
-     is standalone HTML in public/ and never renders through the site layout.
-     If you change one, change both. -->
-<div id="tipm-consent" class="tipm-consent" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
-    <p class="tipm-consent-text">
-        We use analytics to understand what's useful on this site. Nothing is collected until you agree.
-        <a href="https://www.iubenda.com/privacy-policy/26472145/cookie-policy" target="_blank" rel="noreferrer">Cookie policy</a>
-    </p>
-    <div class="tipm-consent-actions">
-        <button type="button" data-consent="decline">Decline</button>
-        <button type="button" data-consent="accept">Accept</button>
-    </div>
-</div>
-<style>
-.tipm-consent{position:fixed;z-index:2000;left:1rem;right:1rem;bottom:1rem;max-width:34rem;margin-inline:auto;padding:1.25rem;background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:1rem;font-size:.9375rem;line-height:1.5}
-.tipm-consent[hidden]{display:none}
-.tipm-consent-text{margin:0;color:#555}
-.tipm-consent-actions{display:flex;gap:.75rem;justify-content:flex-end}
-.tipm-consent-actions button{font:inherit;border-radius:4px;padding:.65rem 1.75rem;cursor:pointer}
-.tipm-consent-actions [data-consent=accept]{background:#ffc600;color:#1e1e1e;border:none;font-weight:500}
-.tipm-consent-actions [data-consent=decline]{background:transparent;color:#000;border:1.5px solid #000}
-@media (max-width:767.98px){.tipm-consent{left:.75rem;right:.75rem;bottom:.75rem}.tipm-consent-actions{justify-content:center}}
-</style>
-<script>
-(function () {
-    var KEY = 'tipm_consent', el = document.getElementById('tipm-consent');
-    if (!el) return;
-    function read() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
-    function write(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
-    if (!read()) el.hidden = false;
-    el.addEventListener('click', function (event) {
-        var choice = event.target && event.target.getAttribute('data-consent');
-        if (!choice) return;
-        if (choice === 'accept') {
-            write('granted');
-            window.dispatchEvent(new Event('tipm:consent-granted'));
-        } else {
-            write('denied');
-            window.dispatchEvent(new Event('tipm:consent-revoked'));
-        }
-        el.hidden = true;
-    });
-    document.addEventListener('click', function (event) {
-        var t = event.target;
-        if (t && t.closest && t.closest('[data-consent-reopen]')) { event.preventDefault(); el.hidden = false; }
-    });
-})();
-</script>
+<!-- Consent banner: markup, styles and behaviour all come from this one
+     file, which the Astro site loads too. -->
+<script src="/shared/consent.js" defer></script>
 </body>
 </html>
