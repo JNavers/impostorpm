@@ -125,4 +125,31 @@ const partners = defineCollection({
   }),
 });
 
-export const collections = { clubs, partners };
+/**
+ * Product Talks.
+ *
+ * These live in Airtable on Softr, not in Luma, and the card art has the title,
+ * speaker and date baked into the image — so none of it exists as text on the
+ * original page. Transcribed here so it is searchable, readable by a screen
+ * reader, and survives Softr being cancelled.
+ *
+ * Future Talks come from Luma instead: tag the event `Product Talks` there and
+ * /product-talks picks it up automatically. These four are the back catalogue
+ * that predates that, and stay static.
+ */
+const talks = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/talks' }),
+  schema: z.object({
+    title: z.string(),
+    speaker: z.string(),
+    speakerRole: z.string().default(''),
+    date: z.coerce.date(),
+    /** "Product Talks" or "Mental Health Series" — shown as the card badge. */
+    series: z.string().default('Product Talks'),
+    image: z.string(),
+    online: z.boolean().default(true),
+    url: z.string().url().optional(),
+  }),
+});
+
+export const collections = { clubs, partners, talks };

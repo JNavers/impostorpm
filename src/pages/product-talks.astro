@@ -1,6 +1,42 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import EventList from '../components/EventList.astro';
+import type { TipmEvent } from '../lib/events';
+
+/**
+ * Two sources, one list.
+ *
+ * The back catalogue lived in Airtable on Softr and is now static in the repo.
+ * Anything new comes from Luma: tag the event `Product Talks` there and it
+ * appears here on its own — no file to edit, nothing to deploy.
+ *
+ * The Talks were never in the Luma calendar (checked against all 16 past events
+ * — zero matches), which is why the past-Talks list cannot simply reuse the
+ * Club feed the way the rest of the site does.
+ */
+const LUMA_TAG = 'Product Talks';
+
+const talks = (await getCollection('talks')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const staticTalks: TipmEvent[] = talks.map((t) => ({
+  id: t.id,
+  name: t.data.title,
+  url: t.data.url ?? 'https://luma.com/impostorpm',
+  start_at: t.data.date.toISOString(),
+  end_at: null,
+  timezone: 'Europe/Lisbon',
+  cover_url: t.data.image,
+  city: null,
+  region: null,
+  country: null,
+  address: null,
+  location_type: t.data.online ? 'online' : 'offline',
+  event_type: t.data.series,
+  tags: [t.data.series],
+}));
 ---
 
 <Base
@@ -53,6 +89,8 @@ import EventList from '../components/EventList.astro';
       <EventList
         period="past"
         limit={12}
+        tags={[LUMA_TAG]}
+        extra={staticTalks}
         emptyMessage="Past Talks will show up here as the calendar fills in."
       />
     </div>
@@ -61,13 +99,13 @@ import EventList from '../components/EventList.astro';
 
 <style>
   .talks-hero { padding: 4.5rem 0 3.5rem; }
-  .talks-hero h1 { font-size: 3rem; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 1rem; }
+  .talks-hero h1 { font-size: 3rem; line-height: 1.5; letter-spacing: -0.04em; margin-bottom: 1rem; }
   .talks-lede { font-size: 1.125rem; color: var(--tipm-text-muted); max-width: 48ch; margin-bottom: 1.75rem; }
 
   .talks-art { display: block; width: 8rem; height: auto; margin-bottom: 1.25rem; }
   .talks-body { max-width: 52rem; }
-  .talks-body h2 { font-size: 1.75rem; margin-bottom: 1rem; }
-  .talks-body > p { color: var(--tipm-text-muted); font-size: 1.0625rem; max-width: 62ch; }
+  .talks-body h2 { font-size: 1.875rem; margin-bottom: 1rem; }
+  .talks-body > p { color: var(--tipm-text-muted); font-size: 1rem; max-width: 62ch; }
 
   .talks-parts { display: grid; gap: 1.5rem; margin-top: 2rem; }
   .talks-part { display: flex; gap: 1.25rem; align-items: flex-start; }

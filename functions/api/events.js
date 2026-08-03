@@ -25,6 +25,7 @@ export async function onRequestGet(context) {
   const period = url.searchParams.get('period') === 'past' ? 'past' : 'future';
   const limit = clampLimit(url.searchParams.get('limit'));
   const cities = parseCities(url.searchParams.get('cities'));
+  const tags = parseCities(url.searchParams.get('tags'));
 
   const cache = caches.default;
   const freshKey = new Request(`${url.origin}/__cache/events/${period}`);
@@ -52,7 +53,7 @@ export async function onRequestGet(context) {
     }
   }
 
-  const events = filterByCities(payload.events, cities).slice(0, limit);
+  const events = filterByTags(filterByCities(payload.events, cities), tags).slice(0, limit);
 
   return json(
     { period, generated_at: payload.generated_at, stale, count: events.length, events },
@@ -79,7 +80,7 @@ async function fetchUpstream(period) {
   if (!Array.isArray(data?.entries)) throw new Error('luma: unexpected shape');
 
   const events = data.entries
-    .map((entry) => normalise(entry.event))
+    .map((entry) => normalise(entry.event, entry.tags))
     .filter(Boolean)
     .sort((a, b) =>
       period === 'past'
@@ -94,7 +95,7 @@ async function fetchUpstream(period) {
  * Keep the ~15 fields a card needs. Luma's payload is ~200 KB for 17 events,
  * almost all of it colour palettes, place_ids and localised address variants.
  */
-function normalise(event) {
+function normalise(event, tags) {
   if (!event?.api_id || !event?.start_at) return null;
   const geo = event.geo_address_info ?? {};
 
@@ -114,6 +115,11 @@ function normalise(event) {
     address: geo.address ?? null,
     location_type: event.location_type ?? null,
     event_type: event.event_type ?? null,
+    /* Luma's own tags, which the calendar already uses to mark the event TYPE
+       (a yellow "Club" / "Huddle" tag) alongside a red city tag. That existing
+       habit is what lets /product-talks pick up future Talks with no extra
+       tooling: tag it "Product Talks" in Luma and it appears. */
+    tags: Array.isArray(tags) ? tags.map((t) => t?.name).filter(Boolean) : [],
   };
 }
 
@@ -158,6 +164,12 @@ function filterByCities(events, cities) {
         (!city && !region && address.includes(needle))
     );
   });
+}
+
+/** Match on Luma's tags. Case- and accent-insensitive like the city filter. */
+function filterByTags(events, tags) {
+  if (!tags.length) return events;
+  return events.filter((event) => (event.tags ?? []).some((t) => tags.includes(fold(t))));
 }
 
 /* ── plumbing ─────────────────────────────────────────────────────────────── */

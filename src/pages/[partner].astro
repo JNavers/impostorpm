@@ -105,16 +105,16 @@ const hasBody = partner.body != null && partner.body.trim().length > 0;
 
 <style is:global>
   .partner-hero { padding: 4rem 0 3rem; }
-  .partner-hero h1 { font-size: 3rem; line-height: 1.05; letter-spacing: -0.04em; margin: 0.5rem 0 0.75rem; }
+  .partner-hero h1 { font-size: 2.25rem; line-height: 1.2;   /* 36/43.2 */ letter-spacing: -0.04em; margin: 0.5rem 0 0.75rem; }
   .partner-tagline { font-size: 1.25rem; color: var(--tipm-text-muted); max-width: 48ch; margin: 0; }
   .partner-hero-split { display: grid; gap: 2.5rem; align-items: center; }
   .partner-banner { width: 100%; max-width: 28rem; height: auto; border-radius: var(--radius-xl); justify-self: center; }
   @media (min-width: 900px) { .partner-hero-split { grid-template-columns: 1fr 28rem; } }
 
   .partner-prose, .partner-offer, .partner-help { max-width: 46rem; }
-  .partner-prose h2, .partner-offer h2, .partner-help h2 { font-size: 1.75rem; margin-bottom: 1rem; }
+  .partner-prose h2, .partner-offer h2, .partner-help h2 { font-size: 2rem;   /* 32px en el original */ margin-bottom: 1rem; }
   .partner-prose h3 { font-size: 1.125rem; margin-top: 1.75rem; }
-  .partner-prose p, .partner-offer p, .partner-help p { color: var(--tipm-text-muted); font-size: 1.0625rem; }
+  .partner-prose p, .partner-offer p, .partner-help p { color: var(--tipm-text-muted); font-size: 1rem; }
   .partner-prose a, .partner-help a {
     color: var(--tipm-black);
     text-decoration: underline;

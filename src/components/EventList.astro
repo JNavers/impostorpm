@@ -17,6 +17,14 @@ interface Props {
   emptyMessage?: string;
   /** Fail the build when the Luma fetch fails, rather than shipping empty cards. */
   requireAtBuild?: boolean;
+  /** Only Luma events carrying one of these tags. */
+  tags?: string[];
+  /**
+   * Events that do not come from Luma at all — the Product Talks back catalogue,
+   * which lives in the repo. Merged with the Luma results and sorted together,
+   * so the two sources read as one list.
+   */
+  extra?: TipmEvent[];
 }
 
 const {
@@ -25,6 +33,8 @@ const {
   cities = [],
   emptyMessage = 'No events scheduled right now. New ones go up on Luma first.',
   requireAtBuild = false,
+  tags = [],
+  extra = [],
 } = Astro.props;
 
 // Rendered at build so the page has real content with no JS and no layout shift;
@@ -34,9 +44,23 @@ let initial: TipmEvent[] = [];
 let buildFailed = false;
 try {
   const all = await fetchEventsAtBuild(period, 100);
-  initial = filterByCities(all, cities).slice(0, limit);
+  let list = filterByCities(all, cities);
+  if (tags.length) {
+    const want = tags.map(fold);
+    list = list.filter((e) => (e.tags ?? []).some((t) => want.includes(fold(t))));
+  }
+  // The static talks are merged in and sorted with the rest, so a future Luma
+  // Talk lands in date order next to the back catalogue instead of after it.
+  initial = [...list, ...extra]
+    .sort((a, b) =>
+      period === 'past'
+        ? Date.parse(b.start_at) - Date.parse(a.start_at)
+        : Date.parse(a.start_at) - Date.parse(b.start_at)
+    )
+    .slice(0, limit);
 } catch (error) {
   buildFailed = true;
+  initial = extra.slice(0, limit);
   if (requireAtBuild) throw error;
   console.warn(`[EventList] Luma fetch failed at build (period=${period}):`, error);
 }
@@ -65,15 +89,16 @@ function filterByCities(events: TipmEvent[], list: string[]): TipmEvent[] {
 
 const endpoint = `/api/events?period=${period}&limit=${limit}${
   cities.length ? `&cities=${encodeURIComponent(cities.join(','))}` : ''
-}`;
+}${tags.length ? `&tags=${encodeURIComponent(tags.join(','))}` : ''}`;
 ---
 
 <div
-  class="ue-list"
+  class:list={['ue-list', extra.length && 'ue-list-artwork']}
   data-events
   data-endpoint={endpoint}
   data-empty={emptyMessage}
   data-build-failed={buildFailed ? 'true' : undefined}
+  data-has-static={extra.length ? 'true' : undefined}
 >
   {initial.length === 0 && <p class="ue-empty">{emptyMessage}</p>}
 
@@ -170,6 +195,10 @@ const endpoint = `/api/events?period=${period}&limit=${limit}${
   for (const host of document.querySelectorAll<HTMLElement>('[data-events]')) {
     const endpoint = host.dataset.endpoint;
     if (!endpoint) continue;
+
+    // With static entries mixed in, a refresh would drop them — the endpoint
+    // only knows about Luma. Leave the server-rendered list alone in that case.
+    if (host.dataset.hasStatic) continue;
 
     fetch(endpoint)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
@@ -419,6 +448,24 @@ const endpoint = `/api/events?period=${period}&limit=${limit}${
 @media (max-width: 900px) {
     .ue-item.has-cover { grid-template-columns: 80px 1fr; }
     .ue-cover { grid-column: 1 / -1; width: 100%; height: 180px; }
+}
+
+/* The Product Talks artwork is a designed card with the title, speaker and date
+   set INTO the image, and it is roughly square. Cropping that to the 3:2 cover
+   used for photos cuts the words off, so these get more room and are contained
+   rather than cropped. */
+.ue-list-artwork .ue-item.has-cover { grid-template-columns: 220px 100px 1fr auto; }
+.ue-list-artwork .ue-cover {
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+}
+@media (max-width: 900px) {
+    .ue-list-artwork .ue-item.has-cover { grid-template-columns: 80px 1fr; }
+    .ue-list-artwork .ue-cover { width: 100%; height: auto; }
 }
 
 /* Added by the component: a time chip beside the location, and the empty state.

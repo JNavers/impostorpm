@@ -23,7 +23,7 @@ import Base from '../layouts/Base.astro';
     </div>
   </header>
 
-  <section class="section-white section-pad-lg">
+  <section class="section-gradient-warm section-pad-lg">
     <div class="container about-body">
       <h2>Our Mission</h2>
       <p>
@@ -49,7 +49,7 @@ import Base from '../layouts/Base.astro';
 
 <style>
   .about-hero { padding: 4.5rem 0 3.5rem; }
-  .about-hero h1 { font-size: 3rem; line-height: 1.05; letter-spacing: -0.04em; max-width: 18ch; margin-bottom: 1rem; }
+  .about-hero h1 { font-size: 2.25rem;   /* 36px en el original, no 48 */ line-height: 1.5; letter-spacing: -0.04em; max-width: 18ch; margin-bottom: 1rem; }
   .about-lede { font-size: 1.125rem; color: var(--tipm-text-muted); max-width: 54ch; margin: 0; }
 
   .about-split { display: grid; gap: 2.5rem; align-items: center; }
@@ -58,14 +58,14 @@ import Base from '../layouts/Base.astro';
 
   .about-contact { display: grid; gap: 2rem; align-items: center; max-width: 52rem; }
   .about-contact img { width: 100%; max-width: 20rem; height: auto; justify-self: center; }
-  .about-contact h2 { font-size: 1.75rem; margin-bottom: 0.5rem; }
-  .about-contact p { color: var(--tipm-text-muted); font-size: 1.0625rem; }
+  .about-contact h2 { font-size: 1.875rem; margin-bottom: 0.5rem; }
+  .about-contact p { color: var(--tipm-text-muted); font-size: 1rem; }
   .about-contact a { color: var(--tipm-black); text-decoration: underline; text-decoration-color: var(--tipm-golden); text-underline-offset: 4px; text-decoration-thickness: 2px; }
   @media (min-width: 760px) { .about-contact { grid-template-columns: 20rem 1fr; } }
 
   .about-body { max-width: 46rem; }
-  .about-body h2 { font-size: 1.75rem; margin-bottom: 1rem; }
-  .about-body p { color: var(--tipm-text-muted); font-size: 1.0625rem; }
+  .about-body h2 { font-size: 2rem;   /* 32px en el original */ margin-bottom: 1rem; }
+  .about-body p { color: var(--tipm-text-muted); font-size: 1rem; }
 
   .about-cta { max-width: 46rem; text-align: center; }
   .about-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }

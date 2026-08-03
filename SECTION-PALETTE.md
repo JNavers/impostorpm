@@ -200,3 +200,49 @@ Verify by measuring, never by reading the CSS:
   .map(h => { const c = getComputedStyle(h);
     return `${c.fontSize}/${c.lineHeight}  ${h.textContent.trim().slice(0,30)}`; });
 ```
+
+
+## The section background can be an IMAGE
+
+`/about` and `/group` measured as "all white" through three different probes, and
+were not. The warm and coral washes on those pages are **`background-image`
+pointing at an SVG** that holds a two-stop linear gradient — not a
+`background-color`, and not a CSS gradient either, so nothing that reads
+`backgroundColor` or greps for `gradient` will ever see them.
+
+Reproduced in CSS from the SVG's own stops, so no image ships:
+
+| class | stops |
+|---|---|
+| `.section-gradient-warm` | `#ffef99 → #ffae63`, 90deg |
+| `.section-gradient-coral` | `#ffaaad → #ffef99`, 90deg |
+
+Where they go: `/about` "Our Mission" is warm; `/group`'s hero is warm.
+
+### How to measure it
+
+Walking up the DOM does not work — a white wrapper wins before you reach the
+section. Neither does "widest covering element", for the same reason. Sample the
+element actually painted at a point, then walk up until something has *either* a
+background image or a background colour:
+
+```js
+window.scrollTo(0, h.getBoundingClientRect().top + scrollY - 250);
+const el = document.elementFromPoint(30, Math.round(h.getBoundingClientRect().top + 10));
+let n = el;
+for (let i = 0; i < 8 && n; i++) {
+  const s = getComputedStyle(n);
+  if (s.backgroundImage !== 'none') { console.log('IMG', s.backgroundImage); break; }
+  if (s.backgroundColor !== 'rgba(0, 0, 0, 0)') { console.log('COL', s.backgroundColor); break; }
+  n = n.parentElement;
+}
+```
+
+Set `scroll-behavior: auto` first, or the scroll has not landed when you sample.
+
+## Wait for the deploy before verifying
+
+Cloudflare takes ~15-20s to propagate. Measuring sooner returns the previous
+build, and has repeatedly made a correct change look broken — and once made a
+working tag filter look like it was returning unfiltered results. Wait, then
+measure.

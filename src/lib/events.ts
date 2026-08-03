@@ -17,6 +17,8 @@ export type TipmEvent = {
   address: string | null;
   location_type: string | null;
   event_type: string | null;
+  /** Luma tags, e.g. ["Club", "Porto"] or ["Product Talks"]. */
+  tags: string[];
 };
 
 export type EventsResponse = {
@@ -51,13 +53,12 @@ export async function fetchEventsAtBuild(
   const response = await fetch(endpoint, { headers: { accept: 'application/json' } });
   if (!response.ok) throw new Error(`Luma responded ${response.status} for period=${period}`);
 
-  const data = (await response.json()) as { entries?: { event: Record<string, any> }[] };
+  const data = (await response.json()) as { entries?: { event: Record<string, any>; tags?: { name?: string }[] }[] };
   if (!Array.isArray(data.entries)) throw new Error('Luma returned an unexpected shape');
 
   return data.entries
-    .map((entry) => entry.event)
-    .filter((event) => event?.api_id && event?.start_at)
-    .map((event) => ({
+    .filter((entry) => entry.event?.api_id && entry.event?.start_at)
+    .map(({ event, tags }) => ({
       id: event.api_id,
       name: event.name ?? '',
       url: event.url ? `https://luma.com/${event.url}` : LUMA_CALENDAR_URL,
@@ -71,6 +72,7 @@ export async function fetchEventsAtBuild(
       address: event.geo_address_info?.address ?? null,
       location_type: event.location_type ?? null,
       event_type: event.event_type ?? null,
+      tags: Array.isArray(tags) ? tags.map((t) => t?.name).filter(Boolean) as string[] : [],
     }))
     .sort((a, b) =>
       period === 'past'

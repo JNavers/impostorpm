@@ -49,8 +49,8 @@ const partners = (await getCollection('partners', ({ data }) => data.listed)).so
 
 <style>
   .benefits-hero { padding: 4.5rem 0 3rem; }
-  .benefits-hero h1 { font-size: 3rem; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 1rem; }
-  .benefits-lede { font-size: 1.0625rem; color: var(--tipm-text-muted); max-width: 52ch; margin: 0; }
+  .benefits-hero h1 { font-size: 3rem; line-height: 1.5; letter-spacing: -0.04em; margin-bottom: 1rem; }
+  .benefits-lede { font-size: 1rem; color: var(--tipm-text-muted); max-width: 52ch; margin: 0; }
 
   .benefits-grid {
     display: grid;
@@ -73,7 +73,7 @@ const partners = (await getCollection('partners', ({ data }) => data.listed)).so
     box-shadow: var(--shadow-soft);
     transform: translateY(-2px);
   }
-  .benefit-card h2 { font-size: 1.375rem; margin: 0.5rem 0 0.5rem; }
+  .benefit-card h2 { font-size: 1.5rem;   /* 24px */ margin: 0.5rem 0 0.5rem; }
   .benefit-tagline { color: var(--tipm-text-muted); font-size: 0.9375rem; margin-bottom: 1rem; }
   .benefit-more { font-weight: 600; font-size: 0.875rem; }
 

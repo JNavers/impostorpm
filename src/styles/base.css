@@ -74,6 +74,15 @@ p { white-space: pre-line; }
    not white. Section background is part of the design, not a default: check it
    against the original page before shipping one. */
 .section-cream  { background-color: var(--tipm-cream); }
+
+/* Two more section washes, and the ones that took longest to find: on Softr
+   they are not a colour and not a CSS gradient but a background IMAGE — an SVG
+   holding a two-stop linear gradient. Every probe that read backgroundColor
+   reported these sections as plain white.
+   Reproduced in CSS from the SVG's own stops, so there is no image to ship.
+   Horizontal, matching the source's x1/x2 orientation. */
+.section-gradient-warm  { background-image: linear-gradient(90deg, var(--tipm-warm-soft) 0%, var(--tipm-warm-peach) 100%); }
+.section-gradient-coral { background-image: linear-gradient(90deg, var(--tipm-warm-pink) 0%, var(--tipm-warm-soft) 100%); }
 .section-pad    { padding: 4rem 0; }
 .section-pad-lg { padding: 6rem 0; }
 

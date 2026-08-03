@@ -36,7 +36,8 @@
   --tipm-cream:       #f1efe7;  /* whole-page wash on /product-talks */
   --tipm-warm-yellow: #fff3cf;
   --tipm-warm-soft:   #ffef99;  /* logo highlight stop */
-  --tipm-warm-peach:  #ffae63;  /* logo radial stop — use sparingly */
+  --tipm-warm-peach:  #ffae63;  /* parada final del degradado cálido */
+  --tipm-warm-pink:   #ffaaad;  /* parada inicial del degradado coral */  /* logo radial stop — use sparingly */
 
   /* ── Banner / cookie accent ──────────────────────────────- */
   --tipm-cookie-yellow: #ffef99; /* from Iubenda banner config */
@@ -81,10 +82,12 @@
   --fs-6xl:  3rem;      /* 48px — section heading (dark) */
   --fs-hero: 4.5rem;    /* 72px — hero */
 
-  --lh-tight:  1.05;
-  --lh-snug:   1.2;
-  --lh-body:   1.65;
-  --lh-normal: 1.7;
+  /* Measured off the Softr original: 76 of 89 size/line-height pairs across the
+     site are exactly 1.5. It is the rhythm of the whole design, not a default. */
+  --lh-tight:  1.5;
+  --lh-snug:   1.5;
+  --lh-body:   1.5;
+  --lh-normal: 1.5;
 
   --tracking-tight: -0.04em; /* hero */
   --tracking-normal: 0;
