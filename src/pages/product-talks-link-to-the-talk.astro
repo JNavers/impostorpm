@@ -26,7 +26,7 @@ const NEXT_TALK = {
     <div class="container">
       <p class="tipm-eyebrow">Access</p>
       <h1>Join the session here</h1>
-      <a href={NEXT_TALK.joinUrl} target="_blank" rel="noreferrer" class="btn-cta join-cta">
+      <a href={NEXT_TALK.joinUrl} target="_blank" rel="noreferrer" class="btn-cta btn-lg-custom join-cta">
         Open the session
       </a>
     </div>
@@ -50,7 +50,8 @@ const NEXT_TALK = {
 <style>
   .join-hero { padding: 4.5rem 0 3.5rem; }
   .join-hero h1 { font-size: 2.75rem; line-height: 1.05; letter-spacing: -0.04em; margin: 0.5rem 0 1.5rem; }
-  .join-cta { font-size: 1.0625rem; padding: 0.85rem 1.75rem; }
+  /* Was resizing the button by hand. Buttons are one shape across the site;
+     .btn-lg-custom is the way to make one bigger. */
 
   .join-body { max-width: 46rem; }
   .join-body h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }

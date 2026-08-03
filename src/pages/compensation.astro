@@ -1332,7 +1332,10 @@ const POSTHOG = {
       margin-left: auto;
       margin-right: auto;
   }
-  .final-cta .btn-cta-dark { padding: .85rem 1.75rem; font-size: 1rem; }
+  /* The final CTA used to grow its own padding here. Buttons are one shape
+     across the site now (base.css); use .btn-lg-custom if a button needs to be
+     bigger, rather than a per-page override. */
+  .final-cta .btn-cta-dark { padding: .65rem 1.75rem; }
 
   /* ════════════ HELPERS ════════════ */
   .lede { font-size: 1.125rem; color: var(--text-muted); line-height: 1.7; }

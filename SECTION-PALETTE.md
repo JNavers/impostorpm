@@ -73,3 +73,40 @@ so the two pages cannot drift.
 `DOMParser` does not do layout, so `innerText` on a parsed document runs block
 elements together and the word diff comes back full of joins like `succeed.Join`.
 Append a space to every block element before comparing, or the diff is noise.
+
+## Buttons
+
+One shape everywhere, measured off the live `/huddle` page:
+
+| | Primary | Dark | Outline |
+|---|---|---|---|
+| class | `.btn-cta` / `.btn-accent` | `.btn-cta-dark` / `.btn-dark` | `.btn-outline-custom` |
+| background | `#ffc600` | `#1e1e1e` | transparent |
+| text | `#1e1e1e` | `#ffffff` | `#000000` |
+| border | none | none | `1.5px solid #000` |
+| radius | **4px** | 4px | 4px |
+| padding | **`.65rem 1.75rem`** | same | same |
+| size / weight | **16px / 500** | 16px / 400 | 16px / 400 |
+
+`.btn-lg-custom` is the only size modifier: `.85rem 2.5rem` at 18px. **Do not
+resize a button with a per-page rule** — two had drifted that way (`/compensation`
+and `/product-talks-link-to-the-talk`) and neither was visible without measuring.
+
+`.btn-cta` and `.btn-accent` are the same button under two names: the migrated
+pages were written against one and `/huddle` against the other. They resolve to a
+single rule in `base.css` so they cannot drift apart.
+
+This **supersedes** the earlier `.btn-cta` spec (8px radius / `.65rem 1.25rem` /
+15px / weight 600).
+
+`.btn-nav` is deliberately not in this set — it is chrome, sized to fit the 56px
+navbar (6px radius, 14px).
+
+### Verify
+
+```js
+// every button on a page should report r=4px p=10.4px 28px f=16px
+[...document.querySelectorAll('.btn-cta,.btn-cta-dark,.btn-accent,.btn-dark,.btn-outline-custom')]
+  .map(b => { const c = getComputedStyle(b);
+    return `${b.textContent.trim()} r=${c.borderRadius} p=${c.padding} f=${c.fontSize}`; });
+```
