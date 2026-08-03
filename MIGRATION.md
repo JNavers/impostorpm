@@ -285,12 +285,11 @@ this as a blocker.
 
 ### What is still genuinely open
 
-- **Google Maps API key.** Seen in Softr's page source, never in this repo, and
-  not recoverable now that Softr no longer serves the domain. It is quite likely
-  Softr's own key rather than Javi's — Softr embeds one for its map blocks. Worth
-  one look in Google Cloud → Credentials; if no Maps key exists there, it was
-  theirs and there is nothing to do. Either way the exposure has already ended:
-  no page on impostor.pm serves a key, and impostor.softr.app 301s.
+- ~~**Google Maps API key**~~ — **closed 2026-08-03.** Javi confirmed no Maps key
+  exists on his Google Cloud account, so the `AIzaSy…` seen in Softr's page source
+  was Softr's own, embedded for their map blocks. Nothing to delete, no account to
+  find. The exposure ended with the cutover regardless: no page on impostor.pm
+  serves a key and impostor.softr.app 301s.
 - The two-week quiet period, then: merge to `main`, retire `salary-compass-pages`
   / `impostorpm-rezonant` / `impostorpm-huddle`, and swap the proxy Worker for a
   real Pages custom domain.
