@@ -1,0 +1,14 @@
+{
+  // Deliberately deployed with NO routes first, so it can be exercised at its
+  // workers.dev URL while impostor.pm is still entirely on Softr. Routes are
+  // added in a second, separate deploy — that second deploy IS the cutover.
+  "name": "impostorpm-site-proxy",
+  "main": "src/worker.js",
+  "workers_dev": true,
+  "preview_urls": false,
+  "compatibility_date": "2026-08-03",
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}
