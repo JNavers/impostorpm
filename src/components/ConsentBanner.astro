@@ -15,8 +15,11 @@ const POLICY_URL = 'https://www.iubenda.com/privacy-policy/26472145/cookie-polic
 ---
 
 <div id="tipm-consent" class="consent" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
+  {/* The space before the link is a literal expression, not whitespace in the
+      markup: Astro collapses the newline away and the sentence ran straight into
+      "Cookie policy". */}
   <p class="consent-text">
-    We use analytics to understand what's useful on this site. Nothing is collected until you agree.
+    We use analytics to understand what's useful on this site. Nothing is collected until you agree.{' '}
     <a href={POLICY_URL} target="_blank" rel="noreferrer">Cookie policy</a>
   </p>
   <div class="consent-actions">
