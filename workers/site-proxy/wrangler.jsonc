@@ -1,12 +1,46 @@
 {
-  // Deliberately deployed with NO routes first, so it can be exercised at its
-  // workers.dev URL while impostor.pm is still entirely on Softr. Routes are
-  // added in a second, separate deploy — that second deploy IS the cutover.
   "name": "impostorpm-site-proxy",
   "main": "src/worker.js",
   "workers_dev": true,
   "preview_urls": false,
   "compatibility_date": "2026-08-03",
+  // THE CUTOVER. Both hostnames, because binding only the apex is the bug that
+  // left www.impostor.pm/compensation on Softr while the apex served Pages.
+  //
+  // These are the least specific routes in the zone, so the five pre-existing
+  // ones (/compensation*, /salary-compass*, /rezonant* x2, /assets/posthog-init.js)
+  // still win for their paths until they are removed — which is the next step,
+  // not this one. Deliberate: this deploy moves ~34 of the 39 URLs off Softr and
+  // leaves the three already-on-Pages tools exactly where they are.
+  //
+  // Rollback is `routes: []` plus a redeploy. Softr is the zone default again the
+  // moment these are gone; nothing else has to be restored.
+  "routes": [
+    { "pattern": "impostor.pm/*", "zone_name": "impostor.pm" },
+    { "pattern": "*.impostor.pm/*", "zone_name": "impostor.pm" }
+
+    // ── Pending, blocked on a manual step ──────────────────────────────────
+    // The five patterns below still belong to salary-compass-proxy and
+    // impostorpm-rezonant-proxy, and a pattern belongs to exactly one Worker, so
+    // adding them here fails with API error 10020 until they are released.
+    //
+    // Wrangler CANNOT release them. Verified both ways on 2026-08-03:
+    // `wrangler triggers deploy` and a full `wrangler deploy` with "routes": []
+    // are both silent no-ops — an empty array reads as "leave routes alone", and
+    // re-reading the deployed config afterwards showed all of them still bound.
+    // The only options are the dashboard or deleting the Workers outright.
+    //
+    // So: delete these in the dashboard (each Worker → Domains), then uncomment
+    // and redeploy. Until then the zone still works — `impostor.pm/*` catches
+    // everything else — with one visible defect: the apex serves the OLD
+    // hand-written /compensation page while www serves the migrated one.
+    //
+    // { "pattern": "impostor.pm/compensation*",        "zone_name": "impostor.pm" },
+    // { "pattern": "impostor.pm/assets/posthog-init.js", "zone_name": "impostor.pm" },
+    // { "pattern": "*.impostor.pm/salary-compass*",    "zone_name": "impostor.pm" },
+    // { "pattern": "impostor.pm/rezonant*",            "zone_name": "impostor.pm" },
+    // { "pattern": "*.impostor.pm/rezonant*",          "zone_name": "impostor.pm" }
+  ],
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1

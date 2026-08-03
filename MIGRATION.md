@@ -5,123 +5,59 @@ Moving impostor.pm off Softr. Full plan:
 
 ## What serves what, right now
 
-| Path | Origin |
-|---|---|
-| `/salary-compass*` | Cloudflare Pages `salary-compass-pages` (repo `JNavers/salary-compass`) |
-| `/rezonant*` | Cloudflare Pages `impostorpm-rezonant` (this repo, **`main` only**) |
-| `/api/*` | **Softr** — not covered by any route, so the Salary Compass email endpoint 405s. Harmless, see below. |
-| everything else | Softr (`impostor.softr.app`, `3.64.247.100`) |
+**Cutover done 2026-08-03.** impostor.pm is served from the `impostorpm-site` Pages
+project via the `impostorpm-site-proxy` Worker on `impostor.pm/*` and
+`*.impostor.pm/*`. Softr no longer serves any page: 39/39 sitemap URLs resolve on
+both hostnames, the `created in Softr` marker is gone from every sampled page,
+`/salary-compass/` is still byte-identical at 274260, and no `X-Robots-Tag` leaks
+to production.
 
-### The mechanism is Workers Routes, on two proxy Workers
+`/api/*` now reaches the Pages Functions, so the Salary Compass email endpoint
+stopped 405ing on its own, exactly as predicted — no change to the live repo.
 
-Confirmed in the dashboard (there is **no** `impostorpm-salary` Worker — that name
-only ever existed in the `wrangler.jsonc` on the abandoned `cloudflare/workers-autoconfig`
-branches, and was never deployed).
+### One defect left, and it needs the dashboard
 
-These **five routes are the complete set**, zone `impostor.pm`. This list is the
-rollback target — do not edit it without re-reading the dashboard:
+Five route patterns still belong to the two old proxy Workers. They are more
+specific than `impostor.pm/*`, so they still win:
 
-| # | Route pattern | Worker |
+| Pattern | Still held by | Effect |
 |---|---|---|
-| 1 | `impostor.pm/assets/posthog-init.js` | `salary-compass-proxy` |
-| 2 | `impostor.pm/compensation*` | `salary-compass-proxy` |
-| 3 | `*.impostor.pm/salary-compass*` | `salary-compass-proxy` |
-| 4 | `impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` |
-| 5 | `*.impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` |
+| `impostor.pm/compensation*` | `salary-compass-proxy` | 🔴 **apex serves the OLD hand-written /compensation**; www serves the migrated one |
+| `impostor.pm/assets/posthog-init.js` | `salary-compass-proxy` | harmless — 404 on both origins |
+| `*.impostor.pm/salary-compass*` | `salary-compass-proxy` | harmless — byte-identical either way |
+| `impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` | harmless — same page either way |
+| `*.impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` | harmless — same page either way |
 
-There are **no Origin Rules and no Redirect Rules** on the zone.
+**Wrangler cannot release them.** Verified both ways: `wrangler triggers deploy`
+and a full `wrangler deploy` with `"routes": []` are both silent no-ops — an empty
+array reads as "leave routes alone", and re-reading the deployed config afterwards
+showed every route still bound. Claiming the patterns from the new Worker fails
+with API error 10020, because a pattern belongs to exactly one Worker.
 
-Three things fall out of this list:
-
-- **Route 1 is dead.** The page loads its tracker from `/salary-compass/posthog-init.js`;
-  `/assets/posthog-init.js` 404s on the apex and 400s on www. Leftover from an
-  older path. Safe to drop — but drop it *after* cutover, not as a separate change.
-- **The host prefixes are inconsistent.** `/rezonant` is bound twice (apex + `*.`),
-  `/salary-compass` only via `*.` (the apex reaches it because the apex 301s to
-  www at the Softr origin), and `/compensation` only on the apex. That last
-  asymmetry is the bug below.
-- **Nothing covers `/api/*`,** which is why the Salary Compass email endpoint 405s.
-  No data is lost: `index.html:2905` catches it and writes the row straight to
-  `script.google.com`, and Apps Script sends the email server-side. Cutover fixes it.
-
-### 🔴 apex and www disagree on /compensation
-
-The routes are bound per-hostname and the two hosts do not match:
-
-| path | `impostor.pm` | `www.impostor.pm` |
-|---|---|---|
-| `/compensation/` | **Pages** | **Softr** |
-| `/salary-compass/` | Pages | Pages |
-| `/rezonant/` | Pages | Pages |
-| everything else | Softr | Softr |
-
-So `impostor.pm/compensation` and `www.impostor.pm/compensation` are **two
-different pages today** — the Pages one and the old Softr "The State of Product
-Compensation". The `salary-compass-proxy` route is written against the apex
-(`impostor.pm/compensation*`) with no `*.` prefix, so www never matches it.
-
-Worth fixing at cutover regardless, since after it `/*` is served from one place.
-
-## Phase 5 — cutover, with the rollback written first
-
-**Do not run this unattended.** Low-traffic window, one person watching.
-
-### Why it is two steps and not one
-
-Worker Routes take precedence over a Pages custom domain. So adding the domains
-to `impostorpm-site` is *not* enough on its own: the five routes above would keep
-winning for `/compensation`, `/salary-compass` and `/rezonant`, and those three
-would still come from the old projects while everything else moved. The routes
-have to come off, and they come off **last** — after the domains are proven.
-
-### Precondition, verified 2026-08-03
-
-`impostorpm-site.pages.dev` already serves every path the five routes cover:
-`/compensation` 200, `/salary-compass/` 200 **at exactly 274260 bytes**,
-`/rezonant/` 200, `/salary-compass/posthog-init.js` 200, and `/api/salary-compass-email`
-200. Re-run this check on the day; it is the gate.
-
-```bash
-for p in /compensation /salary-compass/ /rezonant/ /salary-compass/posthog-init.js; do
-  printf "%-34s %s\n" "$p" "$(curl -so /dev/null -w '%{http_code}' "https://impostorpm-site.pages.dev$p")"
-done
-curl -s https://impostorpm-site.pages.dev/salary-compass/ | wc -c   # must be 274260
-```
-
-### Cutover
-
-1. **Point DNS/custom domains at the new project.** In the `impostorpm-site` Pages
-   project → Custom domains, add **both** `impostor.pm` and `www.impostor.pm`.
-   Adding both is what fixes the apex/www split above. Softr is still the origin
-   for everything not routed, so nothing has moved yet.
-2. **Verify** on both hosts before touching the routes — `/`, `/about`, `/club/porto`,
-   `/huddle`, `/compensation`, `/salary-compass/`, `/rezonant/`.
-3. **Delete the five Worker routes** (dashboard → each Worker → Domains). This is
-   the moment traffic actually moves. Delete route 1 (`/assets/posthog-init.js`)
-   too — it is already dead.
-4. **Watch** for 30 min: Pages analytics, PostHog pageviews, and a manual pass of
-   the sitemap.
+To finish: delete those five in the dashboard (each Worker → Domains), then
+uncomment the matching block in `workers/site-proxy/wrangler.jsonc` and redeploy.
 
 ### Rollback
 
-Restores exactly what was there. Recreate the five routes, in this order — the
-three `salary-compass-proxy` ones first, since `/salary-compass` is the live tool:
+Delete the two `impostor.pm/*` and `*.impostor.pm/*` routes from
+`impostorpm-site-proxy` (dashboard, or set `routes` and redeploy — but note the
+no-op above, so dashboard). Softr becomes the zone default again immediately; the
+five old routes never moved, so nothing else has to be restored. DNS was never
+touched, which is why this stayed reversible in seconds.
 
-| # | Route pattern | Worker |
-|---|---|---|
-| 1 | `*.impostor.pm/salary-compass*` | `salary-compass-proxy` |
-| 2 | `impostor.pm/compensation*` | `salary-compass-proxy` |
-| 3 | `impostor.pm/assets/posthog-init.js` | `salary-compass-proxy` |
-| 4 | `impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` |
-| 5 | `*.impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` |
+Do **not** delete `salary-compass-pages` or `impostorpm-rezonant` yet — they are
+what a rollback restores traffic to. Retire after two quiet weeks.
 
-Then remove `impostor.pm` and `www.impostor.pm` from the `impostorpm-site` Pages
-project. Softr becomes the default again and the zone is byte-for-byte where it
-started.
+### Why a proxy Worker and not a Pages custom domain
 
-**Do not delete `salary-compass-pages` or `impostorpm-rezonant` during cutover.**
-They cost nothing idle and they are what the rollback restores traffic *to*.
-Retire them after two quiet weeks, per Phase 6.
+The apex A record has to keep pointing at Softr while any path still comes from
+Softr, and DNS is the one part of this migration that cannot be undone in seconds.
+Binding and unbinding a Worker route are the same size, so cutover and rollback
+are symmetric. It is also the pattern the zone already used.
+
+Worth replacing with a real Pages custom domain once things are quiet: one less
+hop, and `functions/_middleware.js` stops needing the `X-Robots-Tag` exception the
+proxy makes for it.
 
 ## Duplicated files, deliberately
 
