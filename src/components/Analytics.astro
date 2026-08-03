@@ -44,6 +44,16 @@ const GA4_ID = 'G-Q4C4RYPLP5';
       person_profiles: 'identified_only',
       opt_out_capturing_by_default: true,
       capture_pageview: true,
+
+      // Session replay is ON at the project level, so it records here whether or
+      // not this file mentions it — leaving it unconfigured meant relying on
+      // whatever posthog-js defaults to that month. /partner-with-us collects a
+      // name, company, email and message, and a replay is a video of someone
+      // typing them. Masking is stated explicitly so it cannot change under us.
+      session_recording: {
+        maskAllInputs: true,
+        maskTextSelector: '.ph-mask',
+      },
     });
 
     // ── GA4 ────────────────────────────────────────────────────────────────

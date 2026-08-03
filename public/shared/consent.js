@@ -11,6 +11,10 @@
  * Opt-in, not opt-out: nothing is captured until Accept. The audience is largely
  * Portugal and Spain, so implied consent does not count.
  *
+ * The wording names session recording on purpose. PostHog has replay enabled at
+ * the project level, so accepting here starts a screen recording — and consent
+ * has to be informed to be consent. "We use analytics" did not cover that.
+ *
  * Contract with analytics, relied on by both consumers:
  *   localStorage 'tipm_consent'  →  'granted' | 'denied' | absent
  *   window event 'tipm:consent-granted'  /  'tipm:consent-revoked'
@@ -57,8 +61,9 @@
     el.setAttribute('aria-label', 'Cookie consent');
     el.hidden = true;
     el.innerHTML =
-      '<p>We use analytics to understand what\'s useful on this site. ' +
-      'Nothing is collected until you agree. ' +
+      '<p>We use analytics, including recordings of how pages are used, to ' +
+      'understand what\'s useful on this site. Form fields are never recorded, ' +
+      'and nothing is collected until you agree. ' +
       '<a href="' + POLICY + '" target="_blank" rel="noreferrer">Cookie policy</a></p>' +
       '<div class="tipm-consent-actions">' +
       '<button type="button" data-consent="decline">Decline</button>' +
