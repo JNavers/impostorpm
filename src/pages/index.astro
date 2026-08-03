@@ -36,7 +36,7 @@ import EventList from '../components/EventList.astro';
   <section class="section-white section-pad-lg">
       <div class="container">
   <div class="text-center mb-5">
-      <h2 style="font-size:2.25rem; font-weight:700;">What we do</h2>
+      <h2 class="section-heading">What we do</h2>
       <p style="font-size:1.0625rem; color:#666; max-width:48rem; margin: 1rem auto 0;">Gain quick advice from other PMs, engage in discussions on hot topics, and meet other professionals willing to share their experiences. Whatever you need, this is your place:</p>
   </div>
   <div class="row">
@@ -419,7 +419,9 @@ import EventList from '../components/EventList.astro';
   }
   @media (max-width: 991px) {
       .hero { padding: 3rem 0 3.5rem; }
-      .hero h1 { font-size: 2.5rem; }
+      /* 48px / 1.5, measured on the Softr original at a 420px viewport. Was
+         2.5rem, which is a fifth smaller and made the hero read as timid. */
+      .hero h1 { font-size: 3rem; line-height: 1.5; }
       .hero-art { margin-top: 2rem; }
   }
 
@@ -594,4 +596,18 @@ import EventList from '../components/EventList.astro';
   .social-icon:hover { background: var(--golden); border-color: var(--golden); color: var(--black); }
   .social-icon svg { width: 1.125rem; height: 1.125rem; fill: currentColor; }
 
+
+  /* ── Mobile headings ──
+     At the END of this block on purpose: these override the section rules
+     above, and with equal specificity the later rule is the one that wins.
+     Placed earlier, every one of them silently lost.
+     Original at 420px: every section heading is 30px / 1.5. */
+  @media (max-width: 991px) {
+      .section-heading,
+      .mh-section h2,
+      .cta-golden h2,
+      .cta-support h2,
+      .partner-section h2,
+      .ue-title { font-size: 1.875rem; line-height: 1.5; }
+  }
 </style>

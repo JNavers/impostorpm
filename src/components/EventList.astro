@@ -372,7 +372,7 @@ const endpoint = `/api/events?period=${period}&limit=${limit}${
 
   @media (max-width: 768px) {
       .ue-section { padding: 3.5rem 0 3rem; }
-      .ue-title { font-size: 1.75rem; margin-bottom: 1.75rem; }
+      .ue-title { font-size: 1.875rem; line-height: 1.5; margin-bottom: 1.75rem; }  /* 30px, la escala del original */
       .ue-list { gap: 1.25rem; }
       .ue-item {
           grid-template-columns: 80px 1fr;
@@ -395,7 +395,7 @@ const endpoint = `/api/events?period=${period}&limit=${limit}${
       .ue-item-title { font-size: 1rem; }
   }
   @media (max-width: 480px) {
-      .ue-title { font-size: 1.5rem; }
+      .ue-title { font-size: 1.875rem; }  /* se mantiene a 30px también en pantallas pequeñas */
       .ue-item { grid-template-columns: 70px 1fr; gap: .85rem 1rem; padding: 1rem 1rem; }
       .ue-date { padding-right: .75rem; }
       .ue-date-day { font-size: 1.75rem; }

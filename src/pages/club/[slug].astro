@@ -221,5 +221,9 @@ try {
 
   @media (max-width: 768px) {
     .club-hero h1 { font-size: 1.875rem; line-height: 1.5; }
+    /* is:global here, so the h2 rule has to be anchored to this page's own
+       wrappers or it leaks to every page. Original: 30px / 1.5. */
+    .club-hero h2, .club-waitlist h2, .club-prose h2, .club-cta h2, .club-faq h2,
+    .ue-container h2 { font-size: 1.875rem; line-height: 1.5; }
   }
 </style>

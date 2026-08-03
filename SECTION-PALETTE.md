@@ -168,9 +168,35 @@ would never be guessed from the desktop layout.
 original to match. `/huddle` 404s there and `/compensation` on Softr is a
 different page entirely, so both keep their own authored hero.
 
-Check with:
+### Section headings at mobile
+
+Also per page, also measured:
+
+| Page | h2 @ ≤767px |
+|---|---|
+| `/` · `/club` · `/product-talks` · `/boost` · `/club/<city>` | 30px / 1.5 |
+| `/about` | 32px / 1.2 |
+| `/group` · `/bring-the-club-to-my-city` | 36px / 1.5 |
+| `/club/how-we-select` | 24px / 1.5 |
+
+### Three ways a mobile size rule silently loses
+
+All three happened here, and none of them shows up in a build log:
+
+1. **An inline `style` attribute.** `"What we do"` on the homepage carried
+   `style="font-size:2.25rem"`, which beats every stylesheet rule. Removed in
+   favour of a class.
+2. **Lower specificity.** A bare `h2 { }` inside a page's scoped block loses to
+   `.about-body h2`. Target the same selector the desktop rule uses.
+3. **Rule order.** A `@media` block placed in the MIDDLE of a stylesheet loses to
+   an equal-specificity rule further down. The homepage's mobile block sat before
+   `.mh-section h2` and lost to it. Put mobile overrides at the end.
+
+Verify by measuring, never by reading the CSS:
 
 ```js
-const h = document.querySelector('header h1'); const c = getComputedStyle(h);
-`${c.fontSize} / ${c.lineHeight}`;
+[...document.querySelectorAll('h1,h2')]
+  .filter(h => !h.closest('footer,nav'))
+  .map(h => { const c = getComputedStyle(h);
+    return `${c.fontSize}/${c.lineHeight}  ${h.textContent.trim().slice(0,30)}`; });
 ```
