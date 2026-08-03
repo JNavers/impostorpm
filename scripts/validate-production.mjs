@@ -209,6 +209,35 @@ for (const host of HOSTS) {
     );
   });
 
+  await check('analytics goes through the first-party path', async () => {
+    // Blocker lists match the destination host, so pointing straight at
+    // eu.i.posthog.com loses 10-25% of events. Both consumers must use /ingest.
+    for (const [path, file] of [['/', null], ['/salary-compass/', '/salary-compass/posthog-init.js']]) {
+      const body = (await getText(host + (file ?? path))).body;
+      assert(!/api_host:\s*['"]https:\/\/eu\.i\.posthog/.test(body), `${file ?? path} bypasses /ingest`);
+    }
+
+    // The proxy has to serve both PostHog hosts: assets and ingestion are
+    // different upstreams, and routing both to one silently breaks a half.
+    const lib = await get(`${host}/ingest/static/array.js`);
+    assert(lib.status === 200, `/ingest/static/array.js → ${lib.status}`);
+    assert(
+      (lib.headers.get('content-type') ?? '').includes('javascript'),
+      'the library came back as something other than JS'
+    );
+
+    const event = await fetch(bust(`${host}/ingest/e/`), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: 'phc_skjv4vgokxx9op9vtFHdjwNWuAA9VZZaPQ6wFguFvFcB',
+        event: 'tipm_proxy_healthcheck',
+        properties: { distinct_id: 'validate-production' },
+      }),
+    });
+    assert(event.status === 200, `POST /ingest/e/ → ${event.status}`);
+  });
+
   await check('consent banner ships with a way to change the answer', async () => {
     const { body } = await getText(`${host}/`);
     assert(body.includes('/shared/consent.js'), 'banner script missing');

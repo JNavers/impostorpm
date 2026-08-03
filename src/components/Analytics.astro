@@ -13,11 +13,16 @@
  */
 
 const POSTHOG_KEY = 'phc_skjv4vgokxx9op9vtFHdjwNWuAA9VZZaPQ6wFguFvFcB';
-const POSTHOG_HOST = 'https://eu.i.posthog.com';
+// First-party path, proxied by functions/ingest/[[path]].js. Sending straight
+// to eu.i.posthog.com loses 10-25% of events to blocker lists.
+const POSTHOG_HOST = '/ingest';
+// The UI host still has to be the real one, or in-app links (toolbar, session
+// replay) point at a path on our own domain that serves nothing.
+const POSTHOG_UI_HOST = 'https://eu.posthog.com';
 const GA4_ID = 'G-Q4C4RYPLP5';
 ---
 
-<script is:inline define:vars={{ POSTHOG_KEY, POSTHOG_HOST, GA4_ID }}>
+<script is:inline define:vars={{ POSTHOG_KEY, POSTHOG_HOST, POSTHOG_UI_HOST, GA4_ID }}>
   (function () {
     var CONSENT_KEY = 'tipm_consent';
 
@@ -41,6 +46,7 @@ const GA4_ID = 'G-Q4C4RYPLP5';
 
     posthog.init(POSTHOG_KEY, {
       api_host: POSTHOG_HOST,
+      ui_host: POSTHOG_UI_HOST,
       person_profiles: 'identified_only',
       opt_out_capturing_by_default: true,
       capture_pageview: true,
