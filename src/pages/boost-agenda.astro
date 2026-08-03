@@ -1,0 +1,103 @@
+---
+import Base from '../layouts/Base.astro';
+
+// Softr rendered this as a data table with an emoji column. Kept as a
+// definition-style list instead: it reads the same on a phone, where a
+// four-column table does not.
+const agenda = [
+  { icon: '🚀', time: '10:00', title: 'Check-in & Coffee', body: '' },
+  {
+    icon: '🏆',
+    time: '10:45',
+    title: 'Big failures in successful careers',
+    body: "Let's kick-start the day in a big way. We want everyone to feel comfortable sharing, and what better way to achieve this than to have respected product leaders voluntarily sharing their biggest mistakes? This is an interactive roundtable where everyone is welcome to share their career failures and ask our guests about their deepest secrets!",
+  },
+  { icon: '🍲', time: '12:45', title: 'Lunch', body: '' },
+  {
+    icon: '🎢',
+    time: '14:15',
+    title: 'Great product always fail',
+    body: "After we've shared our career failures, we'll move on to product failures. It's as inevitable as rain on Christmas… All products have their missteps and bad choices! Let's discuss some of the industry giants together, understand how they managed the bad weather, and how they leveraged those failures to ramp up their product!",
+  },
+  { icon: '🥨', time: '16:00', title: 'Snack time', body: '' },
+  {
+    icon: '🧠',
+    time: '16:30',
+    title: 'Failing towards Greatness',
+    body: "Once we've recharged, we'll deconstruct the societal notion that failure is always negative. In an interactive session led by psychologist expert Celso Costa, we'll explore how failures can be the beginning of something great. We'll explore through reflective exercises and group dynamics how can we equip ourselves with tools to navigate and transform setbacks into stepping stones.",
+  },
+  { icon: '☕️', time: '18:00', title: 'Coffee time', body: '' },
+  { icon: '👋', time: '18:30', title: 'Closing Remarks', body: '' },
+];
+---
+
+<Base
+  title="Boost — Agenda | The Impostor PM"
+  description="The full agenda for The Impostor PM Boost: roundtables on career and product failure, an interactive session on turning setbacks into stepping stones, and the breaks in between."
+>
+  <header class="section-warm agenda-hero">
+    <div class="container">
+      <h1>Agenda</h1>
+      <p class="agenda-lede">
+        Below you'll find what the Impostor PM Boost has for you! If you have any questions about the agenda, feel free to DM us on LinkedIn or email us at <a href="mailto:general@impostor.pm">general@impostor.pm</a>.
+      </p>
+    </div>
+  </header>
+
+  <section class="section-white section-pad-lg">
+    <div class="container agenda-body">
+      <ol class="agenda-list">
+        {agenda.map((slot) => (
+          <li class="agenda-item">
+            <div class="agenda-time">
+              <span class="agenda-icon" aria-hidden="true">{slot.icon}</span>
+              <span class="agenda-clock">{slot.time}</span>
+            </div>
+            <div>
+              <h2>{slot.title}</h2>
+              {slot.body && <p>{slot.body}</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section-golden section-pad">
+    <div class="container agenda-cta">
+      <h2>Curious about Boost?</h2>
+      <a href="/boost" class="btn-cta-dark">Read what it's about</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .agenda-hero { padding: 4.5rem 0 3rem; }
+  .agenda-hero h1 { font-size: 3rem; line-height: 1.5; letter-spacing: -0.04em; margin-bottom: 1rem; }
+  .agenda-lede { font-size: 1rem; color: var(--tipm-text-muted); max-width: 58ch; margin: 0; }
+  .agenda-lede a { color: var(--tipm-black); text-decoration: underline; text-decoration-color: var(--tipm-golden); text-underline-offset: 4px; text-decoration-thickness: 2px; }
+
+  .agenda-body { max-width: 52rem; }
+  .agenda-list { list-style: none; padding: 0; margin: 0; }
+  .agenda-item {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--tipm-outline);
+  }
+  .agenda-item:last-child { border-bottom: none; }
+  .agenda-time { display: flex; align-items: baseline; gap: 0.5rem; }
+  .agenda-icon { font-size: 1.125rem; }
+  .agenda-clock { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 1rem; }
+  .agenda-item h2 { font-size: 1.25rem; margin-bottom: 0.35rem; }
+  .agenda-item p { color: var(--tipm-text-muted); font-size: 0.9375rem; margin: 0; }
+
+  .agenda-cta { max-width: 46rem; text-align: center; }
+  .agenda-cta h2 { font-size: 2rem; margin-bottom: 1.25rem; }
+
+  @media (max-width: 640px) {
+    .agenda-hero h1 { font-size: 2.25rem; }
+    .agenda-item { grid-template-columns: 1fr; gap: 0.5rem; }
+  }
+</style>

@@ -1,0 +1,18 @@
+{
+  "name": "impostorpm-site",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "npm run check:softr && astro build && node scripts/fix-directory-shadowing.mjs",
+    "preview": "astro preview",
+    "check:softr": "node scripts/check-no-softr.mjs",
+    "validate": "node scripts/validate-production.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.1.6",
+    "bootstrap": "4.6.2"
+  }
+}

@@ -1,0 +1,48 @@
+---
+import { SITE, FOOTER_GROUPS, SOCIALS } from '../lib/site';
+import Icon from './Icon.astro';
+---
+
+<footer class="footer-site">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-5 mb-5 mb-lg-0">
+        <a href="/">
+          <img src={SITE.logo} alt={SITE.name} class="footer-logo" width="140" height="28" />
+        </a>
+        <p class="footer-copyright">
+          {SITE.copyright}
+          {/* GDPR requires withdrawing consent to be as easy as giving it, so the
+              banner has to stay reachable after the first decision. Handled by a
+              delegated listener in ConsentBanner.astro. */}
+          <span class="footer-sep" aria-hidden="true">·</span>
+          <a href="#" data-consent-reopen>Cookie settings</a>
+        </p>
+        <div>
+          {SOCIALS.map((social) => (
+            <a
+              href={social.href}
+              target="_blank"
+              rel="noreferrer"
+              class="social-icon"
+              aria-label={social.label}
+            >
+              <Icon name={social.icon} size="1rem" />
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {FOOTER_GROUPS.map((group, index) => (
+        <div class={`col-4 col-lg-2${index === 0 ? ' offset-lg-1' : ''}`}>
+          <h6>{group.title}</h6>
+          <ul class="footer-links">
+            {group.links.map((link) => (
+              <li><a href={link.href}>{link.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</footer>

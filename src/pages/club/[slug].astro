@@ -1,0 +1,229 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import EventList from '../../components/EventList.astro';
+import Icon from '../../components/Icon.astro';
+import { fetchEventsAtBuild } from '../../lib/events';
+
+export async function getStaticPaths() {
+  const clubs = await getCollection('clubs', ({ data }) => data.status !== 'deprecated');
+  return clubs.map((club) => ({ params: { slug: club.id }, props: { club } }));
+}
+
+const { club } = Astro.props;
+const { data } = club;
+const { Content } = await render(club);
+
+// Whether to show the waitlist block is a question about the calendar, not a
+// content decision — Softr showed one or the other depending on whether the
+// city had something coming up. Resolved at build here, and the EventList
+// island keeps the list itself current afterwards.
+//
+// This is also the bug being designed out. On Softr, /club/porto and
+// /club/coimbra were still advertising 25 and 30 June as "upcoming" on 31 July,
+// because the block is fed by a table nobody prunes. Reading the calendar means
+// an event stops being upcoming on its own.
+let hasUpcoming = false;
+try {
+  const upcoming = await fetchEventsAtBuild('future', 100);
+  const needles = data.lumaCities.map((c) => c.toLowerCase());
+  hasUpcoming = upcoming.some((event) => {
+    const city = (event.city ?? '').toLowerCase();
+    const region = (event.region ?? '').toLowerCase();
+    const address = (event.address ?? '').toLowerCase();
+    return needles.some(
+      (n) => city === n || region === n || (!city && !region && address.includes(n))
+    );
+  });
+} catch {
+  // Falling back to "show the waitlist" is the safe direction: it never claims
+  // an event exists when we could not check.
+  hasUpcoming = false;
+}
+---
+
+<Base title={data.seo.title} description={data.seo.description} image={data.seo.ogImage}>
+  <header class="section-white club-hero">
+    <div class="container">
+      <div class="club-hero-split">
+        <div>
+          <h1>{data.hero.title}</h1>
+          <p class="club-hero-sub">{data.hero.subtitle}</p>
+        </div>
+        <img
+          src={data.hero.image ?? '/img/pages/club-forme.webp'}
+          alt={data.hero.imageAlt}
+          width="488"
+          height="325"
+          class="club-hero-art"
+        />
+      </div>
+    </div>
+  </header>
+
+  {/* The original shows EITHER the next event OR the waiting list, never both,
+      and both sit in the same warm slot. Rendering the two together is what
+      produced a second warm band and a redundant empty state. */}
+  {hasUpcoming && (
+    <section class="section-warm section-pad" aria-labelledby="club-next">
+      <div class="ue-container">
+        <h2 class="ue-title" id="club-next">Next Club in {data.city}</h2>
+        <EventList period="future" limit={4} cities={data.lumaCities} />
+      </div>
+    </section>
+  )}
+
+  {data.waitlist.enabled && !hasUpcoming && (
+    <section class="section-warm section-pad" aria-labelledby="club-waitlist">
+      <div class="container club-waitlist">
+        <h2 id="club-waitlist">{data.waitlist.eyebrow}</h2>
+        <p>{data.waitlist.body}</p>
+        {data.waitlist.ctaUrl && (
+          <a href={data.waitlist.ctaUrl} target="_blank" rel="noreferrer" class="btn-cta">
+            {data.waitlist.ctaLabel}
+          </a>
+        )}
+      </div>
+    </section>
+  )}
+
+  <section class="section-dark section-pad">
+    <div class="container club-prose">
+      <Content />
+    </div>
+  </section>
+
+  {data.extraSections.map((section) => (
+    <section id={section.id} class="section-white section-pad">
+      <div class="container club-prose">
+        <h2>{section.title}</h2>
+        <p set:html={section.body} />
+      </div>
+    </section>
+  ))}
+
+  <section class="section-warm section-pad" aria-labelledby="club-past">
+    <div class="ue-container">
+      <h2 class="ue-title" id="club-past">{data.pastClubs.title}</h2>
+      {data.pastClubs.source === 'luma' ? (
+        <EventList
+          period="past"
+          limit={data.pastClubs.limit}
+          cities={data.lumaCities}
+          emptyMessage={`No past Clubs in ${data.city} yet — here's what the community has been up to elsewhere.`}
+        />
+      ) : (
+        <ul class="club-past-manual">
+          {data.pastClubs.manualItems.map((item) => (
+            <li><a href={item.url} target="_blank" rel="noreferrer">{item.title}</a></li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  <section class="section-golden section-pad">
+    <div class="container club-cta">
+      <h2>{data.cta.title}</h2>
+      {data.cta.body && <p>{data.cta.body}</p>}
+      <a href={data.cta.url} target="_blank" rel="noreferrer" class="btn-cta-dark">{data.cta.label}</a>
+    </div>
+  </section>
+
+  {data.faq.length > 0 && (
+    <section class="section-white section-pad" aria-labelledby="club-faq">
+      <div class="container club-faq">
+        <h2 id="club-faq">Frequently Asked Questions</h2>
+        <p class="club-faq-lede">Got a question? We've got answers.</p>
+        <div class="faq-list">
+          {data.faq.map((item, i) => (
+            <div class="faq-item">
+              <button class="faq-q" type="button" aria-expanded="false" aria-controls={`club-faq-${i}`}>
+                <span>{item.q}</span>
+                <Icon name="chevron-down" size="0.9rem" class="chev" />
+              </button>
+              <div class="faq-a" id={`club-faq-${i}`} role="region">
+                <p>{item.a}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<script>
+  // Same accordion behaviour as /compensation, reimplemented here rather than
+  // shared: that page's version is entangled with its own page styles, and one
+  // copy of ~15 lines is cheaper than a premature abstraction. Revisit if a
+  // third page needs it.
+  for (const button of document.querySelectorAll<HTMLButtonElement>('.faq-q')) {
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!open));
+      const panel = button.nextElementSibling as HTMLElement | null;
+      if (panel) panel.style.maxHeight = open ? '' : `${panel.scrollHeight}px`;
+    });
+  }
+</script>
+
+<style is:global>
+  .club-hero { padding: 4.5rem 0 3.5rem; }
+  .club-hero h1 { font-size: 3rem; line-height: 1.5; letter-spacing: -0.04em; margin-bottom: 1rem; }
+  .club-hero-sub { font-size: 1.125rem; color: var(--tipm-text-muted); max-width: 52ch; margin: 0; }
+  .club-hero-split { display: grid; gap: 2.5rem; align-items: center; }
+  .club-hero-art { width: 100%; max-width: 26rem; height: auto; border-radius: var(--radius-xl); justify-self: center; }
+  @media (min-width: 900px) { .club-hero-split { grid-template-columns: 1fr 26rem; } }
+
+  .club-waitlist { max-width: 46rem; }
+  .club-waitlist h2 { font-size: 1.875rem; margin-bottom: 0.75rem; }
+  .club-waitlist p { color: var(--tipm-text-muted); margin-bottom: 1.5rem; }
+
+  /* This block sits on section-dark, matching the original — so its copy and
+     link colours cannot inherit the light-background defaults. */
+  .club-prose { max-width: 46rem; }
+  .club-prose h2 { font-size: 1.875rem; margin-bottom: 1rem; color: var(--tipm-white); }
+  .club-prose p { color: #ccc; font-size: 1rem; }
+  .club-prose a { color: var(--tipm-white); text-decoration: underline; text-decoration-color: var(--tipm-golden); text-underline-offset: 4px; text-decoration-thickness: 2px; }
+
+  .club-past-manual { list-style: none; padding: 0; }
+  .club-past-manual li { margin-bottom: 0.75rem; }
+
+  .club-cta { max-width: 46rem; text-align: center; }
+  .club-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .club-cta p { margin-bottom: 1.5rem; }
+
+  .club-faq { max-width: 46rem; }
+  .club-faq h2 { font-size: 2rem; margin-bottom: 0.25rem; }
+  .club-faq-lede { color: var(--tipm-text-muted); margin-bottom: 2rem; }
+  .club-faq .faq-list { border-top: 1px solid var(--tipm-outline); }
+  .club-faq .faq-item { border-bottom: 1px solid var(--tipm-outline); }
+  .club-faq .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1.25rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--tipm-black);
+    cursor: pointer;
+  }
+  .club-faq .faq-q .chev { transition: transform var(--dur-med); flex-shrink: 0; }
+  .club-faq .faq-q[aria-expanded='true'] .chev { transform: rotate(180deg); }
+  .club-faq .faq-a { max-height: 0; overflow: hidden; transition: max-height var(--dur-slow) var(--ease-standard); }
+  .club-faq .faq-a p { color: var(--tipm-text-muted); padding-bottom: 1.25rem; margin: 0; white-space: pre-line; }
+
+  @media (max-width: 768px) {
+    .club-hero h1 { font-size: 1.875rem; line-height: 1.5; }
+    /* is:global here, so the h2 rule has to be anchored to this page's own
+       wrappers or it leaks to every page. Original: 30px / 1.5. */
+    .club-hero h2, .club-waitlist h2, .club-prose h2, .club-cta h2, .club-faq h2,
+    .ue-container h2 { font-size: 1.875rem; line-height: 1.5; }
+  }
+</style>

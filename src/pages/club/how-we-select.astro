@@ -1,0 +1,107 @@
+---
+import Base from '../../layouts/Base.astro';
+
+// On Softr the <title> is "Club Selection" and the description is Softr's own
+// boilerplate. Both replaced with something that describes the page.
+const criteria = [
+  {
+    title: 'Relevant Experience',
+    body: "The Impostor PM is from PMs to PMs. We'll check your relevant experience as a PM and for the Club theme. Lengthier experiences are plus.",
+  },
+  {
+    title: 'Engagement with the Community',
+    body: 'Overall engagement with the community is weighed. Members engaged in multiple initiatives such as our Slack are privileged.',
+  },
+  {
+    title: 'Registration on past events',
+    body: "If you don't have a lot of relevant experience there's still hope! We'll consider past registrations and try to accommodate recurring applicants.",
+  },
+];
+---
+
+<Base
+  title="How we select Club participants — The Impostor PM"
+  description="The framework behind who gets a seat at an Impostor PM Club: relevant experience, community engagement, past registrations, and why applying early matters."
+>
+  <header class="section-white select-hero">
+    <div class="container">
+      <div class="select-split">
+        <div>
+          <h1>How we select participants</h1>
+          <p class="select-lede">
+            Our secret sauce to have engaging and valuable events is by ensuring the best people is present. In this page you can learn more about our selection process.
+          </p>
+          <a href="/club" class="btn-cta">Check our Clubs</a>
+        </div>
+        <img src="/img/pages/select-hero.webp" alt="" width="585" height="390" class="select-art" />
+      </div>
+    </div>
+  </header>
+
+  <section class="section-white section-pad-lg">
+    <div class="container select-body">
+      <h2>Our Criteria</h2>
+      <p>
+        Our selection is not an exact science, so there's always some leeway, but below you can learn about our framework.
+      </p>
+      <div class="select-grid">
+        {criteria.map((item) => (
+          <div class="select-card">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-white section-pad-lg">
+    <div class="container select-body">
+      <img src="/img/pages/club-forme.webp" alt="" width="488" height="325" loading="lazy" decoding="async" class="select-inline-art" />
+      <h2>Early applications matter</h2>
+      <p>
+        In the past, we mostly sorted applications based on experience. From the most experienced to the less experienced. This resulted in late feedback for participants, regarding if they're in or not.
+      </p>
+      <p>
+        We've then decided to change this. Now, if you meet a certain level of relevant experience, the spot is yours!
+      </p>
+      <p class="select-emphasis">So there's a good reason to register early!</p>
+    </div>
+  </section>
+
+  <section class="section-white section-pad">
+    <div class="container select-cta">
+      <h2>Already excited?</h2>
+      <p>Register now if you want to sit on one of our next Club editions.</p>
+      <a href="https://luma.com/impostorpm" target="_blank" rel="noreferrer" class="btn-cta-dark">Register</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .select-hero { padding: 4.5rem 0 3.5rem; }
+  .select-hero h1 { font-size: 3rem; line-height: 1.5; letter-spacing: -0.04em; margin-bottom: 1rem; }
+  .select-lede { font-size: 1rem; color: var(--tipm-text-muted); max-width: 56ch; margin-bottom: 1.75rem; }
+
+  .select-split { display: grid; gap: 2.5rem; align-items: center; }
+  .select-art { width: 100%; max-width: 28rem; height: auto; border-radius: var(--radius-xl); justify-self: center; }
+  @media (min-width: 900px) { .select-split { grid-template-columns: 1fr 28rem; } }
+  .select-inline-art { width: 100%; max-width: 26rem; height: auto; border-radius: var(--radius-xl); margin-bottom: 1.75rem; }
+
+  .select-body { max-width: 52rem; }
+  .select-body h2 { font-size: 1.5rem;   /* 24px en el original */ margin-bottom: 0.75rem; }
+  .select-body p { color: var(--tipm-text-muted); font-size: 1rem; max-width: 62ch; }
+  .select-emphasis { color: var(--tipm-black) !important; font-weight: 600; }
+
+  .select-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+  .select-card { padding: 1.5rem; border: 1px solid var(--tipm-outline); border-radius: var(--radius-xl); }
+  .select-card h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+  .select-card p { color: var(--tipm-text-muted); font-size: 0.9375rem; margin: 0; }
+
+  .select-cta { max-width: 46rem; text-align: center; }
+  .select-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .select-cta p { margin-bottom: 1.5rem; }
+
+  @media (max-width: 768px) { .select-hero h1 { font-size: 3rem; line-height: 1.5; }
+    .select-body h2, .select-cta h2 { font-size: 1.5rem; line-height: 1.5; }   /* original: 24px */ }
+</style>

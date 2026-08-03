@@ -1,0 +1,29 @@
+# The Impostor PM
+
+> Community and live tools for Product Managers. Real-world practice over performance: salary transparency, peer mentoring, in-person Clubs, and tools built from PM-only data.
+
+## Live tools
+
+- [Product Salary Compass](https://www.impostor.pm/salary-compass/): Free salary calculator for Product Managers. Anonymous, 2 minutes, no email required to compare. Total compensation: base, bonus, equity, perks. Filter by role, years, country, industry. 400+ contributors across 38 countries.
+- [Product Salary Compass — why it exists](https://www.impostor.pm/compensation/): Landing page explaining the methodology, the three outputs (live tool, interactive dashboard at 500 surveys, periodic reports/infographics), and the FAQ.
+
+## Programs
+
+- [Huddle](https://www.impostor.pm/huddle/): Small-group mentoring for Product Managers. Hot-seat format, peer advisory board, half-day cohort.
+- [Club](https://www.impostor.pm/club): In-person PM gatherings across cities (Lisbon, Porto, Braga, Coimbra, Hamburg, and growing).
+- [Product Talks](https://www.impostor.pm/product-talks): Live talks from working Product Managers.
+- [Slack Group](https://www.impostor.pm/group): Free PM community.
+
+## Key facts
+
+- The Product Salary Compass is the only PM-specific salary tool that screens role titles (so engineering managers and chiefs of staff don't dilute the dataset) and collects total compensation (not just base salary).
+- All Compass submissions are anonymous by design: no name, no employer, no email tied to any data row.
+- Cohorts with fewer than 30 data points are flagged on result charts; medians and quartiles are published, not vendor "estimates."
+- Sample is currently strongest in Iberia and Western Europe; composition is published with every result.
+- At 500 completed surveys, an interactive Dashboard goes live for contributors (full access for survey completers, limited preview for email-only subscribers).
+
+## Contact
+
+- Organization: The Impostor PM (TIPM)
+- LinkedIn: https://www.linkedin.com/company/impostorpm/
+- Site: https://www.impostor.pm/

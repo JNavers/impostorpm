@@ -1,0 +1,38 @@
+# Targets keep their trailing slash on purpose. /salary-compass/ is a directory
+# index in public/, so pointing at /salary-compass makes Pages 308 to the slashed
+# form — turning every one of these into two hops for no reason.
+#
+# Only redirects whose destination exists in THIS project belong here — a 301 to
+# a 404 is worse than the 404 it replaces. All destinations below verified 200 on
+# production before being added.
+/compensation/compare-salary    /salary-compass/  301
+/compensation/compare-salary/   /salary-compass/  301
+/compensation/compare-salary/*  /salary-compass/  301
+
+# The Mental Health Series became Product Talks — /mentalhealth on Softr is
+# already a byte-for-byte duplicate of /product-talks, and its own <title> says
+# "Mental Health Series is now: Product Talks". A 301 instead of a second copy.
+/mentalhealth                   /product-talks    301
+
+# Retirement map for the junk URLs still in the Softr sitemap. These were
+# deferred until the club pages they point at existed; they now do (all six
+# destinations verified 200 on production).
+#
+# They were invisible until 2026-08-03: with no 404.html, Cloudflare Pages ran
+# the project in SPA mode and answered every one of them with the homepage at
+# HTTP 200, so a sitemap sweep that accepts 200 reported them as passing. Adding
+# src/pages/404.astro is what surfaced them.
+/home-copy                      /                 301
+/test-page12345                 /                 301
+/club/lisbon-v1-deprecated      /club/lisbon      301
+/club/braga-v1-deprecated       /club/braga       301
+/coimbra-v1-deprecated          /club/coimbra     301
+/porto-template                 /club/porto       301
+/porto-club-form                /club/porto       301
+/porto-club-form-copy           /club/porto       301
+/club/tipm-upcoming-clubs       /events           301
+/tipm-upcoming-learning-events  /events           301
+
+# Google has /sitemap.xml on file from the Softr era; @astrojs/sitemap emits
+# /sitemap-index.xml. A 301 rather than a duplicate file, so there is one source.
+/sitemap.xml                    /sitemap-index.xml  301

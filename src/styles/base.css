@@ -1,0 +1,425 @@
+/* ============================================================
+   TIPM — shared site chrome (Layer 1)
+
+   These are the ~119 declarations that were byte-for-byte identical
+   across the inline <style> blocks of index-static.html,
+   huddle/index.html and compensation/index.html. Extracted once,
+   with the hardcoded hexes rewritten to the tokens in tokens.css.
+
+   Loaded AFTER tokens.css so the element rules below win where the
+   token sheet's generic h1/h2/p defaults would otherwise change how
+   the migrated pages look. Page-specific CSS stays scoped inside its
+   own .astro file.
+   ============================================================ */
+
+/* Legacy alias names. The migrated markup uses `style="color:var(--golden)"`
+   inline in several places, so these names have to keep resolving. New code
+   should use the --tipm-* tokens directly. */
+:root {
+  --white:         var(--tipm-white);
+  --warm-yellow:   var(--tipm-warm-yellow);
+  --golden:        var(--tipm-golden);
+  --golden-10:     var(--tipm-golden-10);
+  --golden-20:     var(--tipm-golden-20);
+  --golden-40:     var(--tipm-golden-40);
+  --near-black:    var(--tipm-near-black);
+  --black:         var(--tipm-black);
+  --cream:         var(--tipm-cream);
+  --light-gray:    var(--tipm-light-gray);
+  --border-gray:   var(--tipm-border-gray);
+  --text-muted:    var(--tipm-text-muted);
+  --outline-light: var(--tipm-outline);
+}
+
+/* ── Base ── */
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  overflow-x: hidden;
+  background-color: var(--tipm-white);
+}
+body {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-light);
+  color: var(--tipm-black);
+  background-color: inherit;
+}
+
+/* ── Container overrides (match the Softr breakpoints the pages were built to) ── */
+.container { max-width: 100%; }
+@media (min-width: 576px)  { .container { max-width: 540px; } }
+@media (min-width: 768px)  { .container { max-width: 720px; } }
+@media (min-width: 992px)  { .container { max-width: 960px; } }
+@media (min-width: 1200px) { .container { max-width: 1140px; } }
+
+/* ── Typography ── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  color: var(--tipm-black);
+  white-space: pre-line;
+}
+p { white-space: pre-line; }
+
+/* ── Section helpers ── */
+.section-warm   { background-color: var(--tipm-warm-yellow); }
+.section-dark   { background-color: var(--tipm-near-black); color: var(--tipm-white); }
+.section-dark h1,
+.section-dark h2,
+.section-dark h3 { color: var(--tipm-white); }
+.section-white  { background-color: var(--tipm-white); }
+.section-light  { background-color: var(--tipm-light-gray); }
+.section-golden { background-color: var(--tipm-golden); }
+/* A fifth wash, measured off /product-talks — that page is entirely #f1efe7,
+   not white. Section background is part of the design, not a default: check it
+   against the original page before shipping one. */
+.section-cream  { background-color: var(--tipm-cream); }
+
+/* Two more section washes, and the ones that took longest to find: on Softr
+   they are not a colour and not a CSS gradient but a background IMAGE — an SVG
+   holding a two-stop linear gradient. Every probe that read backgroundColor
+   reported these sections as plain white.
+   Reproduced in CSS from the SVG's own stops, so there is no image to ship.
+   Horizontal, matching the source's x1/x2 orientation. */
+.section-gradient-warm  { background-image: linear-gradient(90deg, var(--tipm-warm-soft) 0%, var(--tipm-warm-peach) 100%); }
+.section-gradient-coral { background-image: linear-gradient(90deg, var(--tipm-warm-pink) 0%, var(--tipm-warm-soft) 100%); }
+.section-pad    { padding: 4rem 0; }
+.section-pad-lg { padding: 6rem 0; }
+
+/* ── Buttons ──
+   One geometry for every button on the site, taken from /huddle by measuring
+   the live page: 4px radius, .65rem 1.75rem, 16px.
+
+   This supersedes the earlier .btn-cta spec (8px / .65rem 1.25rem / 15px).
+   .btn-cta and .btn-accent are the same button under two names — the migrated
+   pages were written against one and /huddle against the other, so both resolve
+   here rather than being two definitions free to drift apart. */
+.btn-cta,
+.btn-cta-dark,
+.btn-accent,
+.btn-dark,
+.btn-outline-custom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  border: none;
+  border-radius: var(--radius-xs);   /* 4px */
+  padding: .65rem 1.75rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;                   /* 16px */
+  font-weight: var(--fw-medium);     /* 500 */
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity var(--dur-med), background-color var(--dur-med), color var(--dur-med);
+}
+
+/* Primary — golden on any background */
+.btn-cta,
+.btn-accent {
+  background: var(--tipm-golden);
+  color: var(--tipm-near-black);
+}
+.btn-cta:hover, .btn-cta:focus,
+.btn-accent:hover, .btn-accent:focus {
+  background: var(--tipm-golden);
+  color: var(--tipm-near-black);
+  opacity: .88;
+  text-decoration: none;
+}
+
+/* Dark — for use on golden or warm sections */
+.btn-cta-dark,
+.btn-dark {
+  background: var(--tipm-near-black);
+  color: var(--tipm-white);
+  font-weight: var(--fw-regular);    /* 400, as on /huddle */
+}
+.btn-cta-dark:hover, .btn-cta-dark:focus,
+.btn-dark:hover, .btn-dark:focus {
+  background: var(--tipm-near-black);
+  color: var(--tipm-white);
+  opacity: .88;
+  text-decoration: none;
+}
+
+/* Secondary — outlined, pairs with the primary in a hero */
+.btn-outline-custom {
+  background: transparent;
+  color: var(--tipm-black);
+  border: 1.5px solid var(--tipm-black);
+  font-weight: var(--fw-regular);
+}
+.btn-outline-custom:hover, .btn-outline-custom:focus {
+  background: var(--tipm-black);
+  color: var(--tipm-white);
+  text-decoration: none;
+}
+
+/* On a dark section the outline has to invert or it disappears. */
+.section-dark .btn-outline-custom { color: var(--tipm-white); border-color: var(--tipm-white); }
+.section-dark .btn-outline-custom:hover { background: var(--tipm-white); color: var(--tipm-black); }
+
+.btn-lg-custom { padding: .85rem 2.5rem; font-size: var(--fs-l); }
+
+/* ── Navbar ── */
+.navbar-site {
+  background-color: var(--tipm-black);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 800;
+  border-bottom: 2px solid var(--tipm-golden);
+}
+.navbar-site .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+}
+.navbar-site .navbar-brand { padding: 0; margin: 0; display: flex; align-items: center; }
+.navbar-site .navbar-brand img { height: 2rem; width: auto; }
+@media (max-width: 576px) {
+  .navbar-site .navbar-brand img { max-width: 10rem; }
+}
+.navbar-site .nav-link {
+  color: var(--tipm-white) !important;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-light);
+  font-size: var(--fs-s);
+  line-height: 1.25rem;
+  padding: 1rem .875rem !important;
+  opacity: .85;
+  transition: opacity var(--dur-fast);
+}
+.navbar-site .nav-link:hover,
+.navbar-site .nav-link:focus { opacity: 1; }
+
+.navbar-site .dropdown-menu {
+  background-color: var(--tipm-black);
+  border: 1px solid #333;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+  padding: .5rem 0;
+  margin-top: .25rem;
+  min-width: 10rem;
+}
+.navbar-site .dropdown-item {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-light);
+  font-size: var(--fs-s);
+  padding: .5rem 1rem;
+  color: var(--tipm-white);
+  opacity: .85;
+}
+.navbar-site .dropdown-item:hover,
+.navbar-site .dropdown-item:focus {
+  background-color: #1a1a1a;
+  color: var(--tipm-white);
+  opacity: 1;
+}
+
+.navbar-site .btn-nav {
+  color: var(--tipm-black);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-s);
+  background: var(--tipm-white);
+  border: 1px solid var(--tipm-white);
+  border-radius: var(--radius-sm);
+  padding: .4rem 1.1rem;
+  line-height: 1.25rem;
+  transition: opacity var(--dur-fast);
+}
+.navbar-site .btn-nav:hover { opacity: .88; color: var(--tipm-black); text-decoration: none; }
+
+/* Mobile hamburger (white icon on dark bg) */
+.navbar-site .navbar-toggler { border: none; padding: .25rem; }
+.navbar-site .navbar-toggler:focus { outline: none; box-shadow: none; }
+.navbar-site .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  width: 1.25em;
+  height: 1.25em;
+}
+.navbar-site .navbar-collapse { background-color: var(--tipm-black); }
+@media (max-width: 991px) {
+  .navbar-site .navbar-collapse { padding: .5rem 0 1rem; }
+  .navbar-site .btn-nav { display: inline-block; margin: .5rem 0 .25rem .875rem; }
+}
+
+/* ── Icon box ── */
+.icon-box {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-lg);
+  background-color: var(--tipm-warm-yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: var(--fs-l);
+  color: var(--tipm-black);
+}
+.icon-box svg { width: 1.125rem; height: 1.125rem; }
+
+/* ── Scribble underline ──
+   Aliased to the tokens.css implementation, which uses
+   preserveAspectRatio='none' and bleeds 2px past each edge so the squiggle
+   covers the full text width and adapts when the wording changes. The old
+   per-page copy did not, and clipped on longer strings. */
+.scribble-underline { position: relative; display: inline-block; }
+.scribble-underline::after {
+  content: "";
+  position: absolute;
+  left: -2px; right: -2px; bottom: -6px;
+  height: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' width='100' height='8' viewBox='0 0 100 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 4.5C12 2 28 6.5 45 5C62 3.5 82 1 99.5 4.5' stroke='%23FFC600' stroke-width='3.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* ── Footer ── */
+.footer-site {
+  background-color: var(--tipm-footer-bg);
+  color: var(--tipm-white);
+  padding: 4.5rem 0 5rem;
+}
+.footer-site .footer-logo { height: 1.75rem; width: auto; }
+.footer-site .footer-copyright {
+  font-size: var(--fs-sm);
+  color: var(--tipm-white);
+  opacity: .65;
+  font-weight: var(--fw-light);
+  margin-top: .75rem;
+  margin-bottom: 1rem;
+}
+.footer-site .social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--tipm-border-gray);
+  border-radius: var(--radius-sm);
+  margin-right: .5rem;
+  color: var(--tipm-white);
+  font-size: var(--fs-base);
+  opacity: .65;
+  transition: opacity var(--dur-med);
+}
+.footer-site .social-icon:hover { opacity: 1; text-decoration: none; color: var(--tipm-white); }
+.footer-site .social-icon svg { width: 1rem; height: 1rem; fill: currentColor; }
+.footer-site h6 {
+  color: var(--tipm-white);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-base);
+  margin-bottom: 1.25rem;
+}
+.footer-site .footer-links { list-style: none; padding: 0; margin: 0; }
+.footer-site .footer-links li { margin-bottom: .75rem; }
+.footer-site .footer-links a {
+  color: var(--tipm-white);
+  font-weight: var(--fw-light);
+  font-size: var(--fs-sm);
+  opacity: .75;
+  transition: opacity var(--dur-fast);
+}
+.footer-site .footer-links a:hover { opacity: 1; text-decoration: none; }
+
+/* ============================================================
+   Mobile: centre the content
+   ============================================================
+   Measured on the Softr original at a 416px viewport: every heading and
+   paragraph switches to text-align:center below the tablet breakpoint, while
+   the footer keeps its own left alignment. This reproduces that in one place
+   rather than per page.
+
+   Two things are deliberately NOT centred:
+   - the footer, which the original leaves left-aligned; and
+   - form fields and their labels, where a centred label floating above a
+     full-width input is harder to scan, not easier.
+
+   Bullet lists are centred as a BLOCK (inline-block + left text) so the group
+   sits in the middle while the markers stay aligned with each other —
+   centring each line individually leaves the bullets in a ragged column.
+   ============================================================ */
+@media (max-width: 767.98px) {
+  .container,
+  .ue-container {
+    text-align: center;
+  }
+
+  /* Anything laid out as a row of children stacks and centres. */
+  .container [class*='-split'],
+  .container [class*='-cols'],
+  .container [class*='-row'],
+  .ue-container [class*='-split'] {
+    justify-items: center;
+  }
+
+  /* Flex rows of buttons */
+  .container .d-flex,
+  .container [class*='-actions'],
+  .container [class*='-cta-row'] {
+    justify-content: center;
+  }
+
+  /* Images centre and stop being pinned to one edge. */
+  .container img,
+  .ue-container img {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Bullet lists: centre the block, keep the markers in line. */
+  .container ul:not(.navbar-nav):not(.footer-links):not(.city-grid),
+  .container ol {
+    display: inline-block;
+    text-align: left;
+  }
+
+  /* Copy that was width-limited for desktop line length should now centre. */
+  .container p,
+  .container h1,
+  .container h2,
+  .container h3 {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── Exceptions ── */
+
+  /* The footer keeps its left alignment, as on the original. */
+  .footer-site .container,
+  .footer-site .container * {
+    text-align: left;
+  }
+
+  /* Forms stay left: a centred label over a full-width field reads worse. */
+  .container form,
+  .container form * {
+    text-align: left;
+  }
+  .container form button[type='submit'] {
+    justify-self: center;
+  }
+
+  /* Event cards keep their own grid — centring the text would break the
+     date/title/action columns apart. */
+  .ue-item,
+  .ue-item * {
+    text-align: left;
+  }
+}
+
+/* Mobile hero sizes are NOT set here: the original uses a different value per
+   page (48px on /club and most heroes, 36px on /about and /group, 30px on the
+   city pages), so each page carries its own measured value in its own @media
+   block. See SECTION-PALETTE.md. */
+
+/* Cookie-settings link sits inline with the copyright rather than in a link
+   group, so it is present on every page without adding a footer column. */
+.footer-copyright .footer-sep { margin: 0 0.4rem; opacity: 0.5; }
+.footer-copyright a { text-decoration: underline; }

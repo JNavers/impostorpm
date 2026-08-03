@@ -1,0 +1,134 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import EventList from '../components/EventList.astro';
+import type { TipmEvent } from '../lib/events';
+
+/**
+ * Two sources, one list.
+ *
+ * The back catalogue lived in Airtable on Softr and is now static in the repo.
+ * Anything new comes from Luma: tag the event `Product Talks` there and it
+ * appears here on its own — no file to edit, nothing to deploy.
+ *
+ * The Talks were never in the Luma calendar (checked against all 16 past events
+ * — zero matches), which is why the past-Talks list cannot simply reuse the
+ * Club feed the way the rest of the site does.
+ */
+const LUMA_TAG = 'Product Talks';
+
+const talks = (await getCollection('talks')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const staticTalks: TipmEvent[] = talks.map((t) => ({
+  id: t.id,
+  name: t.data.title,
+  url: t.data.url ?? 'https://luma.com/impostorpm',
+  start_at: t.data.date.toISOString(),
+  end_at: null,
+  timezone: 'Europe/Lisbon',
+  cover_url: t.data.image,
+  city: null,
+  region: null,
+  country: null,
+  address: null,
+  location_type: t.data.online ? 'online' : 'offline',
+  event_type: t.data.series,
+  tags: [t.data.series],
+}));
+---
+
+<Base
+  title="Product Talks — The Impostor PM"
+  description="Join The Impostor PM's interactive webinar series for honest, practical conversations with product experts."
+>
+  <header class="section-cream talks-hero">
+    <div class="container">
+      <h1>Real people. Real talks.</h1>
+      <p class="talks-lede">Conversations with experienced product minds — live and unfiltered.</p>
+      <a href="https://luma.com/impostorpm" target="_blank" rel="noreferrer" class="btn-cta">I'm in!</a>
+    </div>
+  </header>
+
+  <section class="section-cream section-pad-lg">
+    <div class="container talks-body">
+      <img src="/img/pages/talks-what.webp" alt="" width="195" height="195" loading="lazy" decoding="async" class="talks-art" />
+      <h2>What is Product Talks?</h2>
+      <p>
+        Product Talks is an interactive webinar series by The Impostor PM, where we sit down with product experts (and sometimes people outside of product) to have honest, practical conversations about their craft.
+      </p>
+      <p>Each session is split into two parts:</p>
+
+      <div class="talks-parts">
+        <div class="talks-part">
+          <span class="talks-num">1</span>
+          <div>
+            <h3>Open Talk</h3>
+            <p>
+              A relaxed conversation with our guest about the main topic. We'll explore experiences, ideas, and lessons learned while bringing in questions submitted by the community.
+            </p>
+          </div>
+        </div>
+        <div class="talks-part">
+          <span class="talks-num">2</span>
+          <div>
+            <h3>Practical Session</h3>
+            <p>
+              An interactive experience where we go deeper into the topic through practical examples or collaborative exercises. It's a space where you can ask questions and learn by doing.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-cream section-pad-lg" aria-labelledby="talks-past">
+    <div class="ue-container">
+      <h2 class="ue-title" id="talks-past">Check our past Talks</h2>
+      <EventList
+        period="past"
+        limit={12}
+        tags={[LUMA_TAG]}
+        extra={staticTalks}
+        emptyMessage="Past Talks will show up here as the calendar fills in."
+      />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .talks-hero { padding: 4.5rem 0 3.5rem; }
+  .talks-hero h1 { font-size: 3rem; line-height: 1.5; letter-spacing: -0.04em; margin-bottom: 1rem; }
+  .talks-lede { font-size: 1.125rem; color: var(--tipm-text-muted); max-width: 48ch; margin-bottom: 1.75rem; }
+
+  .talks-art { display: block; width: 8rem; height: auto; margin-bottom: 1.25rem; }
+  .talks-body { max-width: 52rem; }
+  .talks-body h2 { font-size: 1.875rem; margin-bottom: 1rem; }
+  .talks-body > p { color: var(--tipm-text-muted); font-size: 1rem; max-width: 62ch; }
+
+  .talks-parts { display: grid; gap: 1.5rem; margin-top: 2rem; }
+  .talks-part { display: flex; gap: 1.25rem; align-items: flex-start; }
+  .talks-num {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--tipm-golden);
+    color: var(--tipm-near-black);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  .talks-part h3 { font-size: 1.25rem; margin-bottom: 0.35rem; }
+  .talks-part p { color: var(--tipm-text-muted); margin: 0; }
+
+  @media (min-width: 768px) {
+    .talks-parts { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .talks-hero h1 { font-size: 3rem; line-height: 1.5; }
+    .talks-body h2, .ue-title { font-size: 1.875rem; line-height: 1.5; }   /* original: 30px */
+  }
+</style>

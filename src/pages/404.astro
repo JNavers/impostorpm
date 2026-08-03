@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+
+// Without a 404.html in the output, Cloudflare Pages treats the project as a
+// single-page app and answers every unmatched path with index.html at HTTP 200.
+// That was live: /noexiste-xyz, /assets/nada.js and /club/inventado all returned
+// the homepage as a success, which is an unbounded set of indexable duplicates
+// of /. Astro emits this page as dist/404.html, which is the file Pages looks
+// for, and the status becomes a real 404.
+---
+
+<Base
+  title="Page not found — The Impostor PM"
+  description="That page doesn't exist."
+  noindex
+>
+  <section class="section-warm notfound">
+    <div class="container">
+      <p class="tipm-eyebrow">404</p>
+      <h1>That page doesn't exist</h1>
+      <p class="notfound-lede">
+        The link may be out of date, or the page may have moved. Here's where most people are going.
+      </p>
+      <div class="notfound-actions">
+        <a href="/" class="btn-cta">Go to the homepage</a>
+        <a href="/events" class="btn-cta-dark">See upcoming events</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notfound { padding: 5rem 0 4.5rem; }
+  .notfound h1 {
+    font-size: 3rem;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+    margin-bottom: 1rem;
+  }
+  .notfound-lede {
+    font-size: 1rem;
+    color: var(--tipm-text-muted);
+    max-width: 46ch;
+    margin-bottom: 1.75rem;
+  }
+  .notfound-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  @media (max-width: 768px) {
+    .notfound h1 { font-size: 2.25rem; }
+  }
+</style>

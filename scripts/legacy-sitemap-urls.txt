@@ -1,0 +1,43 @@
+# The 39 URLs in the Softr sitemap as of the 2026-08-03 cutover — every
+# address Google already had on file. They must keep resolving forever;
+# a 301 to a real page counts, a 404 does not. Do not prune this list:
+# it is the record of what was indexed, not a list of what exists now.
+/
+/404
+/about
+/benefits
+/boost
+/boost-agenda
+/bring-the-club-to-my-city
+/builderscamp
+/club
+/club/braga
+/club/braga-v1-deprecated
+/club/coimbra
+/club/hamburg
+/club/how-we-select
+/club/lisbon
+/club/lisbon-v1-deprecated
+/club/porto
+/club/tipm-upcoming-clubs
+/coimbra-v1-deprecated
+/compensation
+/group
+/home-copy
+/landcowork
+/landcowork-book-a-seat
+/mentalhealth
+/nextlevelhub
+/nextlevelhub-booking
+/partner-with-us
+/porto-club-form
+/porto-club-form-copy
+/porto-template
+/product-buildcamp
+/product-talks
+/product-talks-link-to-the-talk
+/productized
+/productweekend
+/tekya
+/test-page12345
+/tipm-upcoming-learning-events

@@ -1,0 +1,50 @@
+---
+import Seo from '../components/Seo.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Analytics from '../components/Analytics.astro';
+import ConsentBanner from '../components/ConsentBanner.astro';
+
+// Order matters. Bootstrap first so the token sheet and the shared chrome can
+// both override it; base.css last so its element rules win over the generic
+// h1/h2/p defaults in tokens.css.
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  noindex?: boolean;
+  /** Set false for standalone pages that carry their own header/footer. */
+  chrome?: boolean;
+}
+
+const { chrome = true, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <Seo {...seo} />
+
+    {/* Self-hosted. Previously hotlinked from the Softr asset CDN. */}
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <Analytics />
+    <slot name="head" />
+  </head>
+  <body>
+    {chrome && <SiteNav />}
+    <slot />
+    {chrome && <SiteFooter />}
+    <ConsentBanner />
+  </body>
+</html>

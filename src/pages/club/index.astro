@@ -1,0 +1,189 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CityGrid from '../../components/CityGrid.astro';
+
+// The city list comes from the clubs collection, so adding a city is one .md
+// file rather than an edit here, an edit to the footer and a new page.
+const clubs = (await getCollection('clubs', ({ data }) => data.status !== 'deprecated')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const expectations = [
+  {
+    image: '/img/pages/club-expect-1.webp',
+    title: 'Join the Circle',
+    body: 'Walk into a relaxed space, meet a reduced group of PMs, and feel the "safe room" vibe. Find people like you who are ready to share honestly.',
+  },
+  {
+    image: '/img/pages/club-expect-2.webp',
+    title: 'Real Conversations',
+    body: 'The session will revolve around a different topic each time. You only need to listen and share (if you want), about real challenges.',
+  },
+  {
+    image: '/img/pages/club-expect-3.webp',
+    title: 'A Safe Space',
+    body: 'By the end, you leave with new perspectives, practical takeaways, and the feeling that you are not alone in your struggles.',
+  },
+];
+---
+
+<Base
+  title="TIPM - Join the circle. Leave with value that works."
+  description="In-person Clubs for Product Managers across Porto, Lisbon, Braga, Coimbra and Hamburg. Peer-to-peer, slide-free, and free to attend."
+>
+  <header class="clubidx-hero">
+    <div class="container">
+      <h1>Join the circle. Leave with <span class="clubidx-hl">value that works.</span></h1>
+      <p class="clubidx-lede">
+        Discover a safe space to share experiences and grow together with peers.
+      </p>
+      <a href="#what-to-expect" class="btn-cta">Discover</a>
+    </div>
+  </header>
+
+  <section class="section-warm section-pad-lg">
+    <div class="container clubidx-body">
+      <div class="clubidx-split">
+        <div>
+          <h2>We know that feeling</h2>
+          <p>
+            You show up at events hoping to learn something real, but instead you get pitch decks and someone trying to sell their book.
+          </p>
+          <p>Hundreds of slides. Zero applicability. Zero connections.</p>
+          <p class="clubidx-emphasis">
+            We don't have a magic recipe. But we do have a rare safe space for PMs to learn, share, and connect.
+          </p>
+        </div>
+        <img src="/img/pages/club-hero.webp" alt="" width="366" height="326" loading="lazy" decoding="async" class="clubidx-art" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section-white section-pad-lg" id="what-to-expect">
+    <div class="container clubidx-body">
+      <h2>What to expect</h2>
+      <p>
+        If you like to actively share and discuss ideas in a peer-to-peer, slide-free space, the Club is your place.
+      </p>
+      <div class="clubidx-grid">
+        {expectations.map((item) => (
+          <div class="clubidx-card">
+            {item.image && <img src={item.image} alt="" width="160" height="112" loading="lazy" decoding="async" class="clubidx-icon" />}
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-dark section-pad">
+    <div class="container clubidx-free">
+      <div>
+        <h2>We are 100% free</h2>
+        <p>Because a real sense of community is priceless.</p>
+      </div>
+      <a href="/events" class="btn-cta">Upcoming Clubs</a>
+    </div>
+  </section>
+
+  <section class="section-warm section-pad-lg">
+    <div class="container clubidx-body">
+      <h2>Most events focus on content. We focus on people.</h2>
+      <p>
+        From down-to-earth insights to build meaningful connections. Here's how we impact the community:
+      </p>
+      <div class="clubidx-senja">
+        <div class="senja-embed" data-id="0e45a7a8-f5b1-4a72-8ca2-2b198d0d400f" data-mode="shadow" data-lazyload="false"></div>
+        <script is:inline async type="text/javascript" src="https://widget.senja.io/widget/0e45a7a8-f5b1-4a72-8ca2-2b198d0d400f/platform.js"></script>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-white section-pad-lg">
+    <div class="container clubidx-body">
+      <CityGrid />
+    </div>
+  </section>
+
+  <section class="section-golden section-pad">
+    <div class="container clubidx-cta">
+      <h2>Not finding your City?</h2>
+      <p>No worries. You're one step closer to creating genuine connections.</p>
+      <a href="/bring-the-club-to-my-city" class="btn-cta-dark">Learn more</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Full-bleed photo behind the hero, as on Softr. The gradient is what keeps
+     the copy legible over a busy image rather than trusting the photo. */
+  .clubidx-hero {
+    position: relative;
+    padding: 7rem 0 6rem;
+    background-image:
+      linear-gradient(90deg, rgba(0,0,0,.78) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,.35) 100%),
+      url('/img/pages/club-hero-bg.webp');
+    background-size: cover;
+    background-position: center;
+  }
+  .clubidx-hero h1 {
+    font-size: 3rem;
+    line-height: 1;   /* 48/48: la unica pagina a lh 1 en el original */
+    letter-spacing: -0.04em;
+    max-width: 18ch;
+    margin-bottom: 1.25rem;
+    color: var(--tipm-white);
+  }
+  .clubidx-hl { color: var(--tipm-golden); }
+  .clubidx-lede { font-size: 1.125rem; color: rgba(255,255,255,.85); max-width: 50ch; margin-bottom: 1.75rem; }
+
+  .clubidx-free {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 52rem;
+  }
+  .clubidx-free h2 { font-size: 1.875rem; margin-bottom: 0.35rem; }
+  .clubidx-free p { color: #bbb; margin: 0; }
+
+  .clubidx-senja { margin-top: 2.5rem; }
+
+  .clubidx-body { max-width: 52rem; }
+  .clubidx-body h2 { font-size: 1.875rem;   /* 30px en el original */ margin-bottom: 1rem; letter-spacing: -0.02em; }
+  .clubidx-body > p { color: var(--tipm-text-muted); font-size: 1rem; max-width: 60ch; }
+  .clubidx-emphasis { color: var(--tipm-black) !important; font-weight: 600; font-size: 1.125rem !important; }
+  .clubidx-stat { font-size: 1.5rem; font-weight: 700; color: var(--tipm-black) !important; margin-top: 2rem; }
+
+  .clubidx-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .clubidx-card {
+    background: var(--tipm-white);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    border: 1px solid var(--tipm-outline);
+  }
+  .clubidx-icon { display: block; height: 7rem; width: auto; margin-bottom: 1rem; }
+  .clubidx-split { display: grid; gap: 2.5rem; align-items: center; }
+  .clubidx-art { width: 100%; max-width: 22rem; height: auto; justify-self: center; }
+  @media (min-width: 900px) { .clubidx-split { grid-template-columns: 1fr 22rem; } }
+  .clubidx-card h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+  .clubidx-card p { color: var(--tipm-text-muted); font-size: 0.9375rem; margin: 0; }
+
+
+  .clubidx-cta { max-width: 46rem; text-align: center; }
+  .clubidx-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .clubidx-cta p { margin-bottom: 1.5rem; }
+
+  @media (max-width: 768px) {
+    .clubidx-hero h1 { font-size: 3rem; line-height: 1; }
+    .clubidx-body h2, .clubidx-free h2, .clubidx-cta h2 { font-size: 1.875rem; line-height: 1.5; }   /* original: 30px */
+  }
+</style>

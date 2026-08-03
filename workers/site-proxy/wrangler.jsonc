@@ -1,0 +1,41 @@
+{
+  "name": "impostorpm-site-proxy",
+  "main": "src/worker.js",
+  "workers_dev": true,
+  "preview_urls": false,
+  "compatibility_date": "2026-08-03",
+  // THE CUTOVER. Both hostnames, because binding only the apex is the bug that
+  // left www.impostor.pm/compensation on Softr while the apex served Pages.
+  //
+  // These are the least specific routes in the zone, so the five pre-existing
+  // ones (/compensation*, /salary-compass*, /rezonant* x2, /assets/posthog-init.js)
+  // still win for their paths until they are removed — which is the next step,
+  // not this one. Deliberate: this deploy moves ~34 of the 39 URLs off Softr and
+  // leaves the three already-on-Pages tools exactly where they are.
+  //
+  // Rollback is `routes: []` plus a redeploy. Softr is the zone default again the
+  // moment these are gone; nothing else has to be restored.
+  "routes": [
+    { "pattern": "impostor.pm/*", "zone_name": "impostor.pm" },
+    { "pattern": "*.impostor.pm/*", "zone_name": "impostor.pm" },
+
+    // Released from salary-compass-proxy and impostorpm-rezonant-proxy on
+    // 2026-08-03 and claimed here. They are redundant with `impostor.pm/*` in
+    // routing terms, and kept listed on purpose: while any of them is unowned,
+    // whoever claims it next silently outranks the catch-all, because the most
+    // specific pattern wins. Holding them is what stops that.
+    //
+    // Note for anyone tempted to unbind these with wrangler: `wrangler deploy`
+    // and `wrangler triggers deploy` both treat `"routes": []` as "leave routes
+    // alone" and will NOT remove anything. Use the dashboard.
+    { "pattern": "impostor.pm/compensation*", "zone_name": "impostor.pm" },
+    { "pattern": "impostor.pm/assets/posthog-init.js", "zone_name": "impostor.pm" },
+    { "pattern": "*.impostor.pm/salary-compass*", "zone_name": "impostor.pm" },
+    { "pattern": "impostor.pm/rezonant*", "zone_name": "impostor.pm" },
+    { "pattern": "*.impostor.pm/rezonant*", "zone_name": "impostor.pm" }
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}

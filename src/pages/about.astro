@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+
+// Like /group, this page's <title> on Softr is the literal string "about" and
+// its description is Softr's boilerplate. Both fixed here.
+---
+
+<Base
+  title="About — The Impostor PM"
+  description="A community created by and for Product Managers of all backgrounds: a safe space to share experiences openly and without fear of judgement."
+>
+  <header class="section-white about-hero">
+    <div class="container">
+      <div class="about-split">
+        <div>
+          <h1>We're The Impostor Product Managers</h1>
+          <p class="about-lede">
+            In our community we value open and transparent communication. We believe that through shared successes and failures, we'll become stronger together.
+          </p>
+        </div>
+        <img src="/img/pages/about-hero.webp" alt="The Impostor PM community together at a Club session" width="585" height="408" class="about-art" />
+      </div>
+    </div>
+  </header>
+
+  <section class="section-gradient-warm section-pad-lg">
+    <div class="container about-body">
+      <h2>Our Mission</h2>
+      <p>
+        The Impostor Product Manager is a community created by and for product managers of all backgrounds. Our goal is to provide a safe space where you can share your experiences openly and without fear of judgement. We believe in the power of learning from one another, and envision a world where mistakes are embraced as opportunities for growth.
+      </p>
+      <p>
+        Originally formed as a means of coping with Impostor Syndrome, our community has since evolved into a platform for sharing our insights and experiences with the broader product community. We're passionate about connecting diverse individuals.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-white section-pad-lg">
+    <div class="container about-contact">
+      <img src="/img/pages/about-contact.svg" alt="" width="371" height="278" loading="lazy" decoding="async" />
+      <div>
+        <h2>Do you want to contact us?</h2>
+        <p>Drop us a line at <a href="mailto:general@impostor.pm">general@impostor.pm</a> and we'll get back to you.</p>
+      </div>
+    </div>
+  </section>
+
+</Base>
+
+<style>
+  .about-hero { padding: 4.5rem 0 3.5rem; }
+  .about-hero h1 { font-size: 2.25rem;   /* 36px en el original, no 48 */ line-height: 1.5; letter-spacing: -0.04em; max-width: 18ch; margin-bottom: 1rem; }
+  .about-lede { font-size: 1.125rem; color: var(--tipm-text-muted); max-width: 54ch; margin: 0; }
+
+  .about-split { display: grid; gap: 2.5rem; align-items: center; }
+  .about-art { width: 100%; max-width: 32rem; height: auto; border-radius: var(--radius-xl); justify-self: center; }
+  @media (min-width: 900px) { .about-split { grid-template-columns: 1fr 32rem; } }
+
+  .about-contact { display: grid; gap: 2rem; align-items: center; max-width: 52rem; }
+  .about-contact img { width: 100%; max-width: 20rem; height: auto; justify-self: center; }
+  .about-contact h2 { font-size: 1.875rem; margin-bottom: 0.5rem; }
+  .about-contact p { color: var(--tipm-text-muted); font-size: 1rem; }
+  .about-contact a { color: var(--tipm-black); text-decoration: underline; text-decoration-color: var(--tipm-golden); text-underline-offset: 4px; text-decoration-thickness: 2px; }
+  @media (min-width: 760px) { .about-contact { grid-template-columns: 20rem 1fr; } }
+
+  .about-body { max-width: 46rem; }
+  .about-body h2 { font-size: 2rem;   /* 32px en el original */ margin-bottom: 1rem; }
+  .about-body p { color: var(--tipm-text-muted); font-size: 1rem; }
+
+  .about-cta { max-width: 46rem; text-align: center; }
+  .about-cta h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .about-cta p { margin-bottom: 1.5rem; }
+  .about-cta-row { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+  @media (max-width: 768px) {
+    .about-hero h1 { font-size: 2.25rem; line-height: 1.5; }
+    .about-body h2, .about-contact h2, .about-cta h2 { font-size: 2rem; line-height: 1.2; }   /* original: 32px */
+  }
+</style>

@@ -1,0 +1,111 @@
+---
+import Base from '../layouts/Base.astro';
+
+// On Softr this page's <title> is the literal string "group" and its meta
+// description is Softr's own boilerplate ("Made with Softr, the easiest way to
+// turn your data into internal tools…"). Both are fixed here.
+const reasons = [
+  {
+    title: 'Build connections',
+    body: 'You want to build meaningful relationships and connections with other Product Managers who share your passion and vision for creating great products.',
+  },
+  {
+    title: 'Express yourself',
+    body: 'You are looking for a safe and supportive space to express your doubts, fears, and frustrations without being judged or criticized.',
+  },
+  {
+    title: 'Learn from others',
+    body: 'You want to learn from the experiences, insights, and advice of other Product Managers who have faced similar challenges and overcome them.',
+  },
+  {
+    title: 'Gain confidence',
+    body: 'You just joined a new company, or you were promoted to a higher position and want to gain confidence and self-esteem by recognizing your strengths but also your fears and mistakes.',
+  },
+  {
+    title: 'Develop skills',
+    body: 'You are eager to develop new skills and knowledge that can help you improve your performance and effectiveness as a Product Manager.',
+  },
+  {
+    title: 'Find your tribe & conquer',
+    body: "You can't wait to discover the power of community and collaboration, and you won't let impostor syndrome stop you.",
+  },
+];
+
+const JOIN_URL = 'https://tally.so/r/w2X0de';
+---
+
+<Base
+  title="Slack Group — The Impostor PM"
+  description="A free Slack community for Product Managers who deal with impostor syndrome. Share the hard parts of the job with people who get it."
+>
+  <header class="section-gradient-warm group-hero">
+    <div class="container">
+      <div class="group-split">
+        <div>
+          <h1>You are not alone. Join our Slack group today and unleash your potential.</h1>
+          <p class="group-lede">
+            Are you a Product Manager who struggles with impostor syndrome? Do you wish you had others to share your daily difficulties with? If yes, then our support group is for you.
+          </p>
+          <a href={JOIN_URL} target="_blank" rel="noreferrer" class="btn-cta">Join the Community</a>
+        </div>
+        <img src="/img/pages/group-hero.svg" alt="" width="585" height="400" class="group-art" />
+      </div>
+    </div>
+  </header>
+
+  <section class="section-white section-pad-lg">
+    <div class="container group-body">
+      <h2>Is this for me?</h2>
+      <p>
+        As a Product Manager, you have a lot of responsibilities and expectations. But you are not alone. Many Product Managers face the same challenges and feelings, and they're waiting for you in our Slack group.
+      </p>
+      <p>Here you have six reasons we commonly shared at the time we decided to join the community:</p>
+
+      <div class="group-reasons">
+        {reasons.map((reason) => (
+          <div class="group-reason">
+            <h3>{reason.title}</h3>
+            <p>{reason.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</Base>
+
+<style>
+  .group-hero { padding: 4.5rem 0 3.5rem; }
+  .group-hero h1 { font-size: 2.75rem; line-height: 1.5; letter-spacing: -0.03em; max-width: 20ch; margin-bottom: 1rem; }
+  .group-lede { font-size: 1rem; color: var(--tipm-text-muted); max-width: 54ch; margin-bottom: 1.75rem; }
+
+  .group-split { display: grid; gap: 2.5rem; align-items: center; }
+  .group-art { width: 100%; max-width: 30rem; height: auto; justify-self: center; }
+  @media (min-width: 900px) { .group-split { grid-template-columns: 1fr 30rem; } }
+
+  .group-body { max-width: 52rem; }
+  .group-body h2 { font-size: 2.25rem;   /* 36px en el original */ margin-bottom: 1rem; }
+  .group-body > p { color: var(--tipm-text-muted); font-size: 1rem; max-width: 60ch; }
+
+  .group-reasons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  .group-reason {
+    padding: 1.5rem;
+    border-radius: var(--radius-xl);
+    background: var(--tipm-light-gray);
+  }
+  .group-reason h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+  .group-reason p { color: var(--tipm-text-muted); font-size: 0.9375rem; margin: 0; }
+
+  .group-cta { text-align: center; max-width: 40rem; }
+  .group-cta h2 { font-size: 2rem; margin-bottom: 1.25rem; }
+
+  @media (max-width: 768px) {
+    .group-hero h1 { font-size: 2.25rem; line-height: 1.5; }
+    .group-body h2, .group-cta h2 { font-size: 2.25rem; line-height: 1.5; }   /* original: 36px */
+  }
+</style>

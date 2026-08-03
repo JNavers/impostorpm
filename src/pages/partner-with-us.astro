@@ -1,0 +1,145 @@
+---
+import Base from '../layouts/Base.astro';
+
+// On Softr this page's <title> is "Partner with us" but its meta description is
+// Softr's own boilerplate. The form was a native Softr form, which is why this
+// page needed a replacement endpoint (functions/api/partner-enquiry.js) rather
+// than just a copy of the markup.
+---
+
+<Base
+  title="Partner with us — The Impostor PM"
+  description="Offer a product or service Product Managers would benefit from? Tell us about it and we'll look at making it a community benefit."
+>
+  <header class="section-warm partnerus-hero">
+    <div class="container">
+      <h1>Is there a match?</h1>
+      <p class="partnerus-lede">
+        If you offer a product or service that our engaged community can benefit from, we'd love to hear about you! Product people love to get special discounts from the best in the industry.
+      </p>
+    </div>
+  </header>
+
+  <section class="section-white section-pad-lg">
+    <div class="container partnerus-form-wrap">
+      <form id="partner-form" novalidate>
+        <label>
+          <span>Full name <abbr title="required">*</abbr></span>
+          <input type="text" name="name" required autocomplete="name" />
+        </label>
+
+        <label>
+          <span>Company name</span>
+          <input type="text" name="company" autocomplete="organization" />
+        </label>
+
+        <label>
+          <span>Email <abbr title="required">*</abbr></span>
+          <input type="email" name="email" required autocomplete="email" />
+        </label>
+
+        <label>
+          <span>How would you like to collaborate with us? <abbr title="required">*</abbr></span>
+          <textarea name="message" rows="5" required></textarea>
+        </label>
+
+        <button type="submit" class="btn-cta">Submit</button>
+
+        <p class="partnerus-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const form = document.getElementById('partner-form') as HTMLFormElement | null;
+  const status = document.querySelector('.partnerus-status') as HTMLElement | null;
+  const MAILTO = 'general@impostor.pm';
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!status) return;
+
+    const button = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    if (!data.name || !data.email || !data.message) {
+      status.textContent = 'Please fill in your name, email and message.';
+      status.dataset.state = 'error';
+      return;
+    }
+
+    button.disabled = true;
+    status.dataset.state = 'pending';
+    status.textContent = 'Sending…';
+
+    try {
+      const response = await fetch('/api/partner-enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const body = await response.json().catch(() => ({}));
+
+      if (response.ok && body.status === 'ok') {
+        form.reset();
+        status.dataset.state = 'ok';
+        status.textContent = "Thanks — we've got it. We'll be in touch.";
+      } else {
+        throw new Error(body.message ?? `HTTP ${response.status}`);
+      }
+    } catch (error) {
+      // Never swallow this. An enquiry that vanishes silently is worse than one
+      // that tells the sender to use email instead.
+      status.dataset.state = 'error';
+      status.innerHTML =
+        `That didn't go through (${String((error as Error).message).slice(0, 80)}). ` +
+        `Please email us at <a href="mailto:${MAILTO}">${MAILTO}</a>.`;
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+
+<style>
+  .partnerus-hero { padding: 4.5rem 0 3rem; }
+  .partnerus-hero h1 { font-size: 3rem; line-height: 1.5; letter-spacing: -0.04em; margin-bottom: 1rem; }
+  .partnerus-lede { font-size: 1rem; color: var(--tipm-text-muted); max-width: 56ch; margin: 0; }
+
+  .partnerus-form-wrap { max-width: 36rem; }
+  form { display: grid; gap: 1.25rem; }
+  label { display: grid; gap: 0.4rem; }
+  label > span { font-weight: 600; font-size: 0.9375rem; }
+  abbr { color: var(--tipm-golden); text-decoration: none; }
+
+  input,
+  textarea {
+    font: inherit;
+    font-weight: 400;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--tipm-outline);
+    border-radius: var(--radius-md);
+    background: var(--tipm-white);
+    color: var(--tipm-black);
+    width: 100%;
+  }
+  input:focus,
+  textarea:focus {
+    outline: 2px solid var(--tipm-golden);
+    outline-offset: 1px;
+    border-color: transparent;
+  }
+  textarea { resize: vertical; }
+
+  button[type='submit'] { justify-self: start; }
+  button[disabled] { opacity: 0.6; cursor: progress; }
+
+  .partnerus-status { margin: 0; font-size: 0.9375rem; min-height: 1.4em; }
+  .partnerus-status[data-state='ok'] { color: #1a7f37; font-weight: 600; }
+  .partnerus-status[data-state='error'] { color: #a4262c; }
+  .partnerus-status[data-state='pending'] { color: var(--tipm-text-muted); }
+
+  @media (max-width: 768px) {
+    .partnerus-hero h1 { font-size: 2.25rem; }
+  }
+</style>
