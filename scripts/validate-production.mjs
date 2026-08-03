@@ -74,7 +74,7 @@ const LEGACY_URLS = readFileSync(join(ROOT, 'scripts/legacy-sitemap-urls.txt'), 
  *  last Softr CDN dependencies were cut out of it — deliberately, and the only
  *  edit to this file since the subtree. Any other change to this number means
  *  something modified the page that should not have. */
-const SALARY_COMPASS_BYTES = 274033;
+const SALARY_COMPASS_BYTES = 276897;
 
 console.log(`\nValidating: ${HOSTS.join('  ')}\n`);
 
@@ -192,15 +192,29 @@ for (const host of HOSTS) {
     assert(body.includes('data-consent-reopen'), 'no reopen control in the footer');
   });
 
-  await check('salary-compass does NOT get a second analytics init', async () => {
-    // It ships its own posthog-init.js. Two inits double every pageview on the
-    // highest-value page on the site.
-    const { body } = await getText(`${host}/salary-compass/`);
-    assert(!body.includes('tipm-consent'), 'the shared banner leaked into salary-compass');
+  await check('salary-compass gates capture on consent too', async () => {
+    // It is a common landing page, so a visitor can reach it having never seen
+    // the banner. Until 2026-08-03 it captured on load regardless, while every
+    // other page asked first.
+    const { body } = await getText(`${host}/salary-compass/posthog-init.js`);
     assert(
-      !body.includes('opt_out_capturing_by_default'),
-      'the shared Analytics component leaked into salary-compass'
+      body.includes('opt_out_capturing_by_default'),
+      'posthog-init.js captures without waiting for consent'
     );
+    const page = (await getText(`${host}/salary-compass/`)).body;
+    assert(page.includes('tipm-consent'), 'no consent banner on salary-compass');
+  });
+
+  await check('salary-compass is not initialised twice', async () => {
+    // It ships its own posthog-init.js, so the shared Analytics component must
+    // not also land here — two inits double every pageview on the most valuable
+    // page on the site. GA4 is the discriminator: it exists only in the shared
+    // component, never in this page's own script. (Do not test for
+    // opt_out_capturing_by_default here — since the consent fix, BOTH set it.)
+    const { body } = await getText(`${host}/salary-compass/`);
+    assert(!body.includes('G-Q4C4RYPLP5'), 'the shared Analytics component leaked in');
+    const inits = (body.match(/posthog\.init\(/g) ?? []).length;
+    assert(inits === 0, `${inits} inline posthog.init calls; it should come only from posthog-init.js`);
   });
 
   // ── Integrity ─────────────────────────────────────────────────────────────
