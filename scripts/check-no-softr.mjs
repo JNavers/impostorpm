@@ -34,9 +34,13 @@ const PATTERNS = [
 // Files still allowed to contain hits, with the exact count expected today.
 // Lower these as the pages get cleaned up; never raise them.
 const ALLOWED = new Map([
-  // 7 softr-files.com (CSP font-src/style-src allowances) + 4 impostorpm-huddle
-  // links. Cleared in Phase 2 when this page is re-verified byte-for-byte.
-  ['public/salary-compass/index.html', 11],
+  // Reached zero on 2026-08-03. Was 11: Inter and Font Awesome were loaded from
+  // Softr's CDN and the favicon was hotlinked to it, so the highest-value page on
+  // the site would have lost its font, its icons and its favicon the day the
+  // subscription was cancelled. Inter now comes from Google Fonts, the ten icons
+  // it uses are generated into salary-compass/icons.css by
+  // scripts/build-icon-css.mjs, and the favicon is the site's own.
+  ['public/salary-compass/index.html', 0],
   // rezonant reached zero in Phase 1: favicon self-hosted, Inter moved to
   // Google Fonts, JSON-LD logo repointed. Kept at 0 so it cannot regress.
   ['public/rezonant/index.html', 0],

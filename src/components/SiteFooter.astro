@@ -10,7 +10,14 @@ import Icon from './Icon.astro';
         <a href="/">
           <img src={SITE.logo} alt={SITE.name} class="footer-logo" width="140" height="28" />
         </a>
-        <p class="footer-copyright">{SITE.copyright}</p>
+        <p class="footer-copyright">
+          {SITE.copyright}
+          {/* GDPR requires withdrawing consent to be as easy as giving it, so the
+              banner has to stay reachable after the first decision. Handled by a
+              delegated listener in ConsentBanner.astro. */}
+          <span class="footer-sep" aria-hidden="true">·</span>
+          <a href="#" data-consent-reopen>Cookie settings</a>
+        </p>
         <div>
           {SOCIALS.map((social) => (
             <a

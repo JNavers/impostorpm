@@ -1,0 +1,16 @@
+# Cloudflare appends its own managed block (AI crawler rules + content signals)
+# to whatever this file contains, so the two coexist — do not duplicate those
+# rules here.
+#
+# The point of this file is the Sitemap line: the zone had no origin robots.txt
+# at all, so nothing pointed crawlers at a sitemap.
+
+User-agent: *
+Allow: /
+
+# Preview deployments are byte-identical copies of production and would compete
+# with it for the same queries. functions/_middleware.js already sends
+# X-Robots-Tag: noindex on those hostnames; this is the belt to that's braces.
+Disallow: /cdn-cgi/
+
+Sitemap: https://www.impostor.pm/sitemap-index.xml

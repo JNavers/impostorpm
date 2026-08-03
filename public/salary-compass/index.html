@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https://fonts.softr-files.com https://assets.softr-files.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.softr-files.com https://assets.softr-files.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; connect-src 'self' https://www.impostor.pm https://impostor.pm https://script.google.com https://script.googleusercontent.com https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; form-action 'self' https://script.google.com https://script.googleusercontent.com; frame-src 'self'; upgrade-insecure-requests">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; connect-src 'self' https://www.impostor.pm https://impostor.pm https://script.google.com https://script.googleusercontent.com https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; form-action 'self' https://script.google.com https://script.googleusercontent.com; frame-src 'self'; upgrade-insecure-requests">
     <title>Compare Your PM Salary — The Impostor PM</title>
     <meta name="description" content="See how your Product Manager salary compares with the Portugal PM compensation benchmark. Enter your details and get instant results.">
 
@@ -15,13 +15,15 @@
       crossorigin="anonymous">
 
     <!-- Inter font -->
-    <link href="https://fonts.softr-files.com/google/api/css?family=Inter:100,200,300,400,500,600,700,800,900&display=block" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 
     <!-- Font Awesome 6.5.0 -->
-    <link href="https://assets.softr-files.com/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="/salary-compass/icons.css" rel="stylesheet">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="https://assets.softr-files.com/applications/b27d0a29-3518-4993-9f9d-454d45073bd1/assets/8cb113e8-f737-4f66-b912-03b02e1b1406.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 
     <!-- PostHog Cloud EU: set token in Cloudflare or replace the empty string with the public project key. -->
     <script>
@@ -1471,7 +1473,7 @@
 <nav class="navbar navbar-expand-lg navbar-light navbar-site">
     <div class="container">
         <a class="navbar-brand" href="/">
-            <img src="https://impostorpm-huddle.pages.dev/TIPM-horizontal-white-logo.svg" alt="The Impostor PM">
+            <img src="/brand/tipm-logo-horizontal-white.svg" alt="The Impostor PM">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -1812,7 +1814,7 @@
         <div class="row">
             <div class="col-lg-5 mb-5 mb-lg-0">
                 <a href="/">
-                    <img src="https://impostorpm-huddle.pages.dev/TIPM-horizontal-white-logo.svg" alt="The Impostor PM" class="footer-logo">
+                    <img src="/brand/tipm-logo-horizontal-white.svg" alt="The Impostor PM" class="footer-logo">
                 </a>
                 <p class="footer-newsletter-label">Exclusive PM tools like this, community perks, and Product event updates straight to your inbox.</p>
                 <form id="footer-newsletter-form" class="footer-newsletter-form" novalidate>
@@ -2496,7 +2498,7 @@
                     </div>
                 </div>
                 <div class="success-share-card" id="success-share-card">
-                    <img class="ssc-logo" src="https://impostorpm-huddle.pages.dev/TIPM-horizontal-white-logo.svg" alt="The Impostor PM" crossorigin="anonymous">
+                    <img class="ssc-logo" src="/brand/tipm-logo-horizontal-white.svg" alt="The Impostor PM" crossorigin="anonymous">
                     <div class="ssc-pct" id="success-share-pct">p--</div>
                     <div class="ssc-line">My PM salary in Portugal. Check where you land.</div>
                     <div class="ssc-url">impostor.pm/salary-compass</div>
@@ -4662,7 +4664,7 @@
             drawBody();
             exportPng();
         };
-        logo.src = 'https://impostorpm-huddle.pages.dev/TIPM-horizontal-white-logo.svg';
+        logo.src = '/brand/tipm-logo-horizontal-white.svg';
     }
 
     // PNG download — below-modal strip

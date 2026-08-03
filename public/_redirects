@@ -32,3 +32,7 @@
 /porto-club-form-copy           /club/porto       301
 /club/tipm-upcoming-clubs       /events           301
 /tipm-upcoming-learning-events  /events           301
+
+# Google has /sitemap.xml on file from the Softr era; @astrojs/sitemap emits
+# /sitemap-index.xml. A 301 rather than a duplicate file, so there is one source.
+/sitemap.xml                    /sitemap-index.xml  301
