@@ -85,6 +85,30 @@ Leave it until the quiet period ends, then delete it. If the build-failure email
 are annoying before then, disconnect it from git in the dashboard; that freezes
 the good deployment without losing it.
 
+## Git-connected builds
+
+`impostorpm-site` builds from `JNavers/impostorpm`, production branch `main`,
+`npm run build` → `dist`. Verified byte-identical to the manual deploys it
+replaced.
+
+Two things had to be fixed before the first build passed, and both were caught
+only in CI because both checks had been run on the wrong machine:
+
+- **`.node-version` must be a full `x.y.z` at or above Astro's floor** (currently
+  `>=22.12.0`). A bare `22` resolves to something below it and Astro refuses to
+  run. It passed locally because this machine runs Node 24, so the pin was never
+  exercised. `npm run check:node` reads Astro's own `engines` and fails the build
+  on a bad pin.
+- **`package-lock.json` must carry the Linux branch of the optional dependency
+  tree.** Astro pulls `sharp`, whose wasm variant needs `@emnapi/*` on Linux; a
+  lock generated on macOS omits them and `npm ci` refuses to run with EUSAGE. A
+  clean-clone `npm ci` on macOS cannot catch this — same platform, same blind
+  spot. Use `npm run check:lockfile`, which is `npm ci --dry-run --os=linux
+  --cpu=x64` and reproduces the builder's resolution.
+
+When a build fails, Cloudflare keeps the last successful deployment serving, so
+production is unaffected. That is why the site stayed at 35/35 throughout.
+
 ## Build gate
 
 `npm run build` runs `scripts/check-no-softr.mjs` first. It fails if any file
