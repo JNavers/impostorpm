@@ -15,38 +15,36 @@ to production.
 `/api/*` now reaches the Pages Functions, so the Salary Compass email endpoint
 stopped 405ing on its own, exactly as predicted — no change to the live repo.
 
-### One defect left, and it needs the dashboard
+### Cutover is complete
 
-Five route patterns still belong to the two old proxy Workers. They are more
-specific than `impostor.pm/*`, so they still win:
+All seven route patterns now belong to `impostorpm-site-proxy`. The five that had
+stayed with the old proxy Workers were deleted from the dashboard and claimed
+here; the apex/www split on `/compensation` is gone, and every sampled path
+returns identical bytes on both hostnames.
 
-| Pattern | Still held by | Effect |
-|---|---|---|
-| `impostor.pm/compensation*` | `salary-compass-proxy` | 🔴 **apex serves the OLD hand-written /compensation**; www serves the migrated one |
-| `impostor.pm/assets/posthog-init.js` | `salary-compass-proxy` | harmless — 404 on both origins |
-| `*.impostor.pm/salary-compass*` | `salary-compass-proxy` | harmless — byte-identical either way |
-| `impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` | harmless — same page either way |
-| `*.impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` | harmless — same page either way |
+The five redundant patterns are kept listed rather than dropped: while a pattern
+is unowned, whoever claims it next silently outranks `impostor.pm/*`, because the
+most specific pattern wins. Holding them prevents that.
 
-**Wrangler cannot release them.** Verified both ways: `wrangler triggers deploy`
-and a full `wrangler deploy` with `"routes": []` are both silent no-ops — an empty
-array reads as "leave routes alone", and re-reading the deployed config afterwards
-showed every route still bound. Claiming the patterns from the new Worker fails
-with API error 10020, because a pattern belongs to exactly one Worker.
+**Wrangler cannot unbind a route.** `wrangler deploy` and `wrangler triggers
+deploy` both read `"routes": []` as "leave routes alone" — verified by re-reading
+the deployed config afterwards, twice. Use the dashboard.
 
-To finish: delete those five in the dashboard (each Worker → Domains), then
-uncomment the matching block in `workers/site-proxy/wrangler.jsonc` and redeploy.
+### The soft-404, found by the cutover
 
-### Rollback
+Cloudflare Pages runs a project in SPA mode when the output has no `404.html`,
+answering every unmatched path with `index.html` at **HTTP 200**. That was live:
+`/noexiste-xyz`, `/assets/nada.js` and `/club/inventado` all returned the homepage
+as a success — an unbounded set of indexable duplicates of `/`.
 
-Delete the two `impostor.pm/*` and `*.impostor.pm/*` routes from
-`impostorpm-site-proxy` (dashboard, or set `routes` and redeploy — but note the
-no-op above, so dashboard). Softr becomes the zone default again immediately; the
-five old routes never moved, so nothing else has to be restored. DNS was never
-touched, which is why this stayed reversible in seconds.
+It also meant **every sitemap sweep run before this was partly false comfort.**
+A check that accepts 200 cannot distinguish a real page from the SPA fallback, so
+ten dead URLs reported as passing. `src/pages/404.astro` is what surfaced them,
+and they are now in `public/_redirects` with all six destinations verified 200
+first. Sweeps since then follow redirects and assert a real 200 at the end.
 
-Do **not** delete `salary-compass-pages` or `impostorpm-rezonant` yet — they are
-what a rollback restores traffic to. Retire after two quiet weeks.
+Do not remove `src/pages/404.astro`. Without it the SPA fallback returns, and it
+fails silently — the site looks fine.
 
 ### Why a proxy Worker and not a Pages custom domain
 

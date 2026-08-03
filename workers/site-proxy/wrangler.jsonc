@@ -17,29 +17,22 @@
   // moment these are gone; nothing else has to be restored.
   "routes": [
     { "pattern": "impostor.pm/*", "zone_name": "impostor.pm" },
-    { "pattern": "*.impostor.pm/*", "zone_name": "impostor.pm" }
+    { "pattern": "*.impostor.pm/*", "zone_name": "impostor.pm" },
 
-    // ── Pending, blocked on a manual step ──────────────────────────────────
-    // The five patterns below still belong to salary-compass-proxy and
-    // impostorpm-rezonant-proxy, and a pattern belongs to exactly one Worker, so
-    // adding them here fails with API error 10020 until they are released.
+    // Released from salary-compass-proxy and impostorpm-rezonant-proxy on
+    // 2026-08-03 and claimed here. They are redundant with `impostor.pm/*` in
+    // routing terms, and kept listed on purpose: while any of them is unowned,
+    // whoever claims it next silently outranks the catch-all, because the most
+    // specific pattern wins. Holding them is what stops that.
     //
-    // Wrangler CANNOT release them. Verified both ways on 2026-08-03:
-    // `wrangler triggers deploy` and a full `wrangler deploy` with "routes": []
-    // are both silent no-ops — an empty array reads as "leave routes alone", and
-    // re-reading the deployed config afterwards showed all of them still bound.
-    // The only options are the dashboard or deleting the Workers outright.
-    //
-    // So: delete these in the dashboard (each Worker → Domains), then uncomment
-    // and redeploy. Until then the zone still works — `impostor.pm/*` catches
-    // everything else — with one visible defect: the apex serves the OLD
-    // hand-written /compensation page while www serves the migrated one.
-    //
-    // { "pattern": "impostor.pm/compensation*",        "zone_name": "impostor.pm" },
-    // { "pattern": "impostor.pm/assets/posthog-init.js", "zone_name": "impostor.pm" },
-    // { "pattern": "*.impostor.pm/salary-compass*",    "zone_name": "impostor.pm" },
-    // { "pattern": "impostor.pm/rezonant*",            "zone_name": "impostor.pm" },
-    // { "pattern": "*.impostor.pm/rezonant*",          "zone_name": "impostor.pm" }
+    // Note for anyone tempted to unbind these with wrangler: `wrangler deploy`
+    // and `wrangler triggers deploy` both treat `"routes": []` as "leave routes
+    // alone" and will NOT remove anything. Use the dashboard.
+    { "pattern": "impostor.pm/compensation*", "zone_name": "impostor.pm" },
+    { "pattern": "impostor.pm/assets/posthog-init.js", "zone_name": "impostor.pm" },
+    { "pattern": "*.impostor.pm/salary-compass*", "zone_name": "impostor.pm" },
+    { "pattern": "impostor.pm/rezonant*", "zone_name": "impostor.pm" },
+    { "pattern": "*.impostor.pm/rezonant*", "zone_name": "impostor.pm" }
   ],
   "observability": {
     "enabled": true,
