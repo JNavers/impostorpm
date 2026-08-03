@@ -98,18 +98,15 @@ Done: the 5 club city pages (`src/pages/club/[slug].astro` + `src/content/clubs/
 Migrated: the 5 club city pages, the 6 partner pages, `/about`, `/benefits`,
 `/group`, `/product-talks`. 19 pages build; all verified 200 on the deployment.
 
-### Needs a secret before /partner-with-us works
+### Forms are live
 
-`RESEND_API_KEY` is not set on the `impostorpm-site` Pages project. The endpoint
-correctly returns **503 "Email is not configured on this deployment"** rather
-than pretending to succeed, and the page shows a mailto fallback — but no
-enquiry will actually be delivered until the secret exists:
+`RESEND_API_KEY` is set on `impostorpm-site` (production). All three forms
+verified end to end — `/partner-with-us` and both booking forms return
+`{"status":"ok"}` and deliver.
 
-```
-wrangler pages secret put RESEND_API_KEY --project-name=impostorpm-site
-```
-
-The same key is already set on `salary-compass-pages`.
+**A secret only binds on a NEW deployment.** After `wrangler pages secret put`,
+the running deployment keeps returning 503 until you redeploy. That is not a
+misconfiguration and cost a round of debugging here.
 
 **Nothing left on Softr.** Every page in the sitemap is either migrated or
 intentionally redirected. Softr can be cancelled once the routing cutover
