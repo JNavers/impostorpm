@@ -57,18 +57,33 @@ Worth replacing with a real Pages custom domain once things are quiet: one less
 hop, and `functions/_middleware.js` stops needing the `X-Robots-Tag` exception the
 proxy makes for it.
 
-## Duplicated files, deliberately
+## One project, one repo — since 2026-08-03
 
-Two copies exist while the Pages projects are still separate. Both must be
-edited together until the projects are consolidated (Phase 2/5).
+Rezonant was originally built outside Softr because Softr could not do what that
+page needed, which is also why it had its own Pages project. That reason is gone,
+so the standalone copies at the repo root (`rezonant/`, `huddle/`, `compensation/`,
+`index.html`, `index-static.html`) were removed — each superseded by a live
+`.astro` page or by `public/`, verified 200 in production before deletion, and
+still in git history.
 
-- `rezonant/` (repo root) — what `impostorpm-rezonant` actually deploys today.
-- `public/rezonant/` — the Astro-era location, and the future single source.
+The one thing that would have been lost: there are **two different** Apps Script
+backends. They are now `apps-script/salary-compass/` and `apps-script/rezonant/`
+rather than one of them being buried inside a page directory.
 
-Same story for `huddle/`, `compensation/`, `salary-compass/` at the repo root:
-they are the pre-Astro pages. `huddle/` is now superseded by
-`src/pages/huddle.astro` and is kept only as the reference for visual diffing;
-delete it once `/huddle` is live from this project.
+`main` is the site as of the merge. A clean clone + `npm ci && npm run build`
+reproduces production byte for byte, which is the precondition for connecting
+Cloudflare Pages to git.
+
+### impostorpm-rezonant will fail every build now, harmlessly
+
+It is git-connected to this repo with `main` as its production branch, and its
+build config expects the old flat tree. The first build after the merge failed —
+and Cloudflare kept the last successful deployment serving, which is why it still
+answers on its `.pages.dev` and is still a working rollback target for `/rezonant`.
+
+Leave it until the quiet period ends, then delete it. If the build-failure emails
+are annoying before then, disconnect it from git in the dashboard; that freezes
+the good deployment without losing it.
 
 ## Build gate
 
