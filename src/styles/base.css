@@ -318,3 +318,89 @@ p { white-space: pre-line; }
   transition: opacity var(--dur-fast);
 }
 .footer-site .footer-links a:hover { opacity: 1; text-decoration: none; }
+
+/* ============================================================
+   Mobile: centre the content
+   ============================================================
+   Measured on the Softr original at a 416px viewport: every heading and
+   paragraph switches to text-align:center below the tablet breakpoint, while
+   the footer keeps its own left alignment. This reproduces that in one place
+   rather than per page.
+
+   Two things are deliberately NOT centred:
+   - the footer, which the original leaves left-aligned; and
+   - form fields and their labels, where a centred label floating above a
+     full-width input is harder to scan, not easier.
+
+   Bullet lists are centred as a BLOCK (inline-block + left text) so the group
+   sits in the middle while the markers stay aligned with each other —
+   centring each line individually leaves the bullets in a ragged column.
+   ============================================================ */
+@media (max-width: 767.98px) {
+  .container,
+  .ue-container {
+    text-align: center;
+  }
+
+  /* Anything laid out as a row of children stacks and centres. */
+  .container [class*='-split'],
+  .container [class*='-cols'],
+  .container [class*='-row'],
+  .ue-container [class*='-split'] {
+    justify-items: center;
+  }
+
+  /* Flex rows of buttons */
+  .container .d-flex,
+  .container [class*='-actions'],
+  .container [class*='-cta-row'] {
+    justify-content: center;
+  }
+
+  /* Images centre and stop being pinned to one edge. */
+  .container img,
+  .ue-container img {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Bullet lists: centre the block, keep the markers in line. */
+  .container ul:not(.navbar-nav):not(.footer-links):not(.city-grid),
+  .container ol {
+    display: inline-block;
+    text-align: left;
+  }
+
+  /* Copy that was width-limited for desktop line length should now centre. */
+  .container p,
+  .container h1,
+  .container h2,
+  .container h3 {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── Exceptions ── */
+
+  /* The footer keeps its left alignment, as on the original. */
+  .footer-site .container,
+  .footer-site .container * {
+    text-align: left;
+  }
+
+  /* Forms stay left: a centred label over a full-width field reads worse. */
+  .container form,
+  .container form * {
+    text-align: left;
+  }
+  .container form button[type='submit'] {
+    justify-self: center;
+  }
+
+  /* Event cards keep their own grid — centring the text would break the
+     date/title/action columns apart. */
+  .ue-item,
+  .ue-item * {
+    text-align: left;
+  }
+}

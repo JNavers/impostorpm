@@ -110,3 +110,41 @@ navbar (6px radius, 14px).
   .map(b => { const c = getComputedStyle(b);
     return `${b.textContent.trim()} r=${c.borderRadius} p=${c.padding} f=${c.fontSize}`; });
 ```
+
+## Mobile
+
+Below `767.98px` the content centres. This is what the Softr original does —
+measured at a 416px viewport, where every heading and paragraph switches to
+`text-align: center` while the footer stays left. One rule at the bottom of
+`base.css`, not per page.
+
+Three things stay left on purpose:
+
+- **The footer**, which the original leaves left-aligned.
+- **Forms**, where a centred label floating over a full-width input is harder to
+  scan.
+- **Event cards**, whose date / title / action columns come apart if their text
+  is centred.
+
+Bullet lists are centred as a **block** (`inline-block` + `text-align: left`), so
+the group sits in the middle while the markers stay in one column. Centring each
+line individually leaves the bullets ragged.
+
+### Measuring the original at mobile
+
+`resize_window` does not change the viewport for this setup — `innerWidth` stays
+at 1200. Use a narrow iframe instead, which gives the embedded document a real
+viewport that media queries respond to:
+
+```js
+const f = document.createElement('iframe');
+f.style.cssText = 'width:420px;height:900px;position:fixed;left:-9999px';
+f.src = 'https://www.impostor.pm/club';
+document.body.append(f);
+```
+
+**Read it on first load and do not resize.** Softr renders client-side and picks
+its layout at mount, so resizing an already-loaded frame keeps the mobile layout
+and every later measurement is wrong. Cross-origin also blocks reading the frame,
+so measure the Softr original from a page on `impostor.pm`, and the migrated site
+from a page on `impostorpm-site.pages.dev`.
