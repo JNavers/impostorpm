@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "check:node": "node scripts/check-node-version.mjs",
     "check:softr": "node scripts/check-no-softr.mjs",
+    "check:lockfile": "npm ci --dry-run --os=linux --cpu=x64",
     "validate": "node scripts/validate-production.mjs"
   },
   "dependencies": {
