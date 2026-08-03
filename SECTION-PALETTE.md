@@ -148,3 +148,29 @@ its layout at mount, so resizing an already-loaded frame keeps the mobile layout
 and every later measurement is wrong. Cross-origin also blocks reading the frame,
 so measure the Softr original from a page on `impostor.pm`, and the migrated site
 from a page on `impostorpm-site.pages.dev`.
+
+### Hero sizes at mobile
+
+Not one value — the original uses a different size per page, so each page carries
+its own in its own `@media` block rather than inheriting a site default.
+
+| Page | h1 @ ≤767px | line-height |
+|---|---|---|
+| `/` · `/club` | 48px | `/club` is 1.0, the rest 1.5 |
+| `/bring-the-club-to-my-city` · `/product-talks` · `/boost` · `/club/how-we-select` | 48px | 1.5 |
+| `/about` · `/group` | 36px | 1.5 |
+| `/club/<city>` | **30px** | 1.5 |
+
+The city pages are the odd one out and go **smaller**, not larger — a detail that
+would never be guessed from the desktop layout.
+
+`/huddle` and `/compensation` are excluded on purpose: neither has a Softr
+original to match. `/huddle` 404s there and `/compensation` on Softr is a
+different page entirely, so both keep their own authored hero.
+
+Check with:
+
+```js
+const h = document.querySelector('header h1'); const c = getComputedStyle(h);
+`${c.fontSize} / ${c.lineHeight}`;
+```
