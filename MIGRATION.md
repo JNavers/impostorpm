@@ -9,19 +9,40 @@ Moving impostor.pm off Softr. Full plan:
 |---|---|
 | `/salary-compass*` | Cloudflare Pages `salary-compass-pages` (repo `JNavers/salary-compass`) |
 | `/rezonant*` | Cloudflare Pages `impostorpm-rezonant` (this repo, **`main` only**) |
-| `/api/*` | **Softr** — not covered by any rule. This is why the Salary Compass email capture 405s. |
+| `/api/*` | **Softr** — not covered by any route, so the Salary Compass email endpoint 405s. Harmless, see below. |
 | everything else | Softr (`impostor.softr.app`, `3.64.247.100`) |
 
 ### The mechanism is Workers Routes, on two proxy Workers
 
 Confirmed in the dashboard (there is **no** `impostorpm-salary` Worker — that name
 only ever existed in the `wrangler.jsonc` on the abandoned `cloudflare/workers-autoconfig`
-branches, and was never deployed):
+branches, and was never deployed).
 
-- `salary-compass-proxy` → `impostor.pm/compensation*` + 3 more routes
-- `impostorpm-rezonant-proxy` → `*.impostor.pm/rezonant*` + 2 more routes
+These **five routes are the complete set**, zone `impostor.pm`. This list is the
+rollback target — do not edit it without re-reading the dashboard:
+
+| # | Route pattern | Worker |
+|---|---|---|
+| 1 | `impostor.pm/assets/posthog-init.js` | `salary-compass-proxy` |
+| 2 | `impostor.pm/compensation*` | `salary-compass-proxy` |
+| 3 | `*.impostor.pm/salary-compass*` | `salary-compass-proxy` |
+| 4 | `impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` |
+| 5 | `*.impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` |
 
 There are **no Origin Rules and no Redirect Rules** on the zone.
+
+Three things fall out of this list:
+
+- **Route 1 is dead.** The page loads its tracker from `/salary-compass/posthog-init.js`;
+  `/assets/posthog-init.js` 404s on the apex and 400s on www. Leftover from an
+  older path. Safe to drop — but drop it *after* cutover, not as a separate change.
+- **The host prefixes are inconsistent.** `/rezonant` is bound twice (apex + `*.`),
+  `/salary-compass` only via `*.` (the apex reaches it because the apex 301s to
+  www at the Softr origin), and `/compensation` only on the apex. That last
+  asymmetry is the bug below.
+- **Nothing covers `/api/*`,** which is why the Salary Compass email endpoint 405s.
+  No data is lost: `index.html:2905` catches it and writes the row straight to
+  `script.google.com`, and Apps Script sends the email server-side. Cutover fixes it.
 
 ### 🔴 apex and www disagree on /compensation
 
@@ -40,6 +61,67 @@ Compensation". The `salary-compass-proxy` route is written against the apex
 (`impostor.pm/compensation*`) with no `*.` prefix, so www never matches it.
 
 Worth fixing at cutover regardless, since after it `/*` is served from one place.
+
+## Phase 5 — cutover, with the rollback written first
+
+**Do not run this unattended.** Low-traffic window, one person watching.
+
+### Why it is two steps and not one
+
+Worker Routes take precedence over a Pages custom domain. So adding the domains
+to `impostorpm-site` is *not* enough on its own: the five routes above would keep
+winning for `/compensation`, `/salary-compass` and `/rezonant`, and those three
+would still come from the old projects while everything else moved. The routes
+have to come off, and they come off **last** — after the domains are proven.
+
+### Precondition, verified 2026-08-03
+
+`impostorpm-site.pages.dev` already serves every path the five routes cover:
+`/compensation` 200, `/salary-compass/` 200 **at exactly 274260 bytes**,
+`/rezonant/` 200, `/salary-compass/posthog-init.js` 200, and `/api/salary-compass-email`
+200. Re-run this check on the day; it is the gate.
+
+```bash
+for p in /compensation /salary-compass/ /rezonant/ /salary-compass/posthog-init.js; do
+  printf "%-34s %s\n" "$p" "$(curl -so /dev/null -w '%{http_code}' "https://impostorpm-site.pages.dev$p")"
+done
+curl -s https://impostorpm-site.pages.dev/salary-compass/ | wc -c   # must be 274260
+```
+
+### Cutover
+
+1. **Point DNS/custom domains at the new project.** In the `impostorpm-site` Pages
+   project → Custom domains, add **both** `impostor.pm` and `www.impostor.pm`.
+   Adding both is what fixes the apex/www split above. Softr is still the origin
+   for everything not routed, so nothing has moved yet.
+2. **Verify** on both hosts before touching the routes — `/`, `/about`, `/club/porto`,
+   `/huddle`, `/compensation`, `/salary-compass/`, `/rezonant/`.
+3. **Delete the five Worker routes** (dashboard → each Worker → Domains). This is
+   the moment traffic actually moves. Delete route 1 (`/assets/posthog-init.js`)
+   too — it is already dead.
+4. **Watch** for 30 min: Pages analytics, PostHog pageviews, and a manual pass of
+   the sitemap.
+
+### Rollback
+
+Restores exactly what was there. Recreate the five routes, in this order — the
+three `salary-compass-proxy` ones first, since `/salary-compass` is the live tool:
+
+| # | Route pattern | Worker |
+|---|---|---|
+| 1 | `*.impostor.pm/salary-compass*` | `salary-compass-proxy` |
+| 2 | `impostor.pm/compensation*` | `salary-compass-proxy` |
+| 3 | `impostor.pm/assets/posthog-init.js` | `salary-compass-proxy` |
+| 4 | `impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` |
+| 5 | `*.impostor.pm/rezonant*` | `impostorpm-rezonant-proxy` |
+
+Then remove `impostor.pm` and `www.impostor.pm` from the `impostorpm-site` Pages
+project. Softr becomes the default again and the zone is byte-for-byte where it
+started.
+
+**Do not delete `salary-compass-pages` or `impostorpm-rezonant` during cutover.**
+They cost nothing idle and they are what the rollback restores traffic *to*.
+Retire them after two quiet weeks, per Phase 6.
 
 ## Duplicated files, deliberately
 
