@@ -255,3 +255,42 @@ Per-city and per-partner **social cards** were also found and wired to
 
 Still text-only, correctly: `/benefits` carries no illustrations on Softr either,
 `/tekya` has no images at all, and /compensation has its own art already.
+
+## Before cancelling Softr
+
+Run `npm run validate` first. It asserts, among other things, that nothing on the
+site still loads from a host that disappears with the subscription — which was a
+live problem until 2026-08-03, when `/salary-compass/` was still pulling its font,
+icons and favicon from Softr's CDN.
+
+### The Airtable export is NOT a blocker — decided 2026-08-03
+
+Earlier drafts of the plan listed "export the Softr/Airtable table" as a gate.
+That was written before the content was migrated and is no longer true. Verified:
+the site has **zero** runtime dependency on Airtable. The only mentions left in
+the repo are comments recording that the content used to live there. All five
+clubs use `source: luma`, none use `manualItems`, and the four Product Talks are
+markdown in `src/content/talks/`.
+
+What the table would hold that nothing else does:
+
+- Club events earlier than **2025-11-20**, which is the oldest event Luma has
+  (16 past events, covering all five cities).
+- Product Talks beyond the four transcribed from the card artwork.
+- Any sign-up or waiting-list rows.
+
+None of it affects whether the site works. Javi's call: not exporting now, and
+possibly exporting later purely to lengthen the event history. Do not re-raise
+this as a blocker.
+
+### What is still genuinely open
+
+- **Google Maps API key.** Seen in Softr's page source, never in this repo, and
+  not recoverable now that Softr no longer serves the domain. It is quite likely
+  Softr's own key rather than Javi's — Softr embeds one for its map blocks. Worth
+  one look in Google Cloud → Credentials; if no Maps key exists there, it was
+  theirs and there is nothing to do. Either way the exposure has already ended:
+  no page on impostor.pm serves a key, and impostor.softr.app 301s.
+- The two-week quiet period, then: merge to `main`, retire `salary-compass-pages`
+  / `impostorpm-rezonant` / `impostorpm-huddle`, and swap the proxy Worker for a
+  real Pages custom domain.
