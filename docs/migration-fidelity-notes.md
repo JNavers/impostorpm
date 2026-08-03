@@ -1,3 +1,11 @@
+> **Historical.** This is how the Softr original was measured during the
+> migration, and the mistakes made doing it. Softr no longer serves any page, so
+> the "go and check the live original" instructions no longer work.
+>
+> **For day-to-day design work use [`../DESIGN-SYSTEM.md`](../DESIGN-SYSTEM.md).**
+> Kept because the lessons about how to measure, and about the three ways a mobile
+> rule loses silently, still apply.
+
 # Section backgrounds, measured off the live Softr pages
 
 Section background is part of the design, not a default. Getting it wrong is

@@ -417,7 +417,7 @@ p { white-space: pre-line; }
 /* Mobile hero sizes are NOT set here: the original uses a different value per
    page (48px on /club and most heroes, 36px on /about and /group, 30px on the
    city pages), so each page carries its own measured value in its own @media
-   block. See SECTION-PALETTE.md. */
+   block. See DESIGN-SYSTEM.md. */
 
 /* Cookie-settings link sits inline with the copyright rather than in a link
    group, so it is present on every page without adding a footer column. */
