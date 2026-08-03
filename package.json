@@ -14,5 +14,8 @@
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.1.6",
     "bootstrap": "4.6.2"
+  },
+  "engines": {
+    "node": ">=20.3.0"
   }
 }
