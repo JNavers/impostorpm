@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run check:softr && astro build && node scripts/fix-directory-shadowing.mjs",
+    "build": "npm run check:node && npm run check:softr && astro build && node scripts/fix-directory-shadowing.mjs",
     "preview": "astro preview",
+    "check:node": "node scripts/check-node-version.mjs",
     "check:softr": "node scripts/check-no-softr.mjs",
     "validate": "node scripts/validate-production.mjs"
   },
@@ -16,6 +17,6 @@
     "bootstrap": "4.6.2"
   },
   "engines": {
-    "node": ">=20.3.0"
+    "node": ">=22.12.0"
   }
 }
