@@ -12,6 +12,35 @@ Moving impostor.pm off Softr. Full plan:
 | `/api/*` | **Softr** — not covered by any rule. This is why the Salary Compass email capture 405s. |
 | everything else | Softr (`impostor.softr.app`, `3.64.247.100`) |
 
+### The mechanism is Workers Routes, on two proxy Workers
+
+Confirmed in the dashboard (there is **no** `impostorpm-salary` Worker — that name
+only ever existed in the `wrangler.jsonc` on the abandoned `cloudflare/workers-autoconfig`
+branches, and was never deployed):
+
+- `salary-compass-proxy` → `impostor.pm/compensation*` + 3 more routes
+- `impostorpm-rezonant-proxy` → `*.impostor.pm/rezonant*` + 2 more routes
+
+There are **no Origin Rules and no Redirect Rules** on the zone.
+
+### 🔴 apex and www disagree on /compensation
+
+The routes are bound per-hostname and the two hosts do not match:
+
+| path | `impostor.pm` | `www.impostor.pm` |
+|---|---|---|
+| `/compensation/` | **Pages** | **Softr** |
+| `/salary-compass/` | Pages | Pages |
+| `/rezonant/` | Pages | Pages |
+| everything else | Softr | Softr |
+
+So `impostor.pm/compensation` and `www.impostor.pm/compensation` are **two
+different pages today** — the Pages one and the old Softr "The State of Product
+Compensation". The `salary-compass-proxy` route is written against the apex
+(`impostor.pm/compensation*`) with no `*.` prefix, so www never matches it.
+
+Worth fixing at cutover regardless, since after it `/*` is served from one place.
+
 ## Duplicated files, deliberately
 
 Two copies exist while the Pages projects are still separate. Both must be
