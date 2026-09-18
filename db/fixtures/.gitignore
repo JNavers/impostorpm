@@ -1,0 +1,4 @@
+# Real Sheet exports land here. They hold individual salary records and must
+# never reach git — the dataset's credibility rests on that promise.
+*.csv
+!sample-*.csv

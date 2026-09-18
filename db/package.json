@@ -1,0 +1,15 @@
+{
+  "name": "salary-compass-db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Test harness for the Salary Compass backend migration. Deliberately isolated from the site package.json so the Cloudflare Pages build never installs any of it.",
+  "scripts": {
+    "test": "node --test scripts/*.test.mjs",
+    "seed": "node scripts/seed-synthetic.mjs",
+    "parity": "node scripts/verify-parity.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.6"
+  }
+}
