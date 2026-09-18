@@ -72,6 +72,9 @@ async function handleRest(db, path, init) {
   if (path.startsWith('rpc/')) {
     const fn = path.slice(4).split('?')[0];
     const args = JSON.parse(init.body || '{}');
+    // JSON.stringify drops undefined values, so an argument the handler meant
+    // to send but computed as undefined would vanish silently and the call
+    // would fail with a confusing "function does not exist". Surface it here.
     const names = Object.keys(args);
     // Named arguments, exactly as PostgREST calls them, so a parameter renamed
     // in SQL without being renamed in the handler fails here too.
@@ -79,7 +82,21 @@ async function handleRest(db, path, init) {
     const values = names.map((n) => (
       args[n] !== null && typeof args[n] === 'object' ? JSON.stringify(args[n]) : args[n]
     ));
+
     try {
+      // A function declared RETURNS TABLE/SETOF is a set, and PostgREST returns
+      // an ARRAY of row objects for it — not a single scalar. Calling it as
+      // `select fn(...)` instead would hand back one composite value, which is
+      // not the shape the handler sees in production.
+      const { rows: meta } = await db.query(
+        'select proretset from pg_proc where proname = $1 limit 1', [fn]
+      );
+      const returnsSet = meta[0]?.proretset === true;
+
+      if (returnsSet) {
+        const { rows } = await db.query(`select * from ${fn}(${params})`, values);
+        return jsonResponse(rows);
+      }
       const { rows } = await db.query(`select ${fn}(${params}) as out`, values);
       return jsonResponse(rows[0]?.out ?? null);
     } catch (err) {

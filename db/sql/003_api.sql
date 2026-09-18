@@ -125,3 +125,36 @@ language sql stable set search_path = public, pg_temp as $$
   order by c.created_at
   limit p_limit;
 $$;
+
+-- ── Who is due the deferred result email ──
+-- Ports result-emails.gs. Two details from the original are load-bearing:
+--
+--  • The delay. The email goes out ~7 minutes after capture, not immediately,
+--    so it can tell whether the person completed the survey in the same session
+--    and drop the survey CTA if they did. Asking someone to do what they just
+--    did is the fastest way to look automated.
+--  • The lookback. Captures older than RESULT_LOOKBACK_MS are skipped, so
+--    turning the job on after an outage does not mail three days of backlog.
+--
+-- full_survey and percentile come back with the row because the template needs
+-- both, and fetching them here avoids a second round trip per contact.
+create or replace function compass_pending_results(
+  p_after interval default '7 minutes',
+  p_lookback interval default '3 days',
+  p_limit int default 80
+) returns table (
+  contact_id uuid, email text, token uuid, submission_id uuid,
+  percentile int, full_survey boolean
+)
+language sql stable set search_path = public, pg_temp as $$
+  select c.id, c.email, c.token, c.submission_id, c.percentile,
+         coalesce(s.full_survey, false)
+  from contacts c
+  left join submissions s on s.id = c.submission_id
+  where c.source = 'email_gate'
+    and c.result_email_at is null
+    and c.created_at < now() - p_after
+    and c.created_at > now() - p_lookback
+  order by c.created_at
+  limit p_limit;
+$$;
