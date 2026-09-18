@@ -141,8 +141,8 @@ export function mapHistorical(rows, { clean = false } = {}) {
     country: String(r[col.country] ?? '').trim(),
     // parseSalary() semantics, applied at import so the stored integer is the
     // number production actually aggregates. See the note in verify-parity.
-    base: parseSalaryLegacy(r[col.base]),
-    total: col.total !== undefined ? parseSalaryLegacy(r[col.total]) : 0,
+    base: parseSalaryFromExport(r[col.base]),
+    total: col.total !== undefined ? parseSalaryFromExport(r[col.total]) : 0,
     role: String(r[col.role] ?? '').trim(),
     yoe: String(r[col.yoe] ?? '').trim(),
     outlier: col.outlier !== undefined && String(r[col.outlier] ?? '').trim().toUpperCase() === 'TRUE'
@@ -224,7 +224,15 @@ export function cleanHistorical(rows) {
 /** Above this, a Portuguese PM salary in the historical set is not believable. */
 export const MAX_PLAUSIBLE_BASE = 200000;
 
-/** Code.gs parseSalary(). parseInt, so "50.000" reads as 50 — see verify-parity. */
+/**
+ * Code.gs parseSalary(), verbatim.
+ *
+ * Correct for what it was written against — Apps Script's getValues(), which
+ * hands back the underlying NUMBER of a cell — and wrong for a CSV export,
+ * which serialises the FORMATTED text. Use parseSalaryFromExport below to read
+ * an export; this one is kept because the oracle has to be able to demonstrate
+ * the difference, and because its parseInt behaviour is a documented finding.
+ */
 export function parseSalaryLegacy(val) {
   if (!val) return 0;
   const s = String(val).replace(/[\s ,]/g, '').trim();
@@ -232,8 +240,40 @@ export function parseSalaryLegacy(val) {
   return isNaN(n) ? 0 : n;
 }
 
+/**
+ * Reads a salary cell out of a Google Sheets CSV export.
+ *
+ * The export writes what the cell DISPLAYS, so a cell holding 42000 formatted
+ * in the Portuguese locale arrives as `"42 000,00"` — space for thousands,
+ * comma for decimals. parseSalaryLegacy strips both without understanding
+ * either and returns 4 200 000.
+ *
+ * That produced a hundredfold error on 17 of the 604 Portugal rows, every one
+ * of them an ordinary salary between 15 500 and 56 000. It is also the entire
+ * explanation for the parity gate's "31 differences with identical row counts":
+ * production reads the Sheet directly and never saw those millions — only the
+ * export did.
+ *
+ * It matters beyond the numbers. Those phantom millions were reported to the
+ * user as corrupt data, and on that basis they decided to delete 18 rows. The
+ * data was fine; the reader was broken.
+ */
+export function parseSalaryFromExport(val) {
+  if (val === null || val === undefined) return 0;
+  let s = String(val).trim();
+  if (!s) return 0;
+
+  s = s.replace(/[\s ]/g, '');            // thousands separators
+  s = s.replace(/,(\d{1,2})$/, '');            // trailing decimals, comma style
+  s = s.replace(/\.(\d{1,2})$/, '');           // trailing decimals, dot style
+  s = s.replace(/[,.]/g, '');                  // any remaining grouping marks
+
+  const n = parseInt(s, 10);
+  return Number.isFinite(n) ? n : 0;
+}
+
 function intOrNull(v) {
-  const n = parseSalaryLegacy(v);
+  const n = parseSalaryFromExport(v);
   return n > 0 ? n : null;
 }
 

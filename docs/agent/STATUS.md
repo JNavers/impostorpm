@@ -41,55 +41,41 @@ Steps 2–5 of the runbook in `db/README.md`. Nothing is wired to the frontend;
 No Supabase project exists. The reminder/result email senders are not written
 (only `compass_pending_reminders`, the queue query, is ported and tested).
 
-## Blocker — one open question, and it is NOT the port
+## Blocker — resolved. The remaining gap is a stale export.
 
-`npm run parity` now runs end to end on the real exports. Result:
+The 31-difference mystery is solved, and it was a bug in the importer, not in
+the port or in the data. See the CORRECTION entry at the top of DECISIONS.md.
+
+Short version: the CSV export serialises formatted cell text (`"42 000,00"`),
+while Apps Script reads the underlying number through `getValues()`. Code.gs's
+`parseSalary` strips the space and the comma without understanding either, so
+17 Portugal rows were read a hundredfold too large. Production never saw them.
+`parseSalaryFromExport()` fixes it; `parseSalaryLegacy()` stays as the
+regression witness.
+
+After the fix the gate reports:
 
 ```
-SQL vs oracle (is the port faithful?)
-  ✔ SQL ↔ oracle: identical          ← over all 1 171 real rows
-Oracle vs production (is the export complete?)
-  ✖ oracle ↔ production: 31 difference(s)
+SQL vs oracle:       ✔ identical
+oracle vs production: 28 tiny differences, and overall.n 1030 vs 1031
 ```
 
-**The SQL port is proven faithful against production data.** That was the
-migration's main risk and it is closed.
+That last number is the whole remaining story: **production has more rows than
+the export does.** Confirmed directly — the live counter reads 432 submissions
+while `submissions.csv` holds 428. People kept filling in the survey after the
+download. Every remaining difference is the few euros that one or two extra
+rows move a percentile by.
 
-The open question is the second half. The differences are strange in a
-specific, useful way:
-
-- **The row sets are identical.** totalEntries 1030 = 1030, and every single
-  bucket matches: yoe 0-1 n=101, 1-3 n=269, 3-5 n=295, 6-8 n=217, 9-12 n=109,
-  13+ n=39, districts n=427, roles PM n=161. Same rows, same counts.
-- **Only some VALUES differ**, and only in the upper tail (p50/p75/p90). Our
-  figure is consistently the HIGHER one: `overall.p90` 85 000 vs 80 000,
-  `yoe.9-12.p90` 117 600 vs 95 200.
-- **`roles.*` and `districts.*` match perfectly.** Consistent with the finding
-  below that the historical `Role` column holds salary bands, so role buckets
-  are computed from submissions only — which agree. The disagreement is
-  therefore isolated to the HISTORICAL rows.
-
-Same rows, different values, historical only. Two hypotheses, neither verified:
-
-1. **CSV export vs `getValues()` read different cell values.** Apps Script gets
-   typed values; the CSV gets whatever Sheets serialises. A cell that is text
-   in one view and a number in the other would parse differently through
-   `parseSalary`.
-2. **Production is serving a stale computation.** The 300 s cache is only
-   invalidated by API writes, so a manual edit to the Sheet would not clear it.
-
-**How to settle it:** pick one differing bucket (`yoe.9-12.p90`, the biggest
-gap) and dump the sorted values feeding it from the CSV, then compare against
-what the Sheet shows for those same rows. That names the cell, and the cell
-names the cause.
-
-This does not block building the backend. It blocks *claiming* the benchmark is
-reproduced, so it must be answered before the cutover.
+**This is not a defect and it is not a blocker.** To close it formally,
+re-export both tabs and re-run `npm run parity` promptly; the counts should
+line up and the differences should vanish. Expect it to drift again within
+hours — the gate is best run right after a fresh export.
 
 ## Test state
 
-`cd db && npm install && npm test` → **56 passing, 0 failing**.
-Split: 5 benchmark parity, 8 CSV import, 9 historical clean-up, 12 RPC, 22 endpoint.
+`cd db && npm install && npm test` → **63 passing, 0 failing**.
+Split: 5 benchmark parity, 8 CSV import, 7 export parsing, 9 historical
+clean-up, 12 RPC, 22 endpoint.
 
 `npm run parity` runs end to end on the real exports: SQL ↔ oracle identical.
 `node scripts/verify-parity.mjs --clean` reports the clean-up's impact and
@@ -104,16 +90,20 @@ detects the regression it claims to.
 
 ## Next action
 
-1. **Settle the oracle-vs-production question** (see Blocker). Dump the sorted
-   values behind `yoe.9-12.p90` from the CSV and compare against the Sheet.
-2. **Decide what the clean-up does to the published numbers.** Measured impact,
-   `node scripts/verify-parity.mjs --clean`: overall n 1030 → 1003,
-   `overall.p90` 85 000 → 80 000, `yoe.9-12.p90` **117 600 → 93 500**. The
-   median barely moves. These figures are live on impostor.pm today, so the
-   cutover is a visible change and probably deserves a note to the community.
+1. **Ask the user to re-confirm decision C.** With correct parsing it drops 12
+   Portugal rows, not 27, and the two above €200 000 (225 000 and 350 000) are
+   now the only high ones rather than the tail of sixteen implausible ones. The
+   premise they decided on has changed.
+2. **Re-export and re-run `npm run parity`** to close the count gap formally
+   (432 live vs 428 in the export). Do it back to back; it drifts within hours.
 3. **Then step 2 of the runbook** in `db/README.md`: create the Supabase
-   project, apply `db/sql/`, deploy to a preview URL, verify, and only then
-   start the dual-write window.
+   project, apply `db/sql/`, deploy to a preview URL, and start the dual-write
+   window.
+
+Measured impact of the clean-up, for the conversation in (1)
+(`node scripts/verify-parity.mjs --clean`): overall n 1030 → 1003,
+`yoe.9-12.p90` 95 200 → 92 000, `yoe.0-1.p10` 18 000 → 19 570. Small and
+defensible now, unlike the 117 600 → 93 500 swing the parsing bug implied.
 
 ## New finding — the historical "Role" column is not roles
 

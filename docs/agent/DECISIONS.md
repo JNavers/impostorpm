@@ -4,6 +4,41 @@ Durable technical decisions for this repo. Newest first.
 
 ---
 
+## 2026-09-18 (later) — CORRECTION: the "millions" were a reading bug, not bad data
+
+**This invalidates the premise of part of decision C below. Read it first.**
+
+The Historical export contains cells like `"42 000,00"` — Portuguese locale,
+space for thousands, comma for decimals. Code.gs's `parseSalary` strips spaces
+and commas without understanding either, so reading the CSV turned 42 000 into
+**4 200 000**. Seventeen of the 604 Portugal rows were inflated a hundredfold.
+
+**Production was never affected.** Apps Script reads the Sheet through
+`getValues()`, which returns the underlying number, not the formatted text.
+Only the export path was broken.
+
+The consequence is not academic. Those phantom millions were reported to the
+user as corrupted data, and on that basis they decided to drop 18 rows. The
+rows were fine: 15 500, 42 000, 52 000, 55 000 and so on — ordinary Portuguese
+PM salaries. The reader was broken, not the respondents.
+
+`parseSalaryFromExport()` now reads exports correctly; `parseSalaryLegacy()` is
+kept as the regression witness and as the documented Code.gs behaviour.
+
+**What decision C actually removes, with correct parsing:** 2 rows above
+€200 000 (225 000 and 350 000 — the two that always looked genuine) and 10 rows
+below €10 000 (monthly pay in an annual field, plus incoherent ones). Twelve
+Portugal rows, not 27. The thresholds did not change; the data they see did.
+
+**The user should be asked again** whether they still want the two high rows
+dropped, now that they are the only two and no longer keep company with sixteen
+implausible ones.
+
+**Lesson for the rest of the migration:** a CSV export is not the Sheet. Where a
+number matters, check the raw cell text before concluding the data is bad.
+
+---
+
 ## 2026-09-18 — Historical import: Portugal only, repair the "18 means 18K" rows, drop the rest
 
 > Read A, B and C together. C supersedes part of B: the million-euro rows are
