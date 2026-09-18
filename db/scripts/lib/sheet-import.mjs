@@ -108,8 +108,14 @@ export function mapSubmissions(rows) {
  * Historical tab → rows, using Code.gs's tolerant header resolution verbatim.
  * Its `hCol` lookup is reproduced rather than replaced so that the rows this
  * imports are exactly the rows production aggregates today.
+ *
+ * `clean` is OFF by default, and that default is load-bearing. The parity gate
+ * has to compare like with like: with `clean: false` the rows are exactly what
+ * production aggregates, which is what makes SQL-vs-oracle-vs-production a
+ * meaningful control. Pass `clean: true` for the real migration import, where
+ * decisions A–C apply.
  */
-export function mapHistorical(rows) {
+export function mapHistorical(rows, { clean = false } = {}) {
   const [header, ...body] = rows;
   const col = {};
   header.forEach((h, i) => {
@@ -130,7 +136,8 @@ export function mapHistorical(rows) {
   }
   if (problems.length) return { rows: [], problems, col };
 
-  const out = body.map((r) => ({
+  const out = body.map((r, i) => ({
+    line: i + 2, // 1-indexed, plus the header row — matches what a spreadsheet shows
     country: String(r[col.country] ?? '').trim(),
     // parseSalary() semantics, applied at import so the stored integer is the
     // number production actually aggregates. See the note in verify-parity.
@@ -141,8 +148,81 @@ export function mapHistorical(rows) {
     outlier: col.outlier !== undefined && String(r[col.outlier] ?? '').trim().toUpperCase() === 'TRUE'
   }));
 
-  return { rows: out, problems, col };
+  if (!clean) return { rows: out, problems, col, excluded: [], repaired: [] };
+
+  const { rows: cleaned, excluded, repaired } = cleanHistorical(out);
+  return { rows: cleaned, problems, col, excluded, repaired };
 }
+
+/**
+ * The historical clean-up, per decisions A–C in docs/agent/DECISIONS.md.
+ *
+ * The old Google Form took salary as free text with no validation, so a value
+ * that looks wrong probably IS wrong rather than merely extreme. The user's
+ * call was to drop what cannot be trusted rather than guess a replacement —
+ * `submissions`, which goes through the validated API, is trusted and is NOT
+ * subject to any of this.
+ *
+ * Every exclusion and repair is returned so the importer can log it. Dropping
+ * rows means the table stops mirroring the Sheet, and "we removed 27 rows, here
+ * is exactly which" has to stay answerable afterwards.
+ */
+export function cleanHistorical(rows) {
+  const kept = [];
+  const excluded = [];
+  const repaired = [];
+
+  for (const row of rows) {
+    // Decision A — the Compass is a Portuguese benchmark. Not a filter change
+    // to the published numbers (compass_entries already restricts to Portugal),
+    // a change to what gets stored.
+    if (row.country !== 'Portugal') {
+      excluded.push({ ...row, reason: 'not-portugal' });
+      continue;
+    }
+
+    // Rows the Sheet itself already flagged. Kept as-is: the benchmark honours
+    // the flag, and re-deciding someone else's outlier call is not this job.
+    if (row.outlier) {
+      kept.push(row);
+      continue;
+    }
+
+    // Decision C — implausible on their face, and unrepairable with confidence.
+    //  > 200 000: sixteen rows in the millions (probably "55 000,00" flattened
+    //    by parseSalary) plus 225 000 and 350 000, which could be genuine. The
+    //    user was not confident in either, so all of them go.
+    //  100 – 9 999: monthly pay quoted in an annual field (3000 with perks of
+    //    31 646), plus rows whose perks value is incoherent with any reading.
+    if (row.base > MAX_PLAUSIBLE_BASE) {
+      excluded.push({ ...row, reason: 'implausible-high' });
+      continue;
+    }
+    if (row.base >= 100 && row.base < 10000) {
+      excluded.push({ ...row, reason: 'implausible-monthly-or-junk' });
+      continue;
+    }
+
+    // Decision B — the one repair. A respondent typing `18` meant 18 000; the
+    // user was explicit about this group and only this group. Note the bound is
+    // 100, not 1000: `450` means 45 000, not 450 000, which a blanket ×1000
+    // would have invented.
+    if (row.base > 0 && row.base < 100) {
+      const before = row.base;
+      const after = before * 1000;
+      repaired.push({ ...row, reason: 'thousands-shorthand', before, after });
+      kept.push({ ...row, base: after, total: row.total > 0 && row.total < 100 ? row.total * 1000 : row.total });
+      continue;
+    }
+
+    kept.push(row);
+  }
+
+  return { rows: kept, excluded, repaired };
+}
+
+/** Above this, a Portuguese PM salary in the historical set is not believable. */
+export const MAX_PLAUSIBLE_BASE = 200000;
 
 /** Code.gs parseSalary(). parseInt, so "50.000" reads as 50 — see verify-parity. */
 export function parseSalaryLegacy(val) {

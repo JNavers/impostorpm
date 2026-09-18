@@ -142,11 +142,17 @@ create index if not exists email_log_contact_idx on email_log (contact_id, creat
 -- nothing writes here again, which is why it carries no constraints beyond
 -- what the benchmark needs. `outlier` and `country` are the two filters
 -- computePercentiles() applies before using a row.
+-- The money columns are bigint, not integer, and deliberately so. The clean
+-- import (decisions A–C) drops everything implausible and would fit in an
+-- integer comfortably — but the parity control imports the sheet RAW, and the
+-- raw sheet contains a 3 120 000 000 entry that overflows int4. Narrowing this
+-- would work right up until it silently disabled the one check that proves the
+-- SQL port reproduces production.
 create table if not exists historical (
   id            bigint generated always as identity primary key,
   country       text,
-  base_salary   integer,
-  total_comp    integer,
+  base_salary   bigint,
+  total_comp    bigint,
   role_raw      text,
   yoe_raw       text,
   outlier       boolean not null default false

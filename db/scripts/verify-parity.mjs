@@ -22,7 +22,7 @@
  * Nothing here writes anywhere. It reads two local files and does one GET.
  */
 
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -37,6 +37,17 @@ const PROD_ENDPOINT =
 
 const argv = new Set(process.argv.slice(2));
 const SKIP_PROD = argv.has('--offline');
+
+/**
+ * `--clean` applies the historical clean-up from decisions A–C.
+ *
+ * It is OFF by default, and that matters. The gate's value comes from comparing
+ * like with like: raw, the three benchmarks must agree to the euro, which is
+ * what proves the SQL port is faithful. With `--clean` they are SUPPOSED to
+ * differ, so the run reports the impact instead of passing or failing. Running
+ * only the clean mode would quietly retire the control.
+ */
+const CLEAN = argv.has('--clean');
 
 function fail(msg) {
   console.error(`\n✖ ${msg}\n`);
@@ -84,9 +95,12 @@ async function main() {
     );
   }
 
-  console.log('Reading exports…');
+  console.log(`Reading exports… ${CLEAN ? '(clean mode: decisions A–C applied)' : '(raw: the parity control)'}`);
   const subs = mapSubmissions(parseCsv(submissionsCsv));
-  const hist = mapHistorical(parseCsv(historicalCsv));
+  const hist = mapHistorical(parseCsv(historicalCsv), { clean: CLEAN });
+  // The oracle must ALWAYS see the raw rows. It exists to answer "what does
+  // production print today?", and production has no clean-up.
+  const histRaw = CLEAN ? mapHistorical(parseCsv(historicalCsv)) : hist;
 
   if (subs.problems.length) {
     console.log('\n  Submissions header mismatch — the export does not match setupSubmissionsHeaders():');
@@ -99,6 +113,26 @@ async function main() {
   }
   console.log(`  submissions: ${subs.rows.length} rows`);
   console.log(`  historical:  ${hist.rows.length} rows (resolved columns: ${JSON.stringify(hist.col)})`);
+
+  if (CLEAN) {
+    const byReason = {};
+    for (const e of hist.excluded) byReason[e.reason] = (byReason[e.reason] || 0) + 1;
+    console.log(`\n  Clean-up (decisions A–C):`);
+    console.log(`    dropped:  ${hist.excluded.length}`);
+    for (const [reason, n] of Object.entries(byReason)) console.log(`      ${reason.padEnd(30)} ${n}`);
+    console.log(`    repaired: ${hist.repaired.length}` +
+      (hist.repaired.length ? ` (${hist.repaired.map((r) => `${r.before}→${r.after}`).join(', ')})` : ''));
+
+    // Dropping rows means the table stops mirroring the Sheet, so the exclusions
+    // have to stay answerable afterwards. Git-ignored: it holds salary data.
+    const logPath = join(FIXTURES, 'historical-exclusions.log.json');
+    await writeFile(logPath, JSON.stringify({
+      generatedAt: new Date().toISOString(),
+      excluded: hist.excluded,
+      repaired: hist.repaired
+    }, null, 2));
+    console.log(`    log:      ${logPath}`);
+  }
 
   // ── Load into Postgres ──
   console.log('\nLoading into a throwaway Postgres…');
@@ -146,7 +180,7 @@ async function main() {
   const sql = await readBenchmark(db);
 
   const oracle = computePercentiles(
-    hist.rows.map((r) => ({
+    histRaw.rows.map((r) => ({
       country: r.country, base: r.base, total: r.total,
       role: r.role, yoe: r.yoe, outlier: r.outlier ? 'TRUE' : 'FALSE'
     })),
@@ -156,8 +190,21 @@ async function main() {
   );
 
   let ok = true;
-  console.log('\nSQL vs oracle (is the port faithful?)');
-  ok = report('SQL ↔ oracle', diff(sql, oracle)) && ok;
+
+  if (CLEAN) {
+    // In clean mode the two are MEANT to differ; the difference is the report.
+    console.log('\nImpact of the clean-up (SQL cleaned vs what production serves today)');
+    const impact = diff(sql, oracle);
+    if (!impact.length) {
+      console.log('  (no change — suspicious: the clean-up should have moved something)');
+    } else {
+      for (const d of impact.slice(0, 40)) console.log(`    ${d.path}: ${d.b} → ${d.a}`);
+      if (impact.length > 40) console.log(`    … and ${impact.length - 40} more`);
+    }
+  } else {
+    console.log('\nSQL vs oracle (is the port faithful?)');
+    ok = report('SQL ↔ oracle', diff(sql, oracle)) && ok;
+  }
 
   if (SKIP_PROD) {
     console.log('\n(--offline: skipping the production comparison)');
@@ -178,7 +225,7 @@ async function main() {
         console.log('    A mismatch here usually means the export is stale — someone');
         console.log('    submitted between the download and this run. Re-export and retry.');
       }
-      ok = report('SQL ↔ production', diff(sql, prod)) && ok;
+      if (!CLEAN) ok = report('SQL ↔ production', diff(sql, prod)) && ok;
     }
   }
 
@@ -186,7 +233,12 @@ async function main() {
 
   console.log('');
   if (!ok) fail('PARITY FAILED. Do not migrate until every difference above is explained.');
-  console.log('✔ PARITY HOLDS — the SQL benchmark reproduces production exactly.\n');
+  if (CLEAN) {
+    console.log('✔ Clean-up applied. The differences above are the intended correction.');
+    console.log('  Re-run without --clean to confirm the port itself is still faithful.\n');
+  } else {
+    console.log('✔ PARITY HOLDS — the SQL benchmark reproduces production exactly.\n');
+  }
 }
 
 main().catch((err) => fail(err.stack || err.message));

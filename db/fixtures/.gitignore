@@ -2,3 +2,7 @@
 # never reach git — the dataset's credibility rests on that promise.
 *.csv
 !sample-*.csv
+
+# The clean-up's audit trail: every dropped and repaired row, verbatim. Useful,
+# and made of exactly the same salary data as the exports above.
+*.log.json
