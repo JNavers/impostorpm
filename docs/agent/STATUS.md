@@ -32,14 +32,20 @@ rationale. **Read it before continuing** rather than re-deriving any of it.
   patch survey, contacts) plus `_lib.js` and extracted email templates.
 - Test harness on PGlite (Postgres 17 in WASM) — no Docker, no network, no
   credentials.
-- `db/scripts/verify-parity.mjs`: the three-way gate for step 1.
+- `db/scripts/verify-parity.mjs`: the three-way gate for step 1, run against
+  the real exports. SQL ↔ oracle identical.
+- The export-parsing bug found and fixed (see the CORRECTION in DECISIONS.md).
+- The scheduled emails ported: `functions/api/compass/cron.js` + `_senders.js`,
+  replacing result-emails.gs and survey-reminders.gs. Dry run is a query
+  parameter, and a failed send is retried rather than lost.
 
 ## Not started
 
 Steps 2–5 of the runbook in `db/README.md`. Nothing is wired to the frontend;
 `public/salary-compass/index.html` is untouched and still posts to Apps Script.
-No Supabase project exists. The reminder/result email senders are not written
-(only `compass_pending_reminders`, the queue query, is ported and tested).
+No Supabase project exists, so nothing has been run against a real database —
+only PGlite. The dual-write change to the frontend (step 3) is the next
+substantial piece of code and has not been started.
 
 ## Blocker — resolved. The remaining gap is a stale export.
 
@@ -73,9 +79,11 @@ hours — the gate is best run right after a fresh export.
 
 ## Test state
 
-`cd db && npm install && npm test` → **63 passing, 0 failing**.
+`cd db && npm install && npm test` → **77 passing, 0 failing**.
 Split: 5 benchmark parity, 8 CSV import, 7 export parsing, 9 historical
-clean-up, 12 RPC, 22 endpoint.
+clean-up, 12 RPC, 22 endpoint, 14 scheduled email.
+
+`npm run build` at the repo root succeeds.
 
 `npm run parity` runs end to end on the real exports: SQL ↔ oracle identical.
 `node scripts/verify-parity.mjs --clean` reports the clean-up's impact and
