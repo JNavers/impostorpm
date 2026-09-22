@@ -126,3 +126,25 @@ test('suppression thresholds match the published privacy rule', async () => {
   assert.equal(sql.districts.byDistrict['Beja'].suppressed, true, 'n=9 district must be suppressed');
   await db.close();
 });
+
+test('the benchmark cache can be refreshed CONCURRENTLY', async () => {
+  // The refresh path the scheduled job actually uses. An earlier version had a
+  // unique index over ((true)), which CREATE accepts and REFRESH CONCURRENTLY
+  // rejects — so this passed in tests that refreshed non-concurrently and
+  // failed against the live project. The index has to be over a real column.
+  const db = await createTestDb();
+  await loadFixtures(db, {
+    historical: [],
+    submissions: Array.from({ length: 6 }, (_, i) => ({
+      role: 'PM', base: 50000 + i * 1000, total: null, yoe: 4, district: 'Porto'
+    }))
+  });
+
+  await db.query('refresh materialized view benchmark_cache');
+  await db.query('select refresh_benchmark_cache()');
+
+  const { rows } = await db.query('select payload from benchmark_cache');
+  assert.equal(rows.length, 1, 'exactly one cached payload');
+  assert.equal(Number(rows[0].payload.roles['PM'].n), 6, 'and it reflects the data');
+  await db.close();
+});

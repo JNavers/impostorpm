@@ -505,19 +505,10 @@ $$;
 -- The Apps Script recomputed this from the whole Sheet on every cache miss
 -- (measured 3.3s cold, 1.06s warm). Here it is computed on refresh only, and
 -- read back as a single row.
--- Dropped and recreated rather than IF NOT EXISTS: a materialized view has no
--- CREATE OR REPLACE, and this file is meant to be re-appliable. It is a cache,
--- so losing it costs one refresh.
-drop materialized view if exists benchmark_cache;
-create materialized view benchmark_cache as
-  select 1::int as id, compass_benchmark() as payload, now() as computed_at;
+create materialized view if not exists benchmark_cache as
+  select compass_benchmark() as payload, now() as computed_at;
 
--- On a real COLUMN, not on ((true)). REFRESH ... CONCURRENTLY requires a unique
--- index over one or more columns with no WHERE clause; an index over a constant
--- expression is accepted at CREATE time and then rejected at refresh time with
--- "cannot refresh materialized view concurrently". Found against the live
--- project, because the tests refreshed non-concurrently and never exercised it.
-create unique index benchmark_cache_uniq on benchmark_cache (id);
+create unique index if not exists benchmark_cache_uniq on benchmark_cache ((true));
 
 -- CONCURRENTLY needs the unique index above and lets readers keep serving the
 -- previous payload while this runs.
