@@ -13,7 +13,7 @@
  * by accident.
  */
 
-import { json, preflight, supabase } from './_lib.js';
+import { json, preflight, emailsEnabled } from './_lib.js';
 import { sendBatch, MAX_PER_RUN } from './_senders.js';
 
 const KINDS = new Set(['result', 'reminder_1', 'reminder_2']);
@@ -36,12 +36,17 @@ export async function onRequestPost({ request, env }) {
     return json({ status: 'error', message: `kind must be one of ${[...KINDS].join(', ')}` }, 400);
   }
 
-  const dryRun = url.searchParams.get('dry') === '1';
+  // With sending switched off every run is a dry run, whatever the caller asked
+  // for: it reports who WOULD be mailed, sends nothing and stamps nothing. Not
+  // stamping matters — see "Turning email on" in db/README.md for the one-off
+  // backfill that stops the new backend re-sending what the legacy one sent.
+  const suppressed = !emailsEnabled(env);
+  const dryRun = suppressed || url.searchParams.get('dry') === '1';
   const limit = Math.min(Number(url.searchParams.get('limit')) || MAX_PER_RUN, MAX_PER_RUN);
 
   try {
     const outcome = await sendBatch(env, kind, { dryRun, limit });
-    return json({ status: 'ok', ...outcome });
+    return json({ status: 'ok', ...outcome, suppressed });
   } catch (err) {
     console.error(`cron ${kind} failed:`, err.message);
     return json({ status: 'error', message: 'Job failed', kind }, 500);

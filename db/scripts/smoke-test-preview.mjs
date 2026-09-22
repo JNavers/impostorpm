@@ -160,7 +160,12 @@ async function main() {
     JSON.stringify(rows?.[0]));
 
   const log = rows?.length ? await db(`email_log?contact_id=eq.${rows[0].id}&select=kind,ok,error`) : [];
-  check('and the send attempt is logged either way', log?.length === 1, JSON.stringify(log));
+  if (contact.body?.email_suppressed) {
+    // COMPASS_SEND_EMAILS is off (dual-write): nothing sent, so nothing logged.
+    check('sending is suppressed, and no attempt is logged', log?.length === 0, JSON.stringify(log));
+  } else {
+    check('and the send attempt is logged either way', log?.length === 1, JSON.stringify(log));
+  }
   console.log(`    email_sent=${contact.body?.email_sent} log=${JSON.stringify(log?.[0] || {})}`);
 
   const repeat = await api('/api/compass/contacts', json({ email, source: 'email_gate' }));
