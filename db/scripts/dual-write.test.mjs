@@ -52,19 +52,49 @@ async function load(opts = {}) {
 
   const document = {
     head: { appendChild: (el) => { scripts.push(el); if (opts.turnstile === 'script-fails') { setImmediate(() => el.onerror?.()); } else { setImmediate(() => { window.turnstile = makeTurnstile(opts.turnstile); el.onload?.(); }); } } },
-    body: { appendChild: () => {} },
+    body: { appendChild: (el) => { window._container = el; } },
     createElement: () => ({ style: {}, set onload(fn) { this._onload = fn; }, get onload() { return this._onload; }, set onerror(fn) { this._onerror = fn; }, get onerror() { return this._onerror; } })
   };
 
+  /**
+   * Turnstile, as it actually behaves — which is not what an earlier version of
+   * this double assumed, and that cost a broken deploy.
+   *
+   * The real API delivers the token to the callback passed to RENDER, not to
+   * execute(). execute() just starts the challenge and returns nothing. The
+   * first double accepted a callback in execute(), so the test suite happily
+   * validated code that could never work in a browser: the mock was checking
+   * the implementation against itself.
+   *
+   * It also rejects size:'invisible' (valid: normal, flexible, compact) and
+   * needs execution/appearance to defer the challenge, so those are asserted
+   * here rather than left to a browser to discover.
+   */
   function makeTurnstile(mode) {
+    let renderOpts = null;
     return {
-      render: () => 'widget-1',
+      render: (_el, opts) => {
+        if (opts.size !== undefined && !['normal', 'flexible', 'compact'].includes(opts.size)) {
+          throw new Error(`invalid size: ${opts.size}`);
+        }
+        if (typeof opts.callback !== 'function') {
+          throw new Error('render() needs a callback — that is where the token arrives');
+        }
+        renderOpts = opts;
+        return 'widget-1';
+      },
       reset: () => {},
-      execute: (_id, cb) => {
-        if (mode === 'error') return setImmediate(() => cb['error-callback']());
+      execute: (...args) => {
+        if (args.length > 1 && typeof args[1] === 'object' && args[1] !== null) {
+          throw new Error('execute() takes no callback options; the real API ignores them');
+        }
+        if (!renderOpts) throw new Error('execute() before render()');
+        if (mode === 'error') return setImmediate(() => renderOpts['error-callback']?.());
         if (mode === 'timeout') return; // never calls back
-        setImmediate(() => cb.callback('turnstile-token-abc'));
-      }
+        setImmediate(() => renderOpts.callback('turnstile-token-abc'));
+      },
+      /** For assertions about how the widget was configured. */
+      _opts: () => renderOpts
     };
   }
 
@@ -233,4 +263,38 @@ test('success is recorded too, so the mirror rate is visible', async () => {
   const ok = calls.events.find((e) => e.event === 'compass_mirror_ok');
   assert.ok(ok);
   assert.equal(ok.props.action, 'create');
+});
+
+test('the widget is configured for deferred execution', async () => {
+  // Without execution:'execute' Turnstile runs the challenge at render time,
+  // so the token would be spent before the first submission and every mirror
+  // after it would fail.
+  const { api, window } = await load();
+  await api.mirror(CREATE);
+
+  const opts = window.turnstile._opts();
+  assert.equal(opts.execution, 'execute');
+  assert.equal(opts.appearance, 'execute');
+  assert.equal(opts.sitekey, '0x4AAAAAAE_8GTLACwscn7x9');
+  assert.equal(opts.size, undefined, "there is no size:'invisible'; leaving it unset is correct");
+});
+
+test('the widget container is not hidden', async () => {
+  // Turnstile refuses to run inside display:none, and appearance:'execute'
+  // already keeps it invisible until a challenge actually needs showing — at
+  // which point the visitor has to be able to see and solve it.
+  const { api, window } = await load();
+  await api.mirror(CREATE);
+  assert.notEqual(window._container.style.display, 'none');
+});
+
+test('two mirrors get two fresh tokens', async () => {
+  // Tokens are single-use and expire in five minutes; the comparison and the
+  // survey can be far apart.
+  const { api, calls } = await load();
+  await api.mirror(CREATE);
+  await api.mirror({ action: 'email_only', email: 'a@example.com', source: 'email_gate' });
+
+  const tokens = calls.fetch.map((c) => c.body && c.body.turnstileToken).filter(Boolean);
+  assert.equal(tokens.length, 2, 'both writes carried a token');
 });

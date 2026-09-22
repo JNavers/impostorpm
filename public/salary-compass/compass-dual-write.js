@@ -73,6 +73,12 @@
   var turnstileReady = null;
   var widgetId = null;
 
+  /**
+   * Turnstile delivers tokens through the callback given to render(), not to
+   * execute(), so the promise waiting for one is parked here.
+   */
+  var pendingToken = null;
+
   function track(event, props) {
     try {
       if (window.tipmAnalytics && window.tipmAnalytics.capture) {
@@ -99,13 +105,48 @@
       document.head.appendChild(script);
     }).then(function () {
       if (widgetId !== null) return;
+
       var host = document.createElement('div');
       host.id = 'compass-turnstile';
-      host.style.display = 'none';
+      // NOT display:none. Turnstile refuses to run in a hidden container, and
+      // appearance:'execute' already keeps the widget invisible until it
+      // actually needs to show an interactive challenge — at which point the
+      // visitor has to be able to see it.
+      host.style.position = 'fixed';
+      host.style.bottom = '12px';
+      host.style.right = '12px';
+      host.style.zIndex = '2147483647';
       document.body.appendChild(host);
+
       widgetId = window.turnstile.render(host, {
         sitekey: TURNSTILE_SITEKEY,
-        size: 'invisible'
+        // 'execute' on both: render the widget but do not start a challenge
+        // until execute() is called, and stay invisible until one is needed.
+        // There is no size:'invisible' — the valid sizes are normal, flexible
+        // and compact, and passing anything else makes render() fail silently.
+        execution: 'execute',
+        appearance: 'execute',
+        // The token arrives HERE, not from execute(). execute() only starts
+        // the challenge and returns nothing.
+        callback: function (token) {
+          if (!pendingToken) return;
+          var p = pendingToken;
+          pendingToken = null;
+          p.resolve(token);
+        },
+        'error-callback': function () {
+          if (!pendingToken) return;
+          var p = pendingToken;
+          pendingToken = null;
+          p.reject(new Error('turnstile-error'));
+          return true; // we handled it; do not let Turnstile retry on its own
+        },
+        'timeout-callback': function () {
+          if (!pendingToken) return;
+          var p = pendingToken;
+          pendingToken = null;
+          p.reject(new Error('turnstile-timeout'));
+        }
       });
     });
 
@@ -123,27 +164,38 @@
         return new Promise(function (resolve, reject) {
           var settled = false;
           var timer = setTimeout(function () {
-            if (!settled) { settled = true; reject(new Error('turnstile-timeout')); }
-          }, 10000);
+            if (settled) return;
+            settled = true;
+            pendingToken = null;
+            reject(new Error('turnstile-timeout'));
+          }, 15000);
 
-          try {
-            window.turnstile.reset(widgetId);
-          } catch (e) { /* first use: nothing to reset */ }
-
-          window.turnstile.execute(widgetId, {
-            callback: function (token) {
+          pendingToken = {
+            resolve: function (token) {
               if (settled) return;
               settled = true;
               clearTimeout(timer);
               resolve(token);
             },
-            'error-callback': function () {
+            reject: function (err) {
               if (settled) return;
               settled = true;
               clearTimeout(timer);
-              reject(new Error('turnstile-error'));
+              reject(err);
             }
-          });
+          };
+
+          try {
+            // Tokens are single-use and expire after five minutes, so each
+            // call starts a fresh challenge rather than reusing the last one.
+            window.turnstile.reset(widgetId);
+            window.turnstile.execute(widgetId);
+          } catch (e) {
+            pendingToken = null;
+            clearTimeout(timer);
+            settled = true;
+            reject(e);
+          }
         });
       });
   }
