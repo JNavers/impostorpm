@@ -376,6 +376,17 @@ The page side (`index.html`):
 To send someone their link by hand, use the Sheet's **Salary Compass → Survey
 link for an email…** menu (`apps-script/salary-compass/survey-link.gs`).
 
+**Applied 2026-09-22:** 005 run in the SQL editor, 434/434 rows backfilled.
+Verified on preview `2b63110a`:
+- `PATCH ?by=legacy` returns 200 and merges onto the oldest row;
+- an unknown id gives 404 and a malformed one 400;
+- the test rows were deleted afterwards.
+
+Previews now enforce Turnstile, so `smoke-test-preview.mjs` gets 403 on every
+create. Turnstile also refuses automated browsers (`turnstile-timeout`), which
+is the point of it. So the create path is covered by the unit tests plus a real
+comparison made by hand in a browser.
+
 ---
 
 ## Migration runbook

@@ -144,6 +144,31 @@ async function main() {
     check('a malformed id → 400', malformed.status === 400, `got ${malformed.status}`);
   }
 
+  // ── Survey by Sheet id (email links, 005_legacy_id.sql) ──
+  console.log('\nPATCH /api/compass/submissions/:sheetId?by=legacy');
+  const legacyId = `smoke-legacy-${Date.now()}`;
+  const withLegacy = await api('/api/compass/submissions', json({ ...valid, legacyId }));
+  if (withLegacy.body?.id) created.submissions.push(withLegacy.body.id);
+  const [legacyRow] = withLegacy.body?.id
+    ? await db(`submissions?id=eq.${withLegacy.body.id}&select=legacy_id`) : [];
+  check('the comparison stores the Sheet id', legacyRow?.legacy_id === legacyId, JSON.stringify(legacyRow));
+
+  const byLegacy = await api(`/api/compass/submissions/${legacyId}?by=legacy`, {
+    method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ gender: 'Female' })
+  });
+  check('a survey sent by Sheet id → 200', byLegacy.status === 200, `got ${byLegacy.status} ${JSON.stringify(byLegacy.body).slice(0, 120)}`);
+  check('and answers with our uuid', !!byLegacy.body?.id && byLegacy.body.id === withLegacy.body?.id, JSON.stringify(byLegacy.body));
+  const [enriched] = withLegacy.body?.id
+    ? await db(`submissions?id=eq.${withLegacy.body.id}&select=full_survey,survey`) : [];
+  check('the survey lands on that row', enriched?.full_survey === true && enriched?.survey?.gender === 'Female', JSON.stringify(enriched));
+
+  const unknownLegacy = await api('/api/compass/submissions/never-created-0001?by=legacy', {
+    method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ gender: 'Male' })
+  });
+  check('an unknown Sheet id → 404', unknownLegacy.status === 404, `got ${unknownLegacy.status}`);
+
   // ── POST /contacts ──
   console.log('\nPOST /api/compass/contacts');
   const email = `compass-smoke-${Date.now()}@example.com`;
