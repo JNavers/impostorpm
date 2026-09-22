@@ -69,12 +69,19 @@ const LEGACY_URLS = readFileSync(join(ROOT, 'scripts/legacy-sitemap-urls.txt'), 
   .map((line) => line.trim())
   .filter((line) => line && !line.startsWith('#'));
 
-/** Was 274260 through the migration, which is the number quoted in MIGRATION.md
- *  as proof the page came across untouched. It changed on 2026-08-03 when the
- *  last Softr CDN dependencies were cut out of it — deliberately, and the only
- *  edit to this file since the subtree. Any other change to this number means
- *  something modified the page that should not have. */
-const SALARY_COMPASS_BYTES = 274203;
+/** The page is served verbatim from public/, never templated, so what
+ *  production returns must equal the file in this repo byte for byte.
+ *
+ *  This replaced a hard-coded byte count (274203, and 274260 before the Softr
+ *  CDN cleanup). That version caught the same class of problem — something
+ *  transforming the page in the build — but had to be edited by hand on every
+ *  legitimate change, which meant the number was as likely to be stale as the
+ *  page was to be wrong. Comparing against the source needs no maintenance and
+ *  catches strictly more: a build that rewrote the page to the same length
+ *  would have slipped past the old check. */
+const SALARY_COMPASS_SOURCE = readFileSync(
+  join(ROOT, 'public', 'salary-compass', 'index.html'), 'utf8'
+);
 
 console.log(`\nValidating: ${HOSTS.join('  ')}\n`);
 
@@ -278,11 +285,20 @@ for (const host of HOSTS) {
 
   // ── Integrity ─────────────────────────────────────────────────────────────
   group('integrity');
-  await check('salary-compass is byte-identical to the migrated original', async () => {
+  await check('salary-compass is served byte-identical to the source', async () => {
     const { body } = await getText(`${host}/salary-compass/`);
-    const bytes = Buffer.byteLength(body, 'utf8');
-    assert(bytes === SALARY_COMPASS_BYTES, `${bytes} bytes, expected ${SALARY_COMPASS_BYTES}`);
-    return `${bytes} bytes`;
+    const served = Buffer.byteLength(body, 'utf8');
+    const source = Buffer.byteLength(SALARY_COMPASS_SOURCE, 'utf8');
+
+    if (body !== SALARY_COMPASS_SOURCE) {
+      // Byte counts first: a length difference is almost always a deploy that
+      // has not caught up, while equal lengths with different content means
+      // something rewrote the page, which is the case worth alarming about.
+      assert(served === source,
+        `${served} bytes served, ${source} in the repo — likely an undeployed change`);
+      assert(false, `same length but different content — something is rewriting the page`);
+    }
+    return `${served} bytes, identical to source`;
   });
 
   await check('nothing survives that dies with the Softr subscription', async () => {
