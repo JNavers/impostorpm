@@ -247,6 +247,52 @@ the failure it was retrying.
 
 ---
 
+## The dual-write mirror
+
+`public/salary-compass/compass-dual-write.js` mirrors every write to the new
+backend while Apps Script stays authoritative. It is hooked inside
+`postOpaqueToSheets()` in index.html — the single funnel all four write paths go
+through — so no call site changed. `COMPASS_DUAL_WRITE` at the top of the file
+is the rollback.
+
+**Verified end to end on 2026-09-22** against a preview:
+
+| path | how |
+|---|---|
+| comparison → `POST /submissions` | the real form, in a browser |
+| survey → `PATCH /submissions/:id` | calling `mirror()` directly |
+| email → `POST /contacts` | the smoke test |
+
+The comparison came back `201` with
+`protection: {turnstile: verified, rateLimit: enforced}`, and the survey landed
+on the same row the comparison had created.
+
+### It cannot be fully tested without a browser
+
+Two bugs shipped here with the whole suite green, and both are the same
+mistake: the Turnstile double mirrored what the code assumed instead of what
+Turnstile does.
+
+1. `size: 'invisible'` is not a valid size, and the token arrives at the
+   callback given to `render()`, not to `execute()`. The double accepted a
+   callback in `execute()` because that is what the code passed.
+2. Turnstile can solve the challenge *during* `render()`, so the callback fires
+   before anything is waiting and the token was being discarded. Two attempts
+   at reproducing that in the double both produced a double that agreed with
+   whatever it was pointed at.
+
+The test for (2) is kept with a caveat on it: it pins the intent, it does not
+guard. **Anything touching the Turnstile handshake has to be checked against the
+real widget**, by loading a preview and watching `compass_mirror_ok` /
+`compass_mirror_failed`. `window.compassDualWrite.idMap` shows what got
+mirrored.
+
+One automation note: the form's step 5 perception slider will not validate from
+a script — it needs a real drag — so driving the whole form programmatically
+does not work. Call `mirror()` directly, or move the slider by hand.
+
+---
+
 ## Migration runbook
 
 Five steps, no downtime, reversible at every point.

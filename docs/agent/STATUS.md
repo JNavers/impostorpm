@@ -41,50 +41,29 @@ rationale. **Read it before continuing** rather than re-deriving any of it.
 
 ## Not started
 
-Steps 2–5 of the runbook in `db/README.md`. Nothing is wired to the frontend;
-`public/salary-compass/index.html` is untouched and still posts to Apps Script.
-No Supabase project exists, so nothing has been run against a real database —
-only PGlite. The dual-write change to the frontend (step 3) is the next
-substantial piece of code and has not been started.
+Steps 4 and 5 of the runbook in `db/README.md`. Step 3 (dual-write) is written,
+deployed to a preview and verified, but **not merged and not in production** —
+`public/salary-compass/index.html` on the live site still posts only to Apps
+Script.
 
-## Blocker — none. Step 1 is complete.
+The reminder/result email jobs exist (`functions/api/compass/cron.js`) but no
+Cron Triggers are configured yet, so nothing is scheduled.
 
-On 2026-09-22, against a fresh export of `Submissions` (434 rows) and the
-unchanged `Historical` tab (742 rows, frozen by definition — it is an archive
-of the old Form and does not need re-exporting):
+## Blocker — none
 
-```
-SQL vs oracle (is the port faithful?)
-  ✔ SQL ↔ oracle: identical
-Oracle vs production (is the export complete?)
-  ✔ oracle ↔ production: identical
-  ✔ SQL ↔ production: identical
+Step 3 was verified end to end on 2026-09-22 against preview
+`f0cedb34.impostorpm-site.pages.dev`:
 
-✔ PARITY HOLDS — the SQL benchmark reproduces production exactly.
-```
+- **Comparison, through the real form in a browser** → row in Supabase with the
+  right salary, district, perception and a hashed `ip_hash`.
+- **Survey** → `PATCH` landed on the same row the comparison created.
+- **Email capture** → covered by `smoke-test-preview.mjs`.
 
-The new backend computes the same numbers impostor.pm serves today, to the
-euro, over the entire real dataset. This was the migration's main risk and it
-is closed.
+`protection: {turnstile: verified, rateLimit: enforced}` on the write, so both
+protections are live rather than skipped.
 
-Getting here took two fixes, both recorded in DECISIONS.md: the export-parsing
-bug (formatted cells read a hundredfold too large) and, once that was gone,
-a stale export — which simply needed re-exporting.
-
-### Impact of the clean-up, for the record
-
-`node scripts/verify-parity.mjs --clean` on the same data:
-
-```
-dropped:  150   (138 not-portugal, 10 monthly-or-junk, 2 above €200k)
-repaired: 6     (18→18000, 24→24000, 24→24000, 35→35000, 62→62000, 70→70000)
-overall.n: 1033 → 1021
-overall.p10: 25 000 → 25 200
-overall.p75: 60 000 → 61 000
-```
-
-Small and defensible. When the cutover happens these figures change visibly on
-the site, so it is worth a line to the community rather than a silent shift.
+Every test row was deleted afterwards; counts are back to 434 / 592 / 33 with
+no rows outside the import.
 
 ## Test state
 
