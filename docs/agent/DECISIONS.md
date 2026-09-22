@@ -30,9 +30,11 @@ kept as the regression witness and as the documented Code.gs behaviour.
 below €10 000 (monthly pay in an annual field, plus incoherent ones). Twelve
 Portugal rows, not 27. The thresholds did not change; the data they see did.
 
-**The user should be asked again** whether they still want the two high rows
-dropped, now that they are the only two and no longer keep company with sixteen
-implausible ones.
+**Re-confirmed by the user on 2026-09-22**, having been shown that the two are
+now the only high rows: *"elimina esas dos filas de 225000 y 350000"*. So
+decision C stands unchanged, and the existing `> 200 000` rule already
+implements it — no code change was needed, only the confirmation that the rule
+was still wanted once its premise had been corrected.
 
 **Lesson for the rest of the migration:** a CSV export is not the Sheet. Where a
 number matters, check the raw cell text before concluding the data is bad.

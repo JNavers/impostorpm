@@ -98,15 +98,31 @@ detects the regression it claims to.
 
 ## Next action
 
-1. **Ask the user to re-confirm decision C.** With correct parsing it drops 12
-   Portugal rows, not 27, and the two above €200 000 (225 000 and 350 000) are
-   now the only high ones rather than the tail of sixteen implausible ones. The
-   premise they decided on has changed.
+1. ~~Ask the user to re-confirm decision C.~~ **Done 2026-09-22: confirmed,
+   both high rows go.** The existing `> 200 000` rule already implements it;
+   no code change was required.
+
+   Note for whoever runs the export: the Google Drive connector CANNOT reach
+   this Sheet. Searching by id and by title returns only old `.xlsx` copies
+   owned by jnavero.92@gmail.com and one shared by a third party — the
+   connector is authenticated as an account that does not own
+   `19qBJIJjNS8QmBSowtDyCUYq32mIxyNOR4yWpiMpJGos`. The export has to be done
+   from the browser, or the connector reconnected to the owning account.
 2. **Re-export and re-run `npm run parity`** to close the count gap formally
    (432 live vs 428 in the export). Do it back to back; it drifts within hours.
 3. **Then step 2 of the runbook** in `db/README.md`: create the Supabase
-   project, apply `db/sql/`, deploy to a preview URL, and start the dual-write
-   window.
+   project, apply `db/sql/`, deploy to a preview URL. Needs the user's Supabase
+   credentials; nothing here has ever run against a real database, only PGlite.
+4. **The dual-write change to the frontend** (step 3) is the largest remaining
+   piece of code and has not been started. It touches
+   `public/salary-compass/index.html`, which is guarded by the
+   "byte-identical to the migrated original" assertion in
+   `scripts/validate-production.mjs` — update both in the same commit.
+
+Claude's session ended here at 98% of the 7-day quota. The threshold in
+`~/.agents/failover/config.json` was raised from 85 to 95 mid-session at the
+user's request (backup in `backups/config.json.pre-raise-2026-09-18`); it is
+worth putting back. Everything is committed and pushed, so nothing is at risk.
 
 Measured impact of the clean-up, for the conversation in (1)
 (`node scripts/verify-parity.mjs --clean`): overall n 1030 → 1003,
