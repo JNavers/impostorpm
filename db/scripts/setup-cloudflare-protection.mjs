@@ -25,6 +25,9 @@ const KV_NAMESPACE_ID = 'b885768ad5834c28b37a3de35db87ce3';
 const KV_BINDING = 'COMPASS_RL';
 const DRY = process.argv.includes('--dry');
 
+/** Production plus the Pages project host, which covers every preview hash. */
+const WANT_DOMAINS = ['impostor.pm', 'www.impostor.pm', 'impostorpm-site.pages.dev'];
+
 const API = 'https://api.cloudflare.com/client/v4';
 
 async function token() {
@@ -90,6 +93,37 @@ if (!existing.ok) {
   if (already) {
     console.log(`  ✔ a widget for impostor.pm already exists`);
     console.log(`    sitekey: ${already.sitekey}`);
+    console.log(`    domains: ${(already.domains || []).join(', ')}`);
+
+    // Previews live on *.impostorpm-site.pages.dev. Turnstile matches
+    // subdomains of a listed domain, so the bare project host covers every
+    // preview hash. Without it the mirror cannot be exercised anywhere except
+    // production, which is a poor place for a first run.
+    const missing = WANT_DOMAINS.filter((d) => !(already.domains || []).includes(d));
+    if (!missing.length) {
+      console.log('    all wanted domains already present');
+    } else if (DRY) {
+      console.log(`    (dry) would add: ${missing.join(', ')}`);
+    } else {
+      // PUT, not PATCH: the Turnstile API rejects PATCH with a 405 whose
+      // message ("method not allowed for this authentication scheme") reads
+      // like a permissions problem and is not one.
+      const updated = await cf(`/accounts/${ACCOUNT}/challenges/widgets/${already.sitekey}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          name: already.name,
+          domains: [...(already.domains || []), ...missing],
+          mode: already.mode
+        })
+      }, tok);
+      if (updated.ok) {
+        console.log(`    ✔ added: ${missing.join(', ')}`);
+        console.log(`    domains now: ${(updated.body.result.domains || []).join(', ')}`);
+      } else {
+        console.log(`    ✖ could not add (HTTP ${updated.status}): ` +
+          `${JSON.stringify(updated.body.errors || updated.body).slice(0, 200)}`);
+      }
+    }
   } else if (DRY) {
     console.log('  (dry) would create a managed widget for impostor.pm');
   } else {
@@ -100,7 +134,7 @@ if (!existing.ok) {
         // The preview hostnames are wildcards under pages.dev, which Turnstile
         // does not accept, so previews will report "skipped" rather than
         // silently passing. That is the honest failure mode.
-        domains: ['impostor.pm', 'www.impostor.pm'],
+        domains: WANT_DOMAINS,
         mode: 'managed'
       })
     }, tok);

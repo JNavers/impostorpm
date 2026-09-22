@@ -36,14 +36,32 @@
   var TURNSTILE_SITEKEY = '0x4AAAAAAE_8GTLACwscn7x9';
 
   /**
-   * The widget is registered for impostor.pm. On any other host — a preview
-   * deployment, localhost — Turnstile cannot issue a usable token, so the
-   * mirror is skipped entirely rather than sending writes that the backend
-   * will reject with 403 and that would show up as a wall of failures.
+   * Hosts the Turnstile widget is registered for. Anywhere else — localhost, a
+   * custom domain — Turnstile cannot issue a usable token, so the mirror is
+   * skipped entirely rather than sending writes the backend will reject with
+   * 403. A wall of failures that all mean "wrong hostname" would drown the
+   * ones that mean something.
+   *
+   * Preview deployments are served from <hash>.impostorpm-site.pages.dev, and
+   * Turnstile matches subdomains of a registered domain, so the bare project
+   * host covers every preview. Matching has to allow subdomains here too, or
+   * the client would disable itself on exactly the hosts the widget now
+   * accepts.
    */
-  var TURNSTILE_HOSTS = ['impostor.pm', 'www.impostor.pm'];
+  var TURNSTILE_HOSTS = ['impostor.pm', 'www.impostor.pm', 'impostorpm-site.pages.dev'];
 
-  var enabled = COMPASS_DUAL_WRITE && TURNSTILE_HOSTS.indexOf(window.location.hostname) !== -1;
+  function hostAllowed(hostname) {
+    for (var i = 0; i < TURNSTILE_HOSTS.length; i++) {
+      var domain = TURNSTILE_HOSTS[i];
+      // The leading dot is what stops "notimpostor.pm" matching "impostor.pm".
+      if (hostname === domain || hostname.slice(-(domain.length + 1)) === '.' + domain) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  var enabled = COMPASS_DUAL_WRITE && hostAllowed(window.location.hostname);
 
   /**
    * The new backend assigns its own uuid, while the Sheet keys off an id the

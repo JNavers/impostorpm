@@ -183,13 +183,33 @@ test('a Turnstile script that fails to load never rejects', async () => {
   assert.equal(calls.fetch.length, 0);
 });
 
-test('on a host the widget is not registered for, it does nothing at all', async () => {
-  // Previews live on *.pages.dev, where Turnstile cannot issue a usable token.
-  // Sending anyway would produce a wall of 403s that mean nothing.
+test('preview hosts are allowed, since the widget now covers them', async () => {
+  // <hash>.impostorpm-site.pages.dev. Turnstile matches subdomains of a
+  // registered domain, so the mirror can be exercised on a preview instead of
+  // having its first real run in production.
   const { api, calls } = await load({ hostname: '2c4f49fa.impostorpm-site.pages.dev' });
-  assert.equal(api.enabled, false);
-  assert.equal(await api.mirror(CREATE), null);
-  assert.equal(calls.fetch.length, 0);
+  assert.equal(api.enabled, true);
+  await api.mirror(CREATE);
+  assert.equal(calls.fetch.length, 1);
+});
+
+test('the apex and www are allowed', async () => {
+  for (const hostname of ['impostor.pm', 'www.impostor.pm', 'impostorpm-site.pages.dev']) {
+    const { api } = await load({ hostname });
+    assert.equal(api.enabled, true, `${hostname} should be allowed`);
+  }
+});
+
+test('a lookalike domain is NOT allowed', async () => {
+  // The check is a suffix match, so it needs the leading dot or
+  // "notimpostor.pm" would pass as a subdomain of "impostor.pm".
+  for (const hostname of ['notimpostor.pm', 'impostor.pm.evil.com', 'localhost',
+    'evil-impostorpm-site.pages.dev']) {
+    const { api, calls } = await load({ hostname });
+    assert.equal(api.enabled, false, `${hostname} must NOT be allowed`);
+    await api.mirror(CREATE);
+    assert.equal(calls.fetch.length, 0);
+  }
 });
 
 test('an unknown action is ignored', async () => {
