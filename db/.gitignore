@@ -1,0 +1,5 @@
+
+# Turnstile secret and the Pages config backup, both written by
+# scripts/setup-cloudflare-protection.mjs
+.turnstile-secret
+.pages-config-backup.json
