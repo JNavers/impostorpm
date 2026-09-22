@@ -1,0 +1,30 @@
+{
+  "name": "compass-cron",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-22",
+
+  // No routes. This Worker is never reached over HTTP from the zone — it only
+  // wakes on a schedule and calls the Pages Function. workers_dev is left on so
+  // its GET introspection endpoint is reachable for a quick "is it alive?".
+  "workers_dev": true,
+
+  "triggers": {
+    // These must match the JOBS map in src/worker.js exactly; the Worker reads
+    // event.cron to decide which job to run, and an unmapped expression is a
+    // silent no-op (it logs an error rather than doing nothing quietly).
+    //
+    // The two reminders are at :13 and :43 rather than on the hour: the result
+    // job runs every 5 minutes, so putting an hourly job at :00 would have it
+    // contend with the one job guaranteed to be running at that moment.
+    "crons": [
+      "*/5 * * * *",   // result — matches result-emails.gs
+      "13 * * * *",    // reminder_1 — hourly, as survey-reminders.gs was
+      "43 * * * *"     // reminder_2 — hourly, offset from reminder_1
+    ]
+  },
+
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}

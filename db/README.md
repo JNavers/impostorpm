@@ -237,8 +237,29 @@ and redeploying the source to find out, which is why the repo copies say
 a query parameter and cannot be left the wrong way round by accident.
 
 Three kinds: `result` (7 min after the gate capture), `reminder_1` (24 h) and
-`reminder_2` (72 h, and only after reminder 1 has actually gone out). Set
-`CRON_SECRET` in Cloudflare and point three Cron Triggers at them.
+`reminder_2` (72 h, and only after reminder 1 has actually gone out).
+
+### What fires them
+
+`workers/compass-cron/`. **Pages has no Cron Triggers** — they are a Workers
+feature — so a separate Worker wakes on a schedule and calls the Pages Function
+with `CRON_SECRET`. It holds no logic and touches no database; it reads
+`event.cron` to pick the job and posts. Adding a job is one line in
+`src/worker.js` and one in `wrangler.jsonc`.
+
+Its `fetch` handler returns the schedule it thinks it has, so "is the scheduler
+alive and pointing at the right place?" is answerable without waiting for a
+schedule to come round: <https://compass-cron.javier-navero-tapiador.workers.dev>
+
+`CRON_SECRET` must be identical in the Worker and in Pages. It cannot be read
+back from either, so rotating it means setting it in both — unlike `HASH_SALT`,
+rotating it is harmless.
+
+> **Pages injects environment variables at BUILD time.** A secret added after a
+> deployment finished is invisible to it, and the endpoint answers a perfectly
+> correct secret with a bare `401` that looks exactly like a wrong one. Setting
+> a secret is half the job; `node db/scripts/redeploy-pages.mjs production` is
+> the other half. This cost two diagnoses before it was obvious.
 
 Every attempt is written to `email_log`, and only a success stamps the contact —
 so a failed send comes round again on the next run instead of being lost. The
