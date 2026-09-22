@@ -28,16 +28,37 @@ const DRY = process.argv.includes('--dry');
 const API = 'https://api.cloudflare.com/client/v4';
 
 async function token() {
-  for (const p of [
-    join(homedir(), 'Library', 'Preferences', '.wrangler', 'config', 'default.toml'),
-    join(homedir(), '.wrangler', 'config', 'default.toml')
-  ]) {
+  // Wrangler has used two config locations over time and leaves the old one in
+  // place, still holding a token that expired months ago. Picking by a fixed
+  // order silently reads the stale one and fails with a bare 401, so pick the
+  // one whose expiration_time is still in the future.
+  const candidates = [
+    join(homedir(), '.wrangler', 'config', 'default.toml'),
+    join(homedir(), 'Library', 'Preferences', '.wrangler', 'config', 'default.toml')
+  ];
+
+  const found = [];
+  for (const path of candidates) {
     try {
-      const m = (await readFile(p, 'utf8')).match(/^oauth_token\s*=\s*"([^"]+)"/m);
-      if (m) return m[1];
-    } catch { /* try the next location */ }
+      const text = await readFile(path, 'utf8');
+      const tok = text.match(/^oauth_token\s*=\s*"([^"]+)"/m)?.[1];
+      const exp = text.match(/^expiration_time\s*=\s*"([^"]+)"/m)?.[1];
+      if (tok) found.push({ path, tok, expires: exp ? new Date(exp) : null });
+    } catch { /* not present */ }
   }
-  throw new Error('No wrangler OAuth token found. Run: npx wrangler login');
+
+  if (!found.length) throw new Error('No wrangler OAuth token found. Run: npx wrangler login');
+
+  const live = found.filter((f) => !f.expires || f.expires > new Date());
+  if (!live.length) {
+    const newest = found.sort((a, b) => b.expires - a.expires)[0];
+    throw new Error(
+      `Every wrangler token has expired (newest: ${newest.expires?.toISOString()}).\n` +
+      '  Run: npx wrangler login'
+    );
+  }
+
+  return live.sort((a, b) => (b.expires ?? 0) - (a.expires ?? 0))[0].tok;
 }
 
 async function cf(path, init = {}, tok) {
