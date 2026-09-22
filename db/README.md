@@ -176,6 +176,49 @@ role cut.
 
 ---
 
+## Secrets, and the one that cannot be rotated freely
+
+All four are stored as Cloudflare **Secrets**, not Text variables: a Text var
+can be read back from the dashboard and appears in build logs, and the
+`service_role` key bypasses every RLS policy. Once written they cannot be read
+back, which is the point.
+
+| Secret | Rotatable? | Consequence of rotating |
+|---|---|---|
+| `SUPABASE_URL` | n/a | not a secret, just kept together with them |
+| `SUPABASE_SERVICE_ROLE_KEY` | freely | rotate in Supabase, push again |
+| `CRON_SECRET` | freely | update the Cron Triggers to match |
+| `HASH_SALT` | **no — see below** | silently breaks provenance grouping |
+
+### HASH_SALT
+
+`ip_hash` and `ua_hash` are SHA-256 over `salt:value`, truncated. The salt is
+what makes them irreversible: without it the hash of an IPv4 address is
+trivially brute-forced, since there are only four billion of them.
+
+The catch is that **the salt is part of the hash**. Rotate it and every row
+written afterwards hashes the same IP to a different value than every row
+written before, so the two groups stop comparing. The question these columns
+exist to answer — "did these 400 rows all come from one address?" — silently
+starts returning no across the boundary, with no error and nothing in the data
+that looks wrong.
+
+That trade-off is deliberate: it is what buys irreversibility. But it means:
+
+- **Do not rotate `HASH_SALT` once rows carry provenance.** Treat it as
+  permanent for the life of the dataset.
+- It exists only in Cloudflare and cannot be read back. It was generated at
+  setup and never written down anywhere else, on purpose.
+- If it ever has to change — a suspected leak, say — the honest fix is to
+  re-hash nothing and accept the boundary, recording the date it moved so
+  anyone querying provenance knows to treat before and after separately.
+
+If the salt is lost (project deleted, secret cleared) the existing hashes stay
+valid and comparable with each other; only new rows are cut off. Losing it is
+therefore recoverable-ish, rotating it for no reason is not worth it.
+
+---
+
 ## The scheduled emails
 
 `cron.js` replaces the two Apps Script time-driven triggers. It is an
@@ -212,10 +255,20 @@ Five steps, no downtime, reversible at every point.
 run `npm run parity`. Do not proceed on a failure — explain every difference
 first.
 
-**2. Deploy the endpoints.** They ship with the site (same repo, same build).
-Set in Cloudflare: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `HASH_SALT`,
-`TURNSTILE_SECRET_KEY`, and bind a `COMPASS_RL` KV namespace. Verify against the
-preview URL before it is wired into the page.
+**2. Deploy the endpoints.** DONE 2026-09-22. They ship with the site (same
+repo, same build). `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `HASH_SALT` and
+`CRON_SECRET` are set as SECRETS on both Production and Preview, pushed by
+`db/scripts/push-cloudflare-env.mjs` (values live in the git-ignored
+`db/.env.cloudflare`).
+
+Still optional, both degrade gracefully and say so in the response rather than
+pretending to be protected:
+  - `COMPASS_RL` KV binding for the per-IP rate limit. The namespace exists
+    (`b885768ad5834c28b37a3de35db87ce3`, "compass-rate-limit") but the binding
+    has to be added in the dashboard — Settings → Bindings — because this Pages
+    project builds from Git and adding a wrangler.toml would change how it
+    builds.
+  - `TURNSTILE_SECRET_KEY` for the anti-bot check.
 
 **3. Dual-write, 1–2 weeks.** The page posts to both backends; reads stay on
 Apps Script. Compare the two datasets daily. This is calendar time, not work.
