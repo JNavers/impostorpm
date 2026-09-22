@@ -1893,7 +1893,14 @@
                 </div>
                 <h5 class="modal-title" id="surveyModalLabel"></h5>
             </div>
-            <form id="full-survey-form">
+            <!-- novalidate: the page does its own validation (missingRequiredFields),
+                 chapter by chapter. Without it the browser ALSO validates natively on
+                 the final submit, and the money inputs carry step="500" / "100" / "0.5"
+                 for their spinners — so a bonus of 3,200 € is a step mismatch, the
+                 form is invalid, and "Get my dashboard" silently does nothing: the
+                 offending field sits in a hidden chapter the browser cannot focus,
+                 and Safari shows no message at all. Reported by users for a month. -->
+            <form id="full-survey-form" novalidate>
                 <div class="modal-body" id="survey-body">
                     <!-- Chapter 0 — intro / start screen -->
                     <div class="survey-chapter active" data-survey-chapter="0">

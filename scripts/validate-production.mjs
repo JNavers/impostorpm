@@ -283,6 +283,19 @@ for (const host of HOSTS) {
     assert(inits === 0, `${inits} inline posthog.init calls; it should come only from posthog-init.js`);
   });
 
+  await check('salary-compass survey form opts out of native validation', async () => {
+    // Without novalidate the browser validates the whole form on the final
+    // submit, including money inputs in hidden chapters whose step="500" makes
+    // an ordinary bonus of 3,200 invalid. The submit is then dropped before any
+    // script runs and "Get my dashboard" does nothing — silently, in Safari.
+    // The page validates chapter by chapter itself; the browser must not.
+    const { body } = await getText(`${host}/salary-compass/`);
+    const tag = body.match(/<form[^>]*id="full-survey-form"[^>]*>/)?.[0];
+    assert(tag, 'no #full-survey-form on the page');
+    assert(/\snovalidate(\s|>|=)/.test(tag), `the survey form lost novalidate: ${tag}`);
+    return 'novalidate present';
+  });
+
   // ── Integrity ─────────────────────────────────────────────────────────────
   group('integrity');
   await check('salary-compass is served byte-identical to the source', async () => {
