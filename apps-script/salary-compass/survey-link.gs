@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════════════════════════
  *  SURVEY LINK  —  paste into the LIVE Apps Script (web editor) as a new
- *  file named survey-link.gs. Needs survey-reminders.gs in the same project
- *  (it reuses reminderSurveyLink_ so the link is exactly the one the emails send).
+ *  file named survey-link.gs. Self-contained: it builds the same link as
+ *  reminderSurveyLink_ in survey-reminders.gs, without depending on it.
  *
  *  Adds a "Salary Compass" menu to the Sheet. "Survey link for an email…"
  *  asks for an email and shows the personal survey link for that person's
@@ -12,9 +12,10 @@
  *  link for someone who never compared: there is nothing to attach it to.
  *
  *  ─ ONE-TIME SETUP ─────────────────────────────────────────────────
- *   Paste, save, then reload the Sheet. The menu appears after a few seconds.
- *   The first use asks for authorisation (the script already has it for the
- *   Sheet; this adds the dialog).
+ *   Replace EVERYTHING in the new file (including the default
+ *   `function myFunction() {}`) with this file's contents, save, then reload
+ *   the Sheet. The menu appears after a few seconds. The first use asks for
+ *   authorisation. Nothing needs to be run from the editor.
  *
  *  Only people who can edit the Sheet see the menu. The link carries the
  *  person's email and dashboard token: send it to that person only.
@@ -121,7 +122,7 @@ function surveyLinkLookup_(emailRows, subRows, rawEmail) {
   return {
     ok: true,
     email: email,
-    link: reminderSurveyLink_(best.token, best.id, email),
+    link: surveyLinkBuild_(best.token, best.id, email),
     submissionId: best.id,
     comparedAt: best.sub.createdAt,
     role: best.sub.role,
@@ -129,6 +130,19 @@ function surveyLinkLookup_(emailRows, subRows, rawEmail) {
     alreadyCompleted: best.sub.completed,
     comparisons: Object.keys(distinct).length
   };
+}
+
+/** Same URL as reminderSurveyLink_ in survey-reminders.gs. Keep them in step. */
+function surveyLinkBuild_(token, sid, email) {
+  var url = 'https://www.impostor.pm/salary-compass/?survey=1';
+  if (token) url += '&access=' + encodeURIComponent(token);
+  if (sid)   url += '&sid=' + encodeURIComponent(sid);
+  if (email) url += '&e=' + encodeURIComponent(email);
+  return url;
+}
+
+function surveyLinkEscape_(v) {
+  return String(v || '').replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});
 }
 
 function surveyLinkTime_(v) {
@@ -147,10 +161,10 @@ function surveyLinkDialogHtml_(f) {
     notes.push('<p style="color:#6B6B6B;">This email is linked to ' + f.comparisons + ' comparisons; this is the most recent.</p>');
   }
   return '<div style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#161616;line-height:1.45;">' +
-    '<p style="margin-top:0;"><b>' + reminderEscape_(f.email) + '</b><br>' +
-    'Comparison: ' + reminderEscape_(f.role || '?') + (f.district ? ', ' + reminderEscape_(f.district) : '') + ' · ' + reminderEscape_(when) + '</p>' +
+    '<p style="margin-top:0;"><b>' + surveyLinkEscape_(f.email) + '</b><br>' +
+    'Comparison: ' + surveyLinkEscape_(f.role || '?') + (f.district ? ', ' + surveyLinkEscape_(f.district) : '') + ' · ' + surveyLinkEscape_(when) + '</p>' +
     notes.join('') +
-    '<input id="l" readonly value="' + reminderEscape_(f.link) + '" style="width:100%;box-sizing:border-box;padding:8px;font-size:12px;border:1px solid #ccc;border-radius:6px;" onclick="this.select()">' +
+    '<input id="l" readonly value="' + surveyLinkEscape_(f.link) + '" style="width:100%;box-sizing:border-box;padding:8px;font-size:12px;border:1px solid #ccc;border-radius:6px;" onclick="this.select()">' +
     '<p style="margin:12px 0 0;"><button onclick="var i=document.getElementById(\'l\');i.select();document.execCommand(\'copy\');this.textContent=\'Copied\';" ' +
     'style="background:#FFC600;border:0;border-radius:6px;padding:8px 16px;font-weight:bold;cursor:pointer;">Copy link</button></p>' +
     '<p style="color:#6B6B6B;margin-bottom:0;">Personal link: it carries their email and dashboard access. Send it to this person only.</p>' +

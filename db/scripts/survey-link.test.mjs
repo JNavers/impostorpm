@@ -19,7 +19,8 @@ const GS = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'apps-scrip
 
 async function load() {
   const ctx = vm.createContext({});
-  for (const file of ['survey-reminders.gs', 'survey-link.gs']) {
+  // Loaded alone on purpose: the live project may not have survey-reminders.gs.
+  for (const file of ['survey-link.gs']) {
     vm.runInContext(await readFile(join(GS, file), 'utf8'), ctx, { filename: file });
   }
   return ctx;
@@ -75,6 +76,13 @@ test('a row of the same comparison with a token is preferred over one without', 
   );
   assert.equal(new URL(out.link).searchParams.get('access'), 'tok-1');
   assert.equal(out.comparisons, 1);
+});
+
+test('the link is byte-for-byte the one the reminder emails send', async () => {
+  const ctx = vm.createContext({});
+  vm.runInContext(await readFile(join(GS, 'survey-reminders.gs'), 'utf8'), ctx);
+  const link = await load();
+  assert.equal(link.surveyLinkBuild_('tok', 'sid-1', 'a+b@c.co'), ctx.reminderSurveyLink_('tok', 'sid-1', 'a+b@c.co'));
 });
 
 test('no link without a comparison to attach to', async () => {
