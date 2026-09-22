@@ -340,6 +340,42 @@ One automation note: the form's step 5 perception slider will not validate from
 a script — it needs a real drag — so driving the whole form programmatically
 does not work. Call `mirror()` directly, or move the slider by hand.
 
+### Surveys opened from a link (`legacy_id`)
+
+The result and reminder emails link to `?survey=1&sid=<Sheet id>&access=…&e=…`.
+A survey opened that way — or on any later visit — happens in a page that never
+saw the comparison, so the Sheet-id → uuid map the mirror keeps in memory is
+empty. Until 2026-09-22 those surveys reached the Sheet and silently missed
+Supabase.
+
+`sql/005_legacy_id.sql` stores the Sheet id on each row (`legacy_id`). The
+comparison mirror sends it; a survey with no uuid in memory is sent as
+`PATCH /submissions/<Sheet id>?by=legacy`. A 404 there means the comparison
+never reached this database and is recorded as an expected
+`compass_mirror_failed`. Rows written before 005 get their id from
+`scripts/backfill-legacy-ids.mjs` (dry run by default; 434/434 imported rows
+matched unambiguously on 2026-09-22).
+
+`legacy_id` is **not unique**. Comparing again without reloading reuses the id,
+so the Sheet holds 50 ids shared by 137 rows (87 extra rows, 20% of the
+dataset, median 1 minute apart, 44 of the 50 with different inputs). The shared
+id is the only sign those rows are one person. A survey by Sheet id lands on the
+**oldest** row with it, because that is where `updateSubmission_` writes. How
+the repeats should count in the benchmark is an open decision for step 4.
+
+The page side (`index.html`):
+
+- The comparison's id is kept in `localStorage` (`tipmSubmissionId`), so a
+  survey opened on a later visit without the link still lands on its row.
+- With no comparison at all, the survey does not open: the page shows "Compare
+  your salary first" above the form. Before, it opened, and the Sheet dropped
+  the answers (`updated: false`, unreadable through `no-cors`) while the page
+  thanked the visitor.
+- `sid`, `access` and `e` are removed from the address bar once read.
+
+To send someone their link by hand, use the Sheet's **Salary Compass → Survey
+link for an email…** menu (`apps-script/salary-compass/survey-link.gs`).
+
 ---
 
 ## Migration runbook

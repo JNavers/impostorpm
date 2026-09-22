@@ -14,7 +14,7 @@
 import {
   json, preflight, readJson, supabase, clientIp, hashWithSalt,
   verifyTurnstile, rateLimit, cleanEnum, cleanMoney, cleanNumber, cleanText,
-  BadRequest, ALLOWED_ROLES, ALLOWED_DISTRICTS
+  cleanLegacyId, BadRequest, ALLOWED_ROLES, ALLOWED_DISTRICTS
 } from './_lib.js';
 
 export const onRequestOptions = preflight;
@@ -48,7 +48,14 @@ export async function onRequestPost({ request, env }) {
       throw new BadRequest('A PM submission needs a base salary');
     }
 
-    const [row] = await supabase(env).insert('submissions', {
+    // The Sheet's id for this row, so a survey opened later from an email link
+    // (which only knows that id) can still find it. Not unique: a repeat
+    // comparison on the same page shares it (see 005_legacy_id.sql). A
+    // malformed one is dropped rather than refused: it is bookkeeping.
+    let legacyId = null;
+    try { legacyId = data.legacyId ? cleanLegacyId(data.legacyId) : null; } catch { legacyId = null; }
+
+    const [created] = await supabase(env).insert('submissions', {
       base_salary: baseSalary,
       total_comp: totalComp,
       role,
@@ -56,13 +63,14 @@ export async function onRequestPost({ request, env }) {
       district,
       perception_guess: perceptionGuess,
       source: cleanText(data.source, 40) || null,
+      legacy_id: legacyId,
       ip_hash: await hashWithSalt(ip, env.HASH_SALT),
       ua_hash: await hashWithSalt(request.headers.get('User-Agent'), env.HASH_SALT)
     });
 
     return json({
       status: 'ok',
-      id: row.id,
+      id: created.id,
       // Surfaced so a preview deploy cannot look protected while it is not.
       protection: { turnstile: turnstile.skipped ? 'skipped' : 'verified',
                     rateLimit: limited.skipped ? 'skipped' : 'enforced' }

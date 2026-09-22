@@ -234,6 +234,13 @@
             margin-bottom: 1.5rem; font-size: .875rem; line-height: 1.45;
         }
         .form-error-banner.visible { display: block; }
+        .form-info-banner {
+            background: #fff8e1; border: 1px solid #FFC600; color: #161616;
+            border-radius: .5rem; padding: .875rem 1rem; margin-bottom: 1.5rem;
+            font-size: .875rem; line-height: 1.45;
+        }
+        .form-info-banner[hidden] { display: none; }
+        .form-info-banner strong { display: block; margin-bottom: .25rem; }
         .form-error-banner strong { display: block; margin-bottom: .25rem; color: #912018; }
         .form-error-banner ul { margin: 0; padding-left: 1.1rem; }
         .form-error-banner li { margin-bottom: .125rem; }
@@ -1516,6 +1523,11 @@
     <div class="container">
         <form id="compare-form" class="compare-form-card" autocomplete="off">
 
+            <div id="survey-needs-compare" class="form-info-banner" role="status" hidden>
+                <strong>Compare your salary first. It only takes a minute.</strong>
+                The survey adds detail to your comparison, so it needs one to attach to. Already compared? Open the survey from the link in your results email.
+            </div>
+
             <div id="form-error-banner" class="form-error-banner" role="alert" aria-live="polite">
                 <strong>Please fix the following before comparing your salary:</strong>
                 <ul id="form-error-list"></ul>
@@ -2695,9 +2707,29 @@
        done (and stops the reminder sequence); access restores the dashboard
        token; e pre-fills the captured email so the survey skips re-asking. */
     var dlParams = new URLSearchParams(window.location.search);
+
+    /* The comparison's id, kept in this browser so a survey opened on a later
+       visit — without the email link — still lands on the same row instead of
+       being lost (the Sheet ignores an update for an id it has never seen). */
+    var SUBMISSION_ID_KEY = 'tipmSubmissionId';
+    function cleanSubmissionId(v) {
+        var id = String(v || '').replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 80);
+        return id.length >= 8 ? id : '';
+    }
+    function rememberSubmissionId(id) {
+        try { tokenStore.setItem(SUBMISSION_ID_KEY, id); } catch (e) {}
+    }
     (function() {
-        var dlSid = (dlParams.get('sid') || '').replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 100);
-        if (dlSid) { sessionId = dlSid; submissionCreated = true; registerSubmissionId(); }
+        var dlSid = cleanSubmissionId(dlParams.get('sid'));
+        var storedSid = '';
+        try { storedSid = cleanSubmissionId(tokenStore.getItem(SUBMISSION_ID_KEY)); } catch (e) {}
+        var resumeSid = dlSid || storedSid;
+        if (resumeSid) {
+            sessionId = resumeSid;
+            submissionCreated = true;
+            if (dlSid) rememberSubmissionId(dlSid);
+            registerSubmissionId();
+        }
         var dlToken = (dlParams.get('access') || '').replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 100);
         if (dlToken) {
             dashboardToken = dlToken;
@@ -2708,10 +2740,21 @@
             capturedEmail = dlEmail;
             try { window.sessionStorage.setItem('tipmGateEmail', dlEmail); } catch (e) {}
         }
+
+        // The link carries an email and an access token. Once read, take them
+        // out of the address bar so a copied or shared URL does not carry them.
+        if (dlParams.has('sid') || dlParams.has('access') || dlParams.has('e')) {
+            var clean = new URLSearchParams(window.location.search);
+            ['sid', 'access', 'e'].forEach(function(k) { clean.delete(k); });
+            var qs = clean.toString();
+            try {
+                window.history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
+            } catch (e) {}
+        }
     })();
     $(function() {
         if (dlParams.get('survey') === '1') {
-            track('comp_survey_deeplink_open', { has_sid: !!dlParams.get('sid') });
+            track('comp_survey_deeplink_open', { has_sid: !!dlParams.get('sid'), resumed: submissionCreated });
             $('#filloutModal').modal('show');
         }
     });
@@ -3322,7 +3365,9 @@
             perceptionGuess: guess
         });
         submissionCreated = true;
+        rememberSubmissionId(sessionId);
         registerSubmissionId();
+        $('#survey-needs-compare').attr('hidden', true);
 
         var roleKey = SALARY_DATA.roleMap[roleRaw];
         /* Compare using total comp (base salary = total comp when no perks) */
@@ -3909,7 +3954,17 @@
 
     // Exit guard — the only way out is clicking the backdrop / Esc; warn if any field is filled.
     var allowExitClose = false;
-    $('#filloutModal').on('show.bs.modal', function() {
+    $('#filloutModal').on('show.bs.modal', function(e) {
+        // No comparison to attach the answers to: the Sheet would drop them
+        // while the page thanked the visitor. Send them to the form instead.
+        if (!submissionCreated) {
+            e.preventDefault();
+            track('comp_survey_blocked_no_comparison', { from_deeplink: dlParams.get('survey') === '1' });
+            $('#survey-needs-compare').removeAttr('hidden');
+            var $form = $('#compare-form');
+            if ($form.length) $('html, body').animate({ scrollTop: $form.offset().top - 100 }, 300);
+            return;
+        }
         allowExitClose = false;
         $('#survey-exit-confirm').removeClass('is-open');
     });

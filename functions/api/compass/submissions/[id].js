@@ -12,8 +12,8 @@
  */
 
 import {
-  json, preflight, readJson, supabase, cleanUuid, cleanText, cleanMoney,
-  cleanNumber, BadRequest
+  json, preflight, readJson, supabase, cleanUuid, cleanLegacyId, cleanText,
+  cleanMoney, cleanNumber, BadRequest
 } from '../_lib.js';
 
 export const onRequestOptions = preflight;
@@ -61,7 +61,11 @@ const SURVEY_FIELDS = {
 
 export async function onRequestPatch({ request, env, params }) {
   try {
-    const id = cleanUuid(params.id);
+    // `?by=legacy` means the id is the Sheet's, not ours: the survey was opened
+    // from an email link or on a later visit, where the page never learned the
+    // uuid this database assigned. See db/sql/005_legacy_id.sql.
+    const byLegacy = new URL(request.url).searchParams.get('by') === 'legacy';
+    const id = byLegacy ? cleanLegacyId(params.id) : cleanUuid(params.id);
     const data = await readJson(request);
 
     const survey = {};
@@ -77,16 +81,15 @@ export async function onRequestPatch({ request, env, params }) {
     // REPLACES the jsonb column, so a survey resumed from the reminder email's
     // deep link would wipe what the first pass stored. compass_update_survey
     // merges with `||` instead.
-    const result = await supabase(env).rpc('compass_update_survey', {
-      p_id: id,
-      p_survey: survey
-    });
+    const result = byLegacy
+      ? await supabase(env).rpc('compass_update_survey_legacy', { p_legacy_id: id, p_survey: survey })
+      : await supabase(env).rpc('compass_update_survey', { p_id: id, p_survey: survey });
 
     if (result?.status === 'not_found') {
       return json({ status: 'error', message: 'Unknown submission' }, 404);
     }
 
-    return json({ status: 'ok', id, fields: result?.fields ?? Object.keys(survey).length });
+    return json({ status: 'ok', id: result?.id ?? id, fields: result?.fields ?? Object.keys(survey).length });
   } catch (err) {
     if (err instanceof BadRequest) return json({ status: 'error', message: err.message }, 400);
     console.error('update submission failed:', err.message);

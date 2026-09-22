@@ -202,6 +202,63 @@ test('an unknown submission id is a 404 and a malformed one a 400', async () => 
   await h.close();
 });
 
+test('the comparison stores the Sheet id it was sent', async () => {
+  const h = await harness();
+  await createSubmission({ request: makeRequest({ ...VALID, legacyId: 'sheet-id-0001' }), env: h.env });
+  const { rows } = await h.db.query('select legacy_id from submissions');
+  assert.equal(rows[0].legacy_id, 'sheet-id-0001');
+  await h.close();
+});
+
+test('a repeat comparison keeps the shared Sheet id; a malformed one is dropped', async () => {
+  // Comparing again on the same page reuses the id, as it does in the Sheet.
+  // That shared id is the only sign the rows are one person, so it is kept.
+  const h = await harness();
+  const first = await createSubmission({ request: makeRequest({ ...VALID, legacyId: 'sheet-id-0001' }), env: h.env });
+  const again = await createSubmission({ request: makeRequest({ ...VALID, baseSalary: 64000, legacyId: 'sheet-id-0001' }), env: h.env });
+  const junk = await createSubmission({ request: makeRequest({ ...VALID, legacyId: "'; drop" }), env: h.env });
+  assert.deepEqual([first.status, again.status, junk.status], [201, 201, 201], 'never costs the salary');
+
+  const { rows } = await h.db.query('select legacy_id from submissions');
+  assert.equal(rows.filter((r) => r.legacy_id === 'sheet-id-0001').length, 2);
+  assert.equal(rows.filter((r) => r.legacy_id === null).length, 1);
+  await h.close();
+});
+
+test('a survey from an email link finds its row by the Sheet id', async () => {
+  const h = await harness();
+  const created = await (await createSubmission({
+    request: makeRequest({ ...VALID, legacyId: 'sheet-id-0001' }), env: h.env
+  })).json();
+
+  const res = await updateSurvey({
+    request: makeRequest({ gender: 'Female' }, {
+      method: 'PATCH', url: 'https://www.impostor.pm/api/compass/submissions/sheet-id-0001?by=legacy'
+    }),
+    env: h.env, params: { id: 'sheet-id-0001' }
+  });
+  assert.equal(res.status, 200);
+  assert.equal((await res.json()).id, created.id, 'answers with our uuid, not the Sheet id');
+
+  const { rows } = await h.db.query('select survey, full_survey from submissions where id = $1', [created.id]);
+  assert.equal(rows[0].full_survey, true);
+  assert.equal(rows[0].survey.gender, 'Female');
+  await h.close();
+});
+
+test('an unknown Sheet id is a 404 and a malformed one a 400', async () => {
+  const h = await harness();
+  const patch = (id) => updateSurvey({
+    request: makeRequest({ gender: 'Female' }, {
+      method: 'PATCH', url: `https://www.impostor.pm/api/compass/submissions/x?by=legacy`
+    }),
+    env: h.env, params: { id }
+  });
+  assert.equal((await patch('never-created-1')).status, 404);
+  assert.equal((await patch("'; drop table submissions; --")).status, 400);
+  await h.close();
+});
+
 test('out-of-range survey answers are rejected', async () => {
   const h = await harness();
   const created = await (await createSubmission({ request: makeRequest(VALID), env: h.env })).json();

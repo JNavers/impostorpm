@@ -169,16 +169,40 @@ test('the survey PATCH carries no routing fields', async () => {
     'action/id/dashboardToken/email must not be forwarded as survey answers');
 });
 
-test('a survey with no mirrored comparison is dropped, not invented', async () => {
+test('the comparison carries the Sheet id, so a later survey can find it', async () => {
+  const { api, calls } = await load();
+  await api.mirror(CREATE);
+  const post = calls.fetch.find((c) => c.url.endsWith('/submissions'));
+  assert.equal(post.body.legacyId, 'client-uuid-1');
+});
+
+test('a survey from an email link (no uuid in memory) is sent by Sheet id', async () => {
+  // The page that opened the survey never saw the comparison, so it only has
+  // the id the link carried. Before this, the survey was dropped here.
+  const { api, calls } = await load();
+  await api.mirror({ action: 'update', id: 'sheet-id-from-link', gender: 'Female' });
+
+  const patch = calls.fetch.find((c) => c.method === 'PATCH');
+  assert.ok(patch, 'no PATCH was sent');
+  assert.match(patch.url, /\/submissions\/sheet-id-from-link\?by=legacy$/);
+  assert.deepEqual(patch.body, { gender: 'Female' });
+});
+
+test('a survey whose comparison never reached the database is dropped, not invented', async () => {
   // Making up a submission here would put a survey in the dataset with no
   // salary attached to it, which is worse than losing the survey.
-  const { api, calls } = await load();
+  const { api, calls } = await load({
+    fetchImpl: async (url, init) => {
+      calls.fetch.push({ url, method: init?.method });
+      return { ok: false, status: 404, text: async () => '{"status":"error","message":"Unknown submission"}' };
+    }
+  });
   const result = await api.mirror({ action: 'update', id: 'never-created', gender: 'Female' });
 
   assert.equal(result, null);
-  assert.equal(calls.fetch.filter((c) => c.method === 'PATCH').length, 0);
+  assert.equal(calls.fetch.filter((c) => c.method === 'POST').length, 0, 'nothing is created to hold it');
   const failure = calls.events.find((e) => e.event === 'compass_mirror_failed');
-  assert.equal(failure.props.reason, 'no-mirrored-submission');
+  assert.equal(failure.props.status, 404);
   assert.equal(failure.props.expected, true, 'and it is recorded as expected, not as a bug');
 });
 
