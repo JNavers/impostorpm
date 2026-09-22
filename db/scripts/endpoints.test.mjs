@@ -225,6 +225,17 @@ test('a repeat comparison keeps the shared Sheet id; a malformed one is dropped'
   await h.close();
 });
 
+test('deployed before 005 is applied, a comparison is still stored', async () => {
+  // Real PostgREST says "Could not find the 'legacy_id' column"; PGlite says
+  // 'column "legacy_id" … does not exist'. The handler keys on the name only.
+  const h = await harness();
+  await h.db.exec('alter table submissions drop column legacy_id');
+  const res = await createSubmission({ request: makeRequest({ ...VALID, legacyId: 'sheet-id-0001' }), env: h.env });
+  assert.equal(res.status, 201);
+  assert.equal((await h.db.query('select count(*)::int as n from submissions')).rows[0].n, 1);
+  await h.close();
+});
+
 test('a survey from an email link finds its row by the Sheet id', async () => {
   const h = await harness();
   const created = await (await createSubmission({

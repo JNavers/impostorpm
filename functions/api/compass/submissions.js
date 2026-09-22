@@ -55,7 +55,7 @@ export async function onRequestPost({ request, env }) {
     let legacyId = null;
     try { legacyId = data.legacyId ? cleanLegacyId(data.legacyId) : null; } catch { legacyId = null; }
 
-    const [created] = await supabase(env).insert('submissions', {
+    const row = {
       base_salary: baseSalary,
       total_comp: totalComp,
       role,
@@ -66,7 +66,19 @@ export async function onRequestPost({ request, env }) {
       legacy_id: legacyId,
       ip_hash: await hashWithSalt(ip, env.HASH_SALT),
       ua_hash: await hashWithSalt(request.headers.get('User-Agent'), env.HASH_SALT)
-    });
+    };
+
+    let created;
+    try {
+      [created] = await supabase(env).insert('submissions', row);
+    } catch (err) {
+      // Deployed before 005_legacy_id.sql was applied: the column does not
+      // exist yet. Store the salary without it rather than lose it.
+      if (!/legacy_id/.test(err.message)) throw err;
+      console.error('legacy_id column missing — apply db/sql/005_legacy_id.sql');
+      const { legacy_id: _drop, ...withoutLegacy } = row;
+      [created] = await supabase(env).insert('submissions', withoutLegacy);
+    }
 
     return json({
       status: 'ok',
