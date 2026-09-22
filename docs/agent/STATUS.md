@@ -47,35 +47,44 @@ No Supabase project exists, so nothing has been run against a real database —
 only PGlite. The dual-write change to the frontend (step 3) is the next
 substantial piece of code and has not been started.
 
-## Blocker — resolved. The remaining gap is a stale export.
+## Blocker — none. Step 1 is complete.
 
-The 31-difference mystery is solved, and it was a bug in the importer, not in
-the port or in the data. See the CORRECTION entry at the top of DECISIONS.md.
-
-Short version: the CSV export serialises formatted cell text (`"42 000,00"`),
-while Apps Script reads the underlying number through `getValues()`. Code.gs's
-`parseSalary` strips the space and the comma without understanding either, so
-17 Portugal rows were read a hundredfold too large. Production never saw them.
-`parseSalaryFromExport()` fixes it; `parseSalaryLegacy()` stays as the
-regression witness.
-
-After the fix the gate reports:
+On 2026-09-22, against a fresh export of `Submissions` (434 rows) and the
+unchanged `Historical` tab (742 rows, frozen by definition — it is an archive
+of the old Form and does not need re-exporting):
 
 ```
-SQL vs oracle:       ✔ identical
-oracle vs production: 28 tiny differences, and overall.n 1030 vs 1031
+SQL vs oracle (is the port faithful?)
+  ✔ SQL ↔ oracle: identical
+Oracle vs production (is the export complete?)
+  ✔ oracle ↔ production: identical
+  ✔ SQL ↔ production: identical
+
+✔ PARITY HOLDS — the SQL benchmark reproduces production exactly.
 ```
 
-That last number is the whole remaining story: **production has more rows than
-the export does.** Confirmed directly — the live counter reads 432 submissions
-while `submissions.csv` holds 428. People kept filling in the survey after the
-download. Every remaining difference is the few euros that one or two extra
-rows move a percentile by.
+The new backend computes the same numbers impostor.pm serves today, to the
+euro, over the entire real dataset. This was the migration's main risk and it
+is closed.
 
-**This is not a defect and it is not a blocker.** To close it formally,
-re-export both tabs and re-run `npm run parity` promptly; the counts should
-line up and the differences should vanish. Expect it to drift again within
-hours — the gate is best run right after a fresh export.
+Getting here took two fixes, both recorded in DECISIONS.md: the export-parsing
+bug (formatted cells read a hundredfold too large) and, once that was gone,
+a stale export — which simply needed re-exporting.
+
+### Impact of the clean-up, for the record
+
+`node scripts/verify-parity.mjs --clean` on the same data:
+
+```
+dropped:  150   (138 not-portugal, 10 monthly-or-junk, 2 above €200k)
+repaired: 6     (18→18000, 24→24000, 24→24000, 35→35000, 62→62000, 70→70000)
+overall.n: 1033 → 1021
+overall.p10: 25 000 → 25 200
+overall.p75: 60 000 → 61 000
+```
+
+Small and defensible. When the cutover happens these figures change visibly on
+the site, so it is worth a line to the community rather than a silent shift.
 
 ## Test state
 
