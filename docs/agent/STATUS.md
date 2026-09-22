@@ -1,21 +1,21 @@
 # Status
 
-Last updated: 2026-09-18 (Claude, session c49ed8fc — failover threshold raised
-to 95 by the user so this session could finish the clean-up)
+Last updated: 2026-09-22 (Claude, session c49ed8fc — stopped at 99% of the
+7-day quota, mid-diagnosis of a new bug; see "NEW TASK" below)
 
 ## Objective
 
 Move the Salary Compass backend off Google Sheets + Apps Script onto Supabase
 Postgres, with the API as Cloudflare Pages Functions in this repo.
 
-The user's standing constraint: **build and test in isolation, ship nothing to
-production until the whole thing is tested.** Honour it — production is still
-served by Apps Script and must stay that way until the parity gate passes.
+Steps 1–3 are DONE and IN PRODUCTION (PR #5 merged 2026-09-22 as b0025d4).
+Apps Script is still authoritative for reads; every write now goes to both.
 
 ## Where the work lives
 
-Branch `worktree-compass-backend-migration`, commit `6bfbf4f`, pushed to
-`JNavers/impostorpm`. Developed in the git worktree at
+`main` holds steps 1–3 (PR #5). The branch `worktree-compass-backend-migration`
+is ahead of main by the cron Worker and docs (last pushed 26fcef9) — those are
+deployed but NOT merged; open a small PR to bring them into main. Developed in the git worktree at
 `.claude/worktrees/compass-backend-migration`; the branch is on the remote, so
 it can be checked out anywhere.
 
@@ -41,13 +41,45 @@ rationale. **Read it before continuing** rather than re-deriving any of it.
 
 ## Not started
 
-Steps 4 and 5 of the runbook in `db/README.md`. Step 3 (dual-write) is written,
-deployed to a preview and verified, but **not merged and not in production** —
-`public/salary-compass/index.html` on the live site still posts only to Apps
-Script.
+- Step 4 (switch reads to /api/compass/benchmark) and step 5 (cut Apps Script).
+  Wait 1–2 weeks of dual-write first; watch `compass_mirror_ok` vs
+  `compass_mirror_failed` in PostHog.
+- Merge the branch's remaining commits (cron Worker, docs) into main.
+- `RESEND_API_KEY` is missing from the Pages Preview environment (set in Prod).
 
-The reminder/result email jobs exist (`functions/api/compass/cron.js`) but no
-Cron Triggers are configured yet, so nothing is scheduled.
+## NEW TASK (2026-09-22, not started) — "Get my dashboard" does nothing
+
+Users have reported for a month that the final survey button does nothing
+(Safari on macOS named once; two emails 11–12 Aug 2026 with screenshots of the
+"Confirm your email" step, valid email filled in, button still reading "Get my
+dashboard"). NOT fixed — the session hit 99% quota; diagnosis only, read-only,
+against origin/main's public/salary-compass/index.html.
+
+Findings so far:
+
+- Handler: `$('#full-survey-form').on('submit', …)` (~line 4325 on main).
+- The two error paths that restore the button both SHOW a message: an `alert`
+  on the survey submit, or text in `#survey-email-error` on the email step.
+  Users report no message, so those are unlikely.
+- The button text stayed "Get my dashboard" in the screenshots, so the handler
+  returned BEFORE `$btn.prop('disabled', true)` / "Submitting…".
+- The only silent early return before that point is the required-fields gate:
+  `missingRequiredFields(surveyChapter)` → `flagMissingFields(...)` → focus +
+  scrollIntoView on the first missing field → `return`. On the final email
+  step, a required field flagged on an earlier sub-step is not visible, so the
+  user sees nothing happen.
+  Hypothesis: a required field (candidates: `survey-top-skills` chip logic,
+  `survey-hybrid-days` + frequency, a select Safari leaves empty) evaluates
+  empty on the last step.
+
+Decisive next step, BEFORE touching code: query PostHog for
+`comp_survey_submit_blocked` (fires only on that gate, with `missing_count`).
+If it fires for these users, the fix is to (a) make the gate report WHICH field
+and navigate back to its chapter/sub-step, and (b) find why that field reads
+empty. Reproduce in Safari, not only Chrome.
+
+The page is the delicate file (see "Watch out"); validate-production now
+compares served vs source, so no byte-count to update.
 
 ## Blocker — none
 
@@ -67,55 +99,21 @@ no rows outside the import.
 
 ## Test state
 
-`cd db && npm install && npm test` → **77 passing, 0 failing**.
-Split: 5 benchmark parity, 8 CSV import, 7 export parsing, 9 historical
-clean-up, 12 RPC, 22 endpoint, 14 scheduled email.
+`cd db && npm test` → **100 passing, 0 failing** (as of 26fcef9). `npm run build`
+succeeds and copies the page through byte-identical.
 
-`npm run build` at the repo root succeeds.
-
-`npm run parity` runs end to end on the real exports: SQL ↔ oracle identical.
-`node scripts/verify-parity.mjs --clean` reports the clean-up's impact and
-writes `db/fixtures/historical-exclusions.log.json` (git-ignored).
-
-`npm run build` at the repo root succeeds — the new `functions/` files do not
-break the Astro build.
-
-Verified by negative control: reverting `compass_percentile` to `numeric`
-rounding makes the parity test fail, and restoring it makes it pass. The suite
-detects the regression it claims to.
+Deployed and verified live: the cron Worker `compass-cron` fired `*/5` and
+returned ok against production; all three job kinds pass a dry run; a wrong or
+missing CRON_SECRET returns 401. Turnstile verified + rate limit enforced on
+writes.
 
 ## Next action
 
-1. ~~Ask the user to re-confirm decision C.~~ **Done 2026-09-22: confirmed,
-   both high rows go.** The existing `> 200 000` rule already implements it;
-   no code change was required.
-
-   Note for whoever runs the export: the Google Drive connector CANNOT reach
-   this Sheet. Searching by id and by title returns only old `.xlsx` copies
-   owned by jnavero.92@gmail.com and one shared by a third party — the
-   connector is authenticated as an account that does not own
-   `19qBJIJjNS8QmBSowtDyCUYq32mIxyNOR4yWpiMpJGos`. The export has to be done
-   from the browser, or the connector reconnected to the owning account.
-2. **Re-export and re-run `npm run parity`** to close the count gap formally
-   (432 live vs 428 in the export). Do it back to back; it drifts within hours.
-3. **Then step 2 of the runbook** in `db/README.md`: create the Supabase
-   project, apply `db/sql/`, deploy to a preview URL. Needs the user's Supabase
-   credentials; nothing here has ever run against a real database, only PGlite.
-4. **The dual-write change to the frontend** (step 3) is the largest remaining
-   piece of code and has not been started. It touches
-   `public/salary-compass/index.html`, which is guarded by the
-   "byte-identical to the migrated original" assertion in
-   `scripts/validate-production.mjs` — update both in the same commit.
-
-Claude's session ended here at 98% of the 7-day quota. The threshold in
-`~/.agents/failover/config.json` was raised from 85 to 95 mid-session at the
-user's request (backup in `backups/config.json.pre-raise-2026-09-18`); it is
-worth putting back. Everything is committed and pushed, so nothing is at risk.
-
-Measured impact of the clean-up, for the conversation in (1)
-(`node scripts/verify-parity.mjs --clean`): overall n 1030 → 1003,
-`yoe.9-12.p90` 95 200 → 92 000, `yoe.0-1.p10` 18 000 → 19 570. Small and
-defensible now, unlike the 117 600 → 93 500 swing the parsing bug implied.
+1. The "Get my dashboard" bug above: PostHog `comp_survey_submit_blocked` first.
+2. Keep dual-write running; then step 4, with a public note about the number
+   changes (n 1033 → 1021, p75 60 000 → 61 000).
+3. Put `claude.threshold` in `~/.agents/failover/config.json` back to 85
+   (backup: `backups/config.json.pre-raise-2026-09-18`).
 
 ## New finding — the historical "Role" column is not roles
 
