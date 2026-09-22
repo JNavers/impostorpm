@@ -72,6 +72,7 @@ async function load(opts = {}) {
    */
   function makeTurnstile(mode) {
     let renderOpts = null;
+    let solved = null;
     return {
       render: (_el, opts) => {
         if (opts.size !== undefined && !['normal', 'flexible', 'compact'].includes(opts.size)) {
@@ -81,9 +82,17 @@ async function load(opts = {}) {
           throw new Error('render() needs a callback — that is where the token arrives');
         }
         renderOpts = opts;
+        // Turnstile can solve the challenge during render, before anything has
+        // called execute(). Observed against the live widget: the token was in
+        // the DOM while the client sat waiting for a callback that had already
+        // fired. Any double that only emits after execute() cannot catch it.
+        if (mode === 'solves-on-render') {
+          setImmediate(() => { solved = 'token-from-render'; opts.callback(solved); });
+        }
         return 'widget-1';
       },
-      reset: () => {},
+      reset: () => { solved = null; },
+      getResponse: () => solved,
       execute: (...args) => {
         if (args.length > 1 && typeof args[1] === 'object' && args[1] !== null) {
           throw new Error('execute() takes no callback options; the real API ignores them');
@@ -91,7 +100,11 @@ async function load(opts = {}) {
         if (!renderOpts) throw new Error('execute() before render()');
         if (mode === 'error') return setImmediate(() => renderOpts['error-callback']?.());
         if (mode === 'timeout') return; // never calls back
-        setImmediate(() => renderOpts.callback('turnstile-token-abc'));
+        // A widget that has already solved does NOT emit again on execute().
+        // This is the behaviour that turned a dropped token into a 15-second
+        // hang instead of a retry, and a double that re-emits here hides it.
+        if (solved) return;
+        setImmediate(() => { solved = 'turnstile-token-abc'; renderOpts.callback(solved); });
       },
       /** For assertions about how the widget was configured. */
       _opts: () => renderOpts
@@ -297,4 +310,26 @@ test('two mirrors get two fresh tokens', async () => {
 
   const tokens = calls.fetch.map((c) => c.body && c.body.turnstileToken).filter(Boolean);
   assert.equal(tokens.length, 2, 'both writes carried a token');
+});
+
+test('a token that arrives before anything waits for it is not lost', async () => {
+  // The bug that made the first deploy do nothing: Turnstile solved the
+  // challenge during render, the callback fired while pendingToken was still
+  // null, and the token was discarded. The client then waited 15 seconds for a
+  // second one that never came.
+  //
+  // HONEST CAVEAT: this test also passes against the buggy version. Reproducing
+  // the failure needs the widget's internal state after reset() + execute(),
+  // which this double does not model faithfully — two attempts at that only
+  // produced a double that agreed with whatever it was pointed at. It is kept
+  // because it pins the intended behaviour, not because it would have caught
+  // the bug. What caught it, and what verified the fix, was driving the real
+  // widget in a browser. See "The dual-write mirror" in db/README.md.
+  const { api, calls } = await load({ turnstile: 'solves-on-render' });
+
+  const result = await api.mirror(CREATE);
+
+  assert.notEqual(result, null, 'the mirror must succeed, not time out');
+  assert.equal(calls.fetch.length, 1);
+  assert.ok(calls.fetch[0].body.turnstileToken, 'and it must carry a token');
 });

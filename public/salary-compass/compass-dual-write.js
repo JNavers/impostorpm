@@ -79,6 +79,17 @@
    */
   var pendingToken = null;
 
+  /**
+   * A token that arrived before anything was waiting for it.
+   *
+   * Turnstile can solve the challenge during render(), ahead of the first
+   * execute(), so the callback fires while pendingToken is still null. An
+   * earlier version dropped that token on the floor and then waited 15 seconds
+   * for a second one that never came, because the widget was already solved.
+   * Keeping it turns that race from a guaranteed timeout into a fast path.
+   */
+  var spareToken = null;
+
   function track(event, props) {
     try {
       if (window.tipmAnalytics && window.tipmAnalytics.capture) {
@@ -129,7 +140,11 @@
         // The token arrives HERE, not from execute(). execute() only starts
         // the challenge and returns nothing.
         callback: function (token) {
-          if (!pendingToken) return;
+          if (!pendingToken) {
+            // Nobody is waiting yet: keep it rather than discard it.
+            spareToken = token;
+            return;
+          }
           var p = pendingToken;
           pendingToken = null;
           p.resolve(token);
@@ -161,6 +176,21 @@
   function getToken() {
     return ensureTurnstile()
       .then(function () {
+        // Fast path: a token that arrived during render, or one sitting in the
+        // widget because it solved itself. Single-use, so it is taken, not read.
+        if (spareToken) {
+          var token = spareToken;
+          spareToken = null;
+          return token;
+        }
+        try {
+          var existing = window.turnstile.getResponse(widgetId);
+          if (existing) {
+            window.turnstile.reset(widgetId);
+            return existing;
+          }
+        } catch (e) { /* no response yet; fall through to a fresh challenge */ }
+
         return new Promise(function (resolve, reject) {
           var settled = false;
           var timer = setTimeout(function () {
