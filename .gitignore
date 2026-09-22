@@ -16,3 +16,9 @@ dist/
 
 # Logs
 *.log
+
+# Salary data never belongs in this repo, wherever it lands. db/fixtures has its
+# own rule; this is the backstop, because a stray export in any other directory
+# was committed to a PUBLIC repo once already (6665485, 2026-09-22).
+*.csv
+!scripts/**/*.csv

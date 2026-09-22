@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; connect-src 'self' https://www.impostor.pm https://impostor.pm https://script.google.com https://script.googleusercontent.com https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; form-action 'self' https://script.google.com https://script.googleusercontent.com; frame-src 'self'; upgrade-insecure-requests">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://cdn.jsdelivr.net https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; connect-src 'self' https://challenges.cloudflare.com https://www.impostor.pm https://impostor.pm https://script.google.com https://script.googleusercontent.com https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.posthog.com; form-action 'self' https://script.google.com https://script.googleusercontent.com; frame-src 'self' https://challenges.cloudflare.com; upgrade-insecure-requests">
     <title>Compare Your PM Salary — The Impostor PM</title>
     <meta name="description" content="See how your Product Manager salary compares with the Portugal PM compensation benchmark. Enter your details and get instant results.">
 
@@ -34,6 +34,9 @@
         };
     </script>
     <script src="/salary-compass/posthog-init.js"></script>
+    <!-- Dual-write to the new Compass backend (migration step 3). Deferred:
+         nothing on the page waits for it, and it must never delay first paint. -->
+    <script src="/salary-compass/compass-dual-write.js" defer></script>
 
     <style>
         /* ── Color tokens ── */
@@ -2616,6 +2619,13 @@
 
     /* ── Submit to Google Sheets ── */
     function postOpaqueToSheets(data) {
+        /* Dual-write (migration step 3): every write is mirrored to the new
+           Compass backend while Apps Script stays authoritative. Hooked here
+           because this is the single funnel all four write paths go through.
+           compass-dual-write.js never rejects and never blocks — if it is
+           absent or failing, this line does nothing. */
+        if (!TEST_MODE && window.compassDualWrite) window.compassDualWrite.mirror(data);
+
         return fetch(SHEETS_WEBHOOK, {
             method: 'POST',
             mode: 'no-cors',
