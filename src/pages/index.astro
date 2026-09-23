@@ -101,17 +101,47 @@ import { organisation, webSite } from '../lib/schema';
     </div>
   </section>
 
-  <!-- ════════════ MENTAL HEALTH ════════════ -->
-  <section class="mh-section">
+  <!-- ════════════ SALARY COMPASS ════════════ -->
+  {/* Replaced the Mental Health block, and absorbs the golden "State of Product
+      Compensation" strip that used to sit under the gallery. The card on the
+      right is a trimmed copy of the /compensation hero mockup. */}
+  <section class="sc-section" aria-labelledby="sc-heading">
       <div class="container">
   <div class="row align-items-center">
-      <div class="col-lg-6 order-2 order-lg-1">
-          <h2>Let&rsquo;s speak about Mental Health</h2>
-          <p>Being a Product Manager isn&rsquo;t always easy. It can feel isolating at times, and often comes with a fair share of stress. That&rsquo;s why, in our Product Talks, we regularly create space to talk about it openly, sharing experiences, strategies, and support to help you face it.</p>
-          <a href="/product-talks" class="btn-cta">Learn More</a>
+      <div class="col-lg-6 mb-5 mb-lg-0">
+          <div class="sc-eyebrow">The State of Product Compensation</div>
+          <h2 id="sc-heading">How does your Product Manager salary compare?</h2>
+          <p>The Product Salary Compass tells you if your pay is below, at, or above market, against real Product Managers rather than job-board ranges. It&rsquo;s free, anonymous and built from PM-only data shared by our community.</p>
+          <div class="sc-cta-row">
+              <a href="/salary-compass/" class="btn-cta">Compare my PM salary</a>
+              <a href="/compensation" class="sc-link">How it works</a>
+          </div>
       </div>
-      <div class="col-lg-6 order-1 order-lg-2 mb-4 mb-lg-0">
-          <img src="/img/home/09-e04da44a.webp" alt="Mental health conversation">
+      <div class="col-lg-6">
+          <div class="sc-card" aria-hidden="true">
+              <div class="sc-card-head">
+                  <span>Your result</span>
+                  <span class="sc-pill">Top 38%</span>
+              </div>
+              <div class="sc-amount">€68,000</div>
+              <div class="sc-cohort">Senior PM · 5–8 yrs · Portugal · SaaS</div>
+              <svg class="sc-gauge" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                      <linearGradient id="scGaugeFill" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stop-color="#ffe680"/>
+                          <stop offset="100%" stop-color="#ffc600"/>
+                      </linearGradient>
+                  </defs>
+                  <path d="M20 120 A100 100 0 0 1 220 120" stroke="#f0f0f0" stroke-width="14" fill="none" stroke-linecap="round"/>
+                  <path d="M20 120 A100 100 0 0 1 156.8 27" stroke="url(#scGaugeFill)" stroke-width="14" fill="none" stroke-linecap="round"/>
+                  <g transform="rotate(21.6 120 120)">
+                      <line x1="120" y1="120" x2="120" y2="40" stroke="#1e1e1e" stroke-width="3" stroke-linecap="round"/>
+                      <circle cx="120" cy="120" r="6" fill="#1e1e1e"/>
+                  </g>
+                  <text x="20" y="142" font-size="10" font-family="Inter" fill="#999" text-anchor="middle">€0</text>
+                  <text x="220" y="142" font-size="10" font-family="Inter" fill="#999" text-anchor="middle">€130k</text>
+              </svg>
+          </div>
       </div>
   </div>
       </div>
@@ -141,15 +171,6 @@ import { organisation, webSite } from '../lib/schema';
   <img src="/img/home/17-76c27053.webp" alt="" aria-hidden="true">
   <img src="/img/home/18-9165c82a.webp" alt="" aria-hidden="true">
   <img src="/img/home/19-31adec29.webp" alt="" aria-hidden="true">
-      </div>
-  </section>
-
-  <!-- ════════════ COMPENSATION CTA ════════════ -->
-  <section class="cta-golden">
-      <div class="container">
-  <div class="eyebrow">The State of Product Compensation</div>
-  <h2>Do you want to learn more about pay in Product?</h2>
-  <a href="/compensation" class="btn-cta-dark">Learn more</a>
       </div>
   </section>
 
@@ -460,20 +481,63 @@ import { organisation, webSite } from '../lib/schema';
       margin-bottom: 1rem;
   }
 
-  /* ─── Mental Health (dark) ─── */
-  .mh-section {
+  /* ─── Salary Compass (dark) ─── */
+  .sc-section {
       background-color: var(--near-black);
       color: var(--white);
       padding: 5rem 0;
   }
-  .mh-section h2 { color: var(--white); font-size: 2.25rem; margin-bottom: 1.25rem; font-weight: 700; }
-  .mh-section p { color: #d4d4d4; font-size: 1rem; line-height: 1.5; margin-bottom: 1.75rem; }
-  .mh-section img {
-      width: 100%;
-      height: auto;
+  .sc-section .sc-eyebrow {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--golden);
+      margin-bottom: .75rem;
+  }
+  .sc-section h2 { color: var(--white); font-size: 2.25rem; margin-bottom: 1.25rem; font-weight: 700; white-space: normal; }
+  .sc-section p { color: #d4d4d4; font-size: 1rem; line-height: 1.5; margin-bottom: 1.75rem; white-space: normal; }
+  .sc-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+  .sc-link {
+      color: var(--white);
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1.5px solid var(--golden);
+      padding-bottom: 2px;
+  }
+  .sc-link:hover { color: var(--golden); text-decoration: none; }
+
+  .sc-card {
+      background: var(--white);
+      color: var(--near-black);
       border-radius: .75rem;
       box-shadow: 0 20px 40px rgba(0,0,0,.35);
+      padding: 1.75rem;
+      max-width: 26rem;
+      margin: 0 auto;
   }
+  .sc-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+  }
+  .sc-pill {
+      background: var(--warm-yellow);
+      color: var(--near-black);
+      border-radius: 999px;
+      padding: .2rem .7rem;
+      letter-spacing: 0;
+      text-transform: none;
+      font-size: .8125rem;
+  }
+  .sc-amount { font-size: 2.25rem; font-weight: 700; margin-top: .75rem; line-height: 1.2; }
+  .sc-cohort { font-size: .875rem; color: var(--text-muted); margin-bottom: 1rem; }
+  .sc-gauge { display: block; width: 100%; max-width: 280px; margin: 0 auto; }
 
   /* ─── Gallery marquee ─── */
   .gallery-marquee {
@@ -502,28 +566,6 @@ import { organisation, webSite } from '../lib/schema';
   .gallery-marquee:hover .gallery-track { animation-play-state: paused; }
   @media (max-width: 768px) {
       .gallery-track img { height: 160px; }
-  }
-
-  /* ─── Compensation CTA (golden bg) ─── */
-  .cta-golden {
-      background-color: var(--golden);
-      padding: 4rem 0;
-      text-align: center;
-  }
-  .cta-golden .eyebrow {
-      font-size: .75rem;
-      font-weight: 600;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      color: var(--near-black);
-      opacity: .75;
-      margin-bottom: .5rem;
-  }
-  .cta-golden h2 {
-      font-size: 1.875rem;
-      color: var(--near-black);
-      font-weight: 700;
-      margin-bottom: 1.75rem;
   }
 
   /* ─── Support mission CTA ─── */
@@ -613,8 +655,7 @@ import { organisation, webSite } from '../lib/schema';
      Original at 420px: every section heading is 30px / 1.5. */
   @media (max-width: 991px) {
       .section-heading,
-      .mh-section h2,
-      .cta-golden h2,
+      .sc-section h2,
       .cta-support h2,
       .partner-section h2,
       .ue-title { font-size: 1.875rem; line-height: 1.5; }
