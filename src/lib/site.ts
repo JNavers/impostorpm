@@ -14,6 +14,13 @@ export const SITE = {
   copyright: `© ${new Date().getFullYear()} The Impostor PM. All rights reserved.`,
   defaultDescription:
     'Community and live tools for Product Managers. Real-world practice over performance.',
+  /**
+   * The citable one-paragraph answer to "what is The Impostor PM?". Used by the
+   * Organization JSON-LD and mirrored in public/llms.txt and the homepage's
+   * "About the community" block — keep the three saying the same thing.
+   */
+  orgDescription:
+    'The Impostor PM is a Porto-born community for Product Managers. It runs free, in-person Clubs in Porto, Lisbon, Braga, Coimbra and Hamburg, online Product Talks, Huddle mentoring sessions and a Slack group, and publishes the Product Salary Compass, a free salary benchmark built from anonymous, PM-only data.',
   logo: '/brand/tipm-logo-horizontal-white.svg',
 } as const;
 

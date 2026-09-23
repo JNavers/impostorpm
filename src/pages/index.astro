@@ -13,8 +13,8 @@ import { organisation, webSite } from '../lib/schema';
 ---
 
 <Base
-  title="The Impostor PM — a community for Product Managers"
-  description="Clubs, Product Talks, Huddles and live salary data for Product Managers. Real-world practice over performance."
+  title="The Impostor PM — Product Management Community in Portugal"
+  description="A free community for Product Managers, born in Porto: in-person Clubs in Porto, Lisbon, Braga, Coimbra and Hamburg, Product Talks, a Slack group and the PM Salary Compass."
 >
   {/* The publisher identity for the whole site. The other pages' blocks point at
       its @id rather than repeating it, so the name, logo and social profiles
@@ -40,6 +40,19 @@ import { organisation, webSite } from '../lib/schema';
       </div>
   </header>
 
+
+  <!-- ════════════ ABOUT THE COMMUNITY ════════════ -->
+  {/* The hero H1 keeps the brand voice, so nothing above the fold said what the
+      site is in the words people search with ("product management community
+      in Portugal / Porto"). This block does, in plain sentences that a search
+      engine or an AI answer can quote. Mirrors SITE.orgDescription and llms.txt. */}
+  <section class="section-cream section-pad about-community" aria-labelledby="about-community-heading">
+      <div class="container">
+  <h2 id="about-community-heading" class="section-heading">A product management community, born in Porto</h2>
+  <p>The Impostor PM is a free community for Product Managers in Portugal and beyond. It started in Porto and now runs in-person <a href="/club">Clubs</a> in <a href="/club/porto">Porto</a>, <a href="/club/lisbon">Lisbon</a>, <a href="/club/braga">Braga</a>, <a href="/club/coimbra">Coimbra</a> and <a href="/club/hamburg">Hamburg</a>: small, slide-free sessions where PMs discuss real challenges with peers.</p>
+  <p>Around the Clubs sit online <a href="/product-talks">Product Talks</a> with working practitioners, <a href="/huddle">Huddle</a> mentoring sessions, a <a href="/group">Slack group</a>, and the <a href="/compensation">Product Salary Compass</a>, a free <a href="/salary-compass/">Product Manager salary calculator</a> built from anonymous, PM-only pay data.</p>
+      </div>
+  </section>
 
   <!-- ════════════ WHAT WE DO ════════════ -->
   <section class="section-white section-pad-lg">
@@ -147,9 +160,9 @@ import { organisation, webSite } from '../lib/schema';
   <!-- ════════════ COMPENSATION CTA ════════════ -->
   <section class="cta-golden">
       <div class="container">
-  <div class="eyebrow">The State of Product Compensation</div>
-  <h2>Do you want to learn more about pay in Product?</h2>
-  <a href="/compensation" class="btn-cta-dark">Learn more</a>
+  <div class="eyebrow">Product Salary Compass</div>
+  <h2>How does your Product Manager salary compare?</h2>
+  <a href="/salary-compass/" class="btn-cta-dark">Compare my PM salary</a>
       </div>
   </section>
 
@@ -505,6 +518,12 @@ import { organisation, webSite } from '../lib/schema';
   }
 
   /* ─── Compensation CTA (golden bg) ─── */
+  .about-community .container { max-width: 48rem; text-align: center; }
+  .about-community h2 { margin-bottom: 1.25rem; }
+  .about-community p { font-size: 1.0625rem; color: #444; line-height: 1.7; margin: 0 0 1rem; }
+  .about-community a { color: inherit; text-decoration: underline; text-decoration-color: var(--golden); text-underline-offset: 3px; text-decoration-thickness: 2px; }
+  .about-community a:hover { text-decoration-color: currentColor; }
+
   .cta-golden {
       background-color: var(--golden);
       padding: 4rem 0;

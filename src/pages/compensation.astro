@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { organisation } from '../lib/schema';
 
 // Converted from compensation/index.html (the salary-compass copy, 79,233 B —
 // the newer of the two twins that existed before the repos were folded together).
@@ -14,8 +16,8 @@ const POSTHOG = {
 ---
 
 <Base
-  title="Product Manager Salary Calculator | Product Salary Compass"
-  description="See where your Product Manager salary stands. Real data from 400+ PMs in 38 countries. Anonymous, 2 minutes, no email. Compare base, bonus, equity."
+  title="Product Manager Salaries in Portugal — Product Salary Compass"
+  description="How much do Product Managers earn? Real, anonymous pay data from 400+ PMs, strongest in Portugal. Base, bonus and equity, by role and years of experience."
   image="/compensation-og.png"
 >
   <Fragment slot="head">
@@ -45,38 +47,17 @@ const POSTHOG = {
             "price": "0",
             "priceCurrency": "EUR"
           },
-          "provider": {
-            "@type": "Organization",
-            "name": "The Impostor PM",
-            "url": "https://www.impostor.pm/"
-          },
+          "provider": { "@id": "https://www.impostor.pm/#organization" },
           "audience": {
             "@type": "Audience",
             "audienceType": "Product Managers"
           }
         }
         </script>
-        <script type="application/ld+json" is:inline>
-        {
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          "name": "The Impostor PM",
-          "alternateName": "TIPM",
-          "url": "https://www.impostor.pm/",
-          "logo": "https://www.impostor.pm/compensation-logo.svg",
-          "description": "A community for Product Managers focused on real-world practice: salary transparency, peer mentoring, in-person Clubs, and live tools like the Product Salary Compass.",
-          "knowsAbout": [
-            "Product Management",
-            "Product Manager salary",
-            "Product Manager compensation",
-            "PM career development",
-            "Salary benchmarking"
-          ],
-          "sameAs": [
-            "https://www.linkedin.com/company/impostorpm/"
-          ]
-        }
-        </script>
+        {/* The publisher is the site-wide Organization, defined once in lib/schema.ts.
+            This page used to declare a second one with no @id, a different logo
+            and a shorter sameAs, which reads as two organisations. */}
+        <JsonLd data={organisation()} />
         <script type="application/ld+json" is:inline>
         {
           "@context": "https://schema.org",
