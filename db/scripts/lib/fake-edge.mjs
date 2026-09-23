@@ -21,7 +21,11 @@ export const TEST_ENV = {
   HASH_SALT: 'test-salt',
   RESEND_API_KEY: 'test-resend-key',
   SALARY_COMPASS_FROM_EMAIL: 'Test <test@impostor.pm>',
-  SALARY_COMPASS_REPLY_TO: 'test@impostor.pm'
+  SALARY_COMPASS_REPLY_TO: 'test@impostor.pm',
+  // ON here so the existing tests keep exercising the sending path. Production
+  // runs with it unset (= off) during dual-write; email-switch.test.mjs covers
+  // that mode and asserts nothing is sent.
+  COMPASS_SEND_EMAILS: 'true'
 };
 
 /**

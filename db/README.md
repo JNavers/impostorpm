@@ -237,13 +237,62 @@ and redeploying the source to find out, which is why the repo copies say
 a query parameter and cannot be left the wrong way round by accident.
 
 Three kinds: `result` (7 min after the gate capture), `reminder_1` (24 h) and
-`reminder_2` (72 h, and only after reminder 1 has actually gone out). Set
-`CRON_SECRET` in Cloudflare and point three Cron Triggers at them.
+`reminder_2` (72 h, and only after reminder 1 has actually gone out).
+
+They are fired by `workers/compass-cron/`, because **Pages has no Cron
+Triggers** — a separate Worker wakes on a schedule and calls this endpoint with
+`CRON_SECRET`. It holds no logic. `node db/scripts/cron-schedules.mjs` shows,
+pauses or resumes its schedules.
+
+> **Pages injects environment variables at BUILD time.** A secret added after a
+> deployment finished is invisible to it, and the endpoint answers a correct
+> secret with a bare `401` identical to a wrong one. After setting a secret,
+> run `node db/scripts/redeploy-pages.mjs production`.
 
 Every attempt is written to `email_log`, and only a success stamps the contact —
 so a failed send comes round again on the next run instead of being lost. The
 Sheet kept one "Email Sent" cell per contact, so a retry erased the record of
 the failure it was retrying.
+
+---
+
+## Email is OFF during dual-write
+
+While Apps Script is authoritative it still sends every welcome, result and
+reminder email itself — its time triggers are live. If the new backend sent
+them too, every person would get each one twice. So on the new side:
+
+- **`COMPASS_SEND_EMAILS` is unset**, which means off. `/contacts` records the
+  contact and sends nothing (`email_suppressed: true`, no `email_log` row);
+  every cron run is forced to a dry run and stamps nothing. Anything other than
+  the exact string `"true"` counts as off.
+- **The `compass-cron` schedules are paused**, on Cloudflare and in
+  `workers/compass-cron/wrangler.jsonc`, so a routine deploy cannot revive them.
+
+This was missed at first: dual-write shipped mirroring the data *and* the side
+effects. It was caught before any real capture arrived — zero rows in
+`contacts` and `email_log` when the schedules were paused.
+
+### Turning email on (step 5), in this order
+
+1. **Remove the Apps Script time triggers** in the web editor (Triggers →
+   delete `sendResultEmails` and `sendSurveyReminders`). Confirm none remain.
+2. **Backfill what the legacy side already handled**, so the new side does not
+   re-send it. Run in the Supabase SQL editor:
+   ```sql
+   update contacts set
+     result_email_at = coalesce(result_email_at, now()),
+     reminder_1_at   = coalesce(reminder_1_at, now()),
+     reminder_2_at   = coalesce(reminder_2_at, now());
+   ```
+   Trade-off, accepted on purpose: someone mid-sequence at the switch loses
+   their last nudge. A missed reminder is better than a duplicate one.
+3. **Set `COMPASS_SEND_EMAILS=true`** in Production, then
+   `node db/scripts/redeploy-pages.mjs production` — secrets are read at build.
+4. **Resume the schedules**: `node db/scripts/cron-schedules.mjs resume`, and
+   restore the three crons in `wrangler.jsonc` in the same commit.
+5. **Check with a dry run**: `…/api/compass/cron?kind=reminder_1&dry=1` should
+   return `"suppressed": false` and a `due` of 0 right after the backfill.
 
 ---
 

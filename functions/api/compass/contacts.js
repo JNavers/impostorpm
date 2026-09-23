@@ -19,7 +19,7 @@
 import {
   json, preflight, readJson, supabase, clientIp, verifyTurnstile, rateLimit,
   cleanEmail, cleanEnum, cleanNumber, cleanBool, cleanUuid, BadRequest,
-  ALLOWED_EMAIL_SOURCES
+  ALLOWED_EMAIL_SOURCES, emailsEnabled
 } from './_lib.js';
 import { buildEmailTemplate } from './_email-templates.js';
 
@@ -55,6 +55,20 @@ export async function onRequestPost({ request, env }) {
     // Without this, refreshing the thank-you page re-sends the welcome email.
     if (!contact.created) {
       return json({ status: 'ok', token: contact.token, email_sent: false, duplicate: true });
+    }
+
+    // During dual-write the legacy path already sent this person their welcome
+    // email. Record the contact, send nothing, and write no email_log row: a
+    // log row would claim an attempt that never happened. See emailsEnabled().
+    if (!emailsEnabled(env)) {
+      return json({
+        status: 'ok',
+        token: contact.token,
+        email_sent: false,
+        email_suppressed: true,
+        protection: { turnstile: turnstile.skipped ? 'skipped' : 'verified',
+                      rateLimit: limited.skipped ? 'skipped' : 'enforced' }
+      }, 201);
     }
 
     const sent = await sendCaptureEmail(env, {
