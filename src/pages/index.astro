@@ -101,15 +101,41 @@ import { organisation, webSite } from '../lib/schema';
     </div>
   </section>
 
+  <!-- ════════════ GALLERY MARQUEE ════════════ -->
+  <section class="gallery-marquee" aria-label="Community moments">
+      <div class="gallery-track">
+  <img src="/img/home/10-b708b77b.webp" alt="">
+  <img src="/img/home/11-eb9ce009.webp" alt="">
+  <img src="/img/home/12-167df795.webp" alt="">
+  <img src="/img/home/13-a5cffae9.webp" alt="">
+  <img src="/img/home/14-8fe3d258.webp" alt="">
+  <img src="/img/home/15-5addaeac.webp" alt="">
+  <img src="/img/home/16-0beef04e.webp" alt="">
+  <img src="/img/home/17-76c27053.webp" alt="">
+  <img src="/img/home/18-9165c82a.webp" alt="">
+  <img src="/img/home/19-31adec29.webp" alt="">
+  <!-- duplicate for infinite loop -->
+  <img src="/img/home/10-b708b77b.webp" alt="" aria-hidden="true">
+  <img src="/img/home/11-eb9ce009.webp" alt="" aria-hidden="true">
+  <img src="/img/home/12-167df795.webp" alt="" aria-hidden="true">
+  <img src="/img/home/13-a5cffae9.webp" alt="" aria-hidden="true">
+  <img src="/img/home/14-8fe3d258.webp" alt="" aria-hidden="true">
+  <img src="/img/home/15-5addaeac.webp" alt="" aria-hidden="true">
+  <img src="/img/home/16-0beef04e.webp" alt="" aria-hidden="true">
+  <img src="/img/home/17-76c27053.webp" alt="" aria-hidden="true">
+  <img src="/img/home/18-9165c82a.webp" alt="" aria-hidden="true">
+  <img src="/img/home/19-31adec29.webp" alt="" aria-hidden="true">
+      </div>
+  </section>
+
   <!-- ════════════ SALARY COMPASS ════════════ -->
   {/* Replaced the Mental Health block, and absorbs the golden "State of Product
-      Compensation" strip that used to sit under the gallery. The card on the
+      Compensation" strip that used to sit further down. The card on the
       right is a trimmed copy of the /compensation hero mockup. */}
   <section class="sc-section" aria-labelledby="sc-heading">
       <div class="container">
   <div class="row align-items-center">
       <div class="col-lg-6 mb-5 mb-lg-0">
-          <div class="sc-eyebrow">The State of Product Compensation</div>
           <h2 id="sc-heading">How does your Product Manager salary compare?</h2>
           <p>The Product Salary Compass tells you if your pay is below, at, or above market, against real Product Managers rather than job-board ranges. It&rsquo;s free, anonymous and built from PM-only data shared by our community.</p>
           <div class="sc-cta-row">
@@ -147,32 +173,6 @@ import { organisation, webSite } from '../lib/schema';
       </div>
   </section>
 
-  <!-- ════════════ GALLERY MARQUEE ════════════ -->
-  <section class="gallery-marquee" aria-label="Community moments">
-      <div class="gallery-track">
-  <img src="/img/home/10-b708b77b.webp" alt="">
-  <img src="/img/home/11-eb9ce009.webp" alt="">
-  <img src="/img/home/12-167df795.webp" alt="">
-  <img src="/img/home/13-a5cffae9.webp" alt="">
-  <img src="/img/home/14-8fe3d258.webp" alt="">
-  <img src="/img/home/15-5addaeac.webp" alt="">
-  <img src="/img/home/16-0beef04e.webp" alt="">
-  <img src="/img/home/17-76c27053.webp" alt="">
-  <img src="/img/home/18-9165c82a.webp" alt="">
-  <img src="/img/home/19-31adec29.webp" alt="">
-  <!-- duplicate for infinite loop -->
-  <img src="/img/home/10-b708b77b.webp" alt="" aria-hidden="true">
-  <img src="/img/home/11-eb9ce009.webp" alt="" aria-hidden="true">
-  <img src="/img/home/12-167df795.webp" alt="" aria-hidden="true">
-  <img src="/img/home/13-a5cffae9.webp" alt="" aria-hidden="true">
-  <img src="/img/home/14-8fe3d258.webp" alt="" aria-hidden="true">
-  <img src="/img/home/15-5addaeac.webp" alt="" aria-hidden="true">
-  <img src="/img/home/16-0beef04e.webp" alt="" aria-hidden="true">
-  <img src="/img/home/17-76c27053.webp" alt="" aria-hidden="true">
-  <img src="/img/home/18-9165c82a.webp" alt="" aria-hidden="true">
-  <img src="/img/home/19-31adec29.webp" alt="" aria-hidden="true">
-      </div>
-  </section>
 
   <!-- ════════════ TESTIMONIALS (Senja) ════════════ -->
   <section class="section-white section-pad">
@@ -486,14 +486,6 @@ import { organisation, webSite } from '../lib/schema';
       background-color: var(--near-black);
       color: var(--white);
       padding: 5rem 0;
-  }
-  .sc-section .sc-eyebrow {
-      font-size: .75rem;
-      font-weight: 600;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      color: var(--golden);
-      margin-bottom: .75rem;
   }
   .sc-section h2 { color: var(--white); font-size: 2.25rem; margin-bottom: 1.25rem; font-weight: 700; white-space: normal; }
   .sc-section p { color: #d4d4d4; font-size: 1rem; line-height: 1.5; margin-bottom: 1.75rem; white-space: normal; }
