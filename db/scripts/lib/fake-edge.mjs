@@ -125,7 +125,10 @@ async function handleRest(db, path, init) {
       );
       return jsonResponse(rows);
     } catch (err) {
-      return new Response(JSON.stringify({ message: err.message }), { status: 400 });
+      // PostgREST answers a unique violation (23505) with 409, not 400, and the
+      // create handler branches on exactly that.
+      const status = err.code === '23505' ? 409 : 400;
+      return new Response(JSON.stringify({ code: err.code, message: err.message }), { status });
     }
   }
 

@@ -4,6 +4,29 @@ Durable technical decisions for this repo. Newest first.
 
 ---
 
+## 2026-09-22 — Surveys resume on the original comparison; the Sheet id is kept, not unique
+
+The user asked for a way for people who already compared to complete the
+survey without filling the comparison again (which duplicates their salary).
+
+- **The personal link already existed** (`?survey=1&sid=…`, in the result and
+  reminder emails) and binds the survey to the original row. Kept as the one
+  mechanism; the manual path is a Sheet menu that builds the same link
+  (`survey-link.gs`), so hand-sent and emailed links cannot diverge.
+- **A survey with no comparison is refused, not accepted.** The Sheet dropped
+  it silently while the page showed success. Refusing means some visitors are
+  sent to the form, which is the duplicate risk, but the alternative was data
+  loss that looked like success.
+- **`legacy_id` is not unique**, and repeat comparisons keep sharing one id.
+  A fresh id per comparison was implemented and reverted in the same session:
+  the shared id is the only evidence that 137 rows are 50 people, and step 4
+  has to decide how those count. Which of a person's comparisons is "theirs"
+  (first, last, none) is the user's call, not a side effect of a bug fix.
+- The survey lands on the **oldest** row with the id, to match
+  `updateSubmission_` exactly, so both stores agree on which row is enriched.
+
+---
+
 ## 2026-09-18 (later) — CORRECTION: the "millions" were a reading bug, not bad data
 
 **This invalidates the premise of part of decision C below. Read it first.**

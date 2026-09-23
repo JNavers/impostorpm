@@ -72,6 +72,37 @@ test('updating an unknown submission reports not_found rather than throwing', as
   await db.close();
 });
 
+test('the survey can be merged by the Sheet id, and an unknown one is not_found', async () => {
+  const db = await createTestDb();
+  const id = await newSubmission(db);
+  await db.query(`update submissions set legacy_id = 'sheet-id-0001' where id = $1`, [id]);
+
+  await rpc(db, 'compass_update_survey_legacy($1, $2)', ['sheet-id-0001', JSON.stringify({ gender: 'Female' })]);
+  const out = await rpc(db, 'compass_update_survey_legacy($1, $2)', ['sheet-id-0001', JSON.stringify({ perks: 'Gym' })]);
+  assert.equal(out.id, id);
+  assert.equal(out.fields, 2, 'merged, as compass_update_survey does');
+
+  const missing = await rpc(db, 'compass_update_survey_legacy($1, $2)', ['nope-nope', JSON.stringify({ gender: 'Male' })]);
+  assert.equal(missing.status, 'not_found');
+  await db.close();
+});
+
+test('with a shared Sheet id, the survey lands on the oldest row, as in the Sheet', async () => {
+  // updateSubmission_ stops at the first matching row. Landing anywhere else
+  // would put the survey on different comparisons in the two stores.
+  const db = await createTestDb();
+  const older = await newSubmission(db, { base: 50000 });
+  const newer = await newSubmission(db, { base: 55000 });
+  await db.query(`update submissions set legacy_id = 'sheet-id-0001', created_at = now() - interval '2 minutes' where id = $1`, [older]);
+  await db.query(`update submissions set legacy_id = 'sheet-id-0001' where id = $1`, [newer]);
+
+  const out = await rpc(db, 'compass_update_survey_legacy($1, $2)', ['sheet-id-0001', JSON.stringify({ gender: 'Female' })]);
+  assert.equal(out.id, older);
+  const { rows } = await db.query('select id, full_survey from submissions order by created_at');
+  assert.deepEqual(rows.map((r) => r.full_survey), [true, false], 'only one row carries the survey');
+  await db.close();
+});
+
 test('a repeat capture is idempotent and keeps the original token', async () => {
   // The Sheet appended a second row, so the same person counted twice and got
   // a second welcome email with a different token — while the token in the

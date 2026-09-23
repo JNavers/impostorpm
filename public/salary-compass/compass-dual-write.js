@@ -273,6 +273,9 @@
       city: data.city || null,
       perceptionGuess: data.perceptionGuess,
       source: 'compare',
+      // The Sheet's id, so a survey opened later from an email link can find
+      // this row by the only id that link carries.
+      legacyId: data.id,
       turnstileToken: token
     };
   }
@@ -329,15 +332,18 @@
 
         if (action === 'update') {
           var compassId = idMap[data.id];
-          if (!compassId) {
-            // The comparison's mirror failed, so there is no row to enrich.
-            // Recorded rather than retried: inventing a submission here would
-            // put a survey in the dataset with no salary attached to it.
-            var err = new Error('no-mirrored-submission');
-            err.expected = true;
-            throw err;
+          if (compassId) {
+            return patch('/submissions/' + encodeURIComponent(compassId), surveyBody(data));
           }
-          return patch('/submissions/' + encodeURIComponent(compassId), surveyBody(data));
+          // Opened from an email link or on a later visit: this page never
+          // learned our uuid, so the row is found by the Sheet id instead. A
+          // 404 means that comparison never reached this database; nothing is
+          // invented to hold the survey, since it would carry no salary.
+          return patch('/submissions/' + encodeURIComponent(data.id) + '?by=legacy', surveyBody(data))
+            .catch(function (err) {
+              if (err && err.status === 404) err.expected = true;
+              throw err;
+            });
         }
 
         if (action === 'email_only') {
