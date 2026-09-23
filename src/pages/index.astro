@@ -158,14 +158,14 @@ import { organisation, webSite } from '../lib/schema';
                           <stop offset="100%" stop-color="#ffc600"/>
                       </linearGradient>
                   </defs>
-                  <path d="M20 120 A100 100 0 0 1 220 120" stroke="#f0f0f0" stroke-width="14" fill="none" stroke-linecap="round"/>
+                  <path d="M20 120 A100 100 0 0 1 220 120" stroke="#3a3a3a" stroke-width="14" fill="none" stroke-linecap="round"/>
                   <path d="M20 120 A100 100 0 0 1 156.8 27" stroke="url(#scGaugeFill)" stroke-width="14" fill="none" stroke-linecap="round"/>
                   <g transform="rotate(21.6 120 120)">
-                      <line x1="120" y1="120" x2="120" y2="40" stroke="#1e1e1e" stroke-width="3" stroke-linecap="round"/>
-                      <circle cx="120" cy="120" r="6" fill="#1e1e1e"/>
+                      <line x1="120" y1="120" x2="120" y2="40" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+                      <circle cx="120" cy="120" r="6" fill="#ffffff"/>
                   </g>
-                  <text x="20" y="142" font-size="10" font-family="Inter" fill="#999" text-anchor="middle">€0</text>
-                  <text x="220" y="142" font-size="10" font-family="Inter" fill="#999" text-anchor="middle">€130k</text>
+                  <text x="20" y="142" font-size="10" font-family="Inter" fill="#8a8a8a" text-anchor="middle">€0</text>
+                  <text x="220" y="142" font-size="10" font-family="Inter" fill="#8a8a8a" text-anchor="middle">€130k</text>
               </svg>
           </div>
       </div>
@@ -499,11 +499,9 @@ import { organisation, webSite } from '../lib/schema';
   }
   .sc-link:hover { color: var(--golden); text-decoration: none; }
 
+  /* No card surface: the illustration sits straight on the dark band. */
   .sc-card {
-      background: var(--white);
-      color: var(--near-black);
-      border-radius: .75rem;
-      box-shadow: 0 20px 40px rgba(0,0,0,.35);
+      color: var(--white);
       padding: 1.75rem;
       max-width: 26rem;
       margin: 0 auto;
@@ -516,10 +514,10 @@ import { organisation, webSite } from '../lib/schema';
       font-weight: 600;
       letter-spacing: .08em;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: #a3a3a3;
   }
   .sc-pill {
-      background: var(--warm-yellow);
+      background: var(--golden);
       color: var(--near-black);
       border-radius: 999px;
       padding: .2rem .7rem;
@@ -528,7 +526,7 @@ import { organisation, webSite } from '../lib/schema';
       font-size: .8125rem;
   }
   .sc-amount { font-size: 2.25rem; font-weight: 700; margin-top: .75rem; line-height: 1.2; }
-  .sc-cohort { font-size: .875rem; color: var(--text-muted); margin-bottom: 1rem; }
+  .sc-cohort { font-size: .875rem; color: #a3a3a3; margin-bottom: 1rem; }
   .sc-gauge { display: block; width: 100%; max-width: 280px; margin: 0 auto; }
 
   /* ─── Gallery marquee ─── */
