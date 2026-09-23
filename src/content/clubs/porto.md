@@ -44,15 +44,29 @@ faq:
       while the event is designed to last around 90 minutes, we are flexible to
       adjust to the conversation flow and ensure everyone has a valuable
       experience.
+  - q: How is the Club different from other product management meetups in Porto?
+    a: >-
+      Most PM meetups are talks: one speaker, a deck, and questions at the end.
+      The Club is a small group discussion with no slides, where every
+      Product Manager in the room can bring a real challenge and hear how peers
+      have handled it.
   - q: Is this a paid event?
     a: "No. Just no. :)"
 seo:
   ogImage: /img/og/club-porto.webp
-  title: TIPM - Your Club in Porto
+  title: Product Management Community in Porto — The Impostor PM Club
   description: >-
-    The Impostor PM Club is in Porto. Meet peers, and learn from them
-    through the power of sharing.
+    Free, in-person meetups for Product Managers in Porto. Small peer groups,
+    no slides, real challenges. See past Clubs and join the next one.
 ---
+
+## A product management community in Porto
+
+Porto is where The Impostor PM started, and it is still the community's home. The Porto Club brings together Product Managers from across Greater Porto, including Matosinhos and Maia, for small, in-person sessions built around one real topic at a time.
+
+Sessions are free, last around 90 minutes and are capped in size, so everyone gets to speak. Between Clubs, the conversation continues in the [Impostor PM Slack group](/group) and at online [Product Talks](/product-talks).
+
+Curious how Product Manager pay in Porto compares? The [Product Salary Compass](/salary-compass/) is a free, anonymous salary calculator built from PM-only data, and lets you compare against other PMs in the Porto district.
 
 ## Is this for me?
 

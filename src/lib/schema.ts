@@ -19,16 +19,44 @@ const abs = (path: string) => (path.startsWith('http') ? path : `${SITE.url}${pa
 /** The publisher, referenced by @id from the other blocks rather than repeated. */
 export const ORGANISATION_ID = `${SITE.url}/#organization`;
 
+/**
+ * Where the community operates. These are the cities with a club page, which is
+ * what makes the claim true; the search this is for is "product management
+ * community in Portugal / Porto", and without areaServed nothing on the site
+ * tells a crawler which place the organisation belongs to.
+ */
+const AREA_SERVED = ['Porto', 'Lisbon', 'Braga', 'Coimbra', 'Hamburg'].map((name) => ({
+  '@type': 'City',
+  name,
+}));
+
 export function organisation() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': ORGANISATION_ID,
     name: SITE.name,
+    alternateName: ['TIPM', 'Impostor PM'],
     url: SITE.url,
-    description: SITE.defaultDescription,
+    description: SITE.orgDescription,
     logo: abs(SITE.logo),
-    sameAs: SOCIALS.filter((s) => s.href.startsWith('http')).map((s) => s.href),
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Porto',
+      addressCountry: 'PT',
+    },
+    areaServed: [{ '@type': 'Country', name: 'Portugal' }, ...AREA_SERVED],
+    knowsAbout: [
+      'Product Management',
+      'Product Manager community',
+      'Product Manager salary',
+      'Product Manager compensation',
+      'Salary benchmarking',
+      'PM career development',
+    ],
+    sameAs: SOCIALS.filter((s) => s.href.startsWith('http') && !s.href.includes('tally.so')).map(
+      (s) => s.href
+    ),
   };
 }
 

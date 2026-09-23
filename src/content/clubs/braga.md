@@ -44,14 +44,28 @@ faq:
       while the event is designed to last around 90 minutes, we are flexible to
       adjust to the conversation flow and ensure everyone has a valuable
       experience.
+  - q: How is the Club different from other product management meetups in Braga?
+    a: >-
+      Most PM meetups are talks: one speaker, a deck, and questions at the end.
+      The Club is a small group discussion with no slides, where every
+      Product Manager in the room can bring a real challenge and hear how peers
+      have handled it.
   - q: Is this a paid event?
     a: "No. Just no. :)"
 seo:
-  title: TIPM - Your Club in Braga
+  title: Product Management Community in Braga — The Impostor PM Club
   description: >-
-    The Impostor PM Club is in Braga. Meet peers, and learn from them
-    through the power of sharing.
+    Free, in-person meetups for Product Managers in Braga. Small peer groups,
+    no slides, real challenges. See past Clubs and join the next one.
 ---
+
+## A product management community in Braga
+
+Braga has a growing product scene, and the Braga Club gives its Product Managers a place to meet without travelling to Porto: a small group, one real topic, and a conversation rather than a stage.
+
+Sessions are free, last around 90 minutes and are capped in size, so everyone gets to speak. Between Clubs, the conversation continues in the [Impostor PM Slack group](/group) and at online [Product Talks](/product-talks).
+
+Curious how Product Manager pay in Braga compares? The [Product Salary Compass](/salary-compass/) is a free, anonymous salary calculator built from PM-only data, and lets you compare against other PMs in the Braga district.
 
 ## Is this for me?
 

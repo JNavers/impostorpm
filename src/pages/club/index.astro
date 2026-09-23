@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import CityGrid from '../../components/CityGrid.astro';
+import JsonLd from '../../components/JsonLd.astro';
+import { breadcrumbs } from '../../lib/schema';
 
 // The city list comes from the clubs collection, so adding a city is one .md
 // file rather than an edit here, an edit to the footer and a new page.
@@ -29,9 +31,12 @@ const expectations = [
 ---
 
 <Base
-  title="TIPM - Join the circle. Leave with value that works."
-  description="In-person Clubs for Product Managers across Porto, Lisbon, Braga, Coimbra and Hamburg. Peer-to-peer, slide-free, and free to attend."
+  title="Product Manager Meetups in Portugal — The Impostor PM Club"
+  description="Free, in-person Clubs for Product Managers in Porto, Lisbon, Braga, Coimbra and Hamburg. Small peer groups, no slides, real challenges."
 >
+  <Fragment slot="head">
+    <JsonLd data={breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Club', path: '/club' }])} />
+  </Fragment>
   <header class="clubidx-hero">
     <div class="container">
       <h1>Join the circle. Leave with <span class="clubidx-hl">value that works.</span></h1>
