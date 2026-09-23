@@ -73,6 +73,7 @@ async function load(opts = {}) {
   function makeTurnstile(mode) {
     let renderOpts = null;
     let solved = null;
+    let issued = 0;
     return {
       render: (_el, opts) => {
         if (opts.size !== undefined && !['normal', 'flexible', 'compact'].includes(opts.size)) {
@@ -104,7 +105,10 @@ async function load(opts = {}) {
         // This is the behaviour that turned a dropped token into a 15-second
         // hang instead of a retry, and a double that re-emits here hides it.
         if (solved) return;
-        setImmediate(() => { solved = 'turnstile-token-abc'; renderOpts.callback(solved); });
+        // Every solve is a NEW token, as in the real widget. An earlier double
+        // issued one constant string, which made a reused (already spent)
+        // token indistinguishable from a fresh one — and one shipped.
+        setImmediate(() => { solved = `turnstile-token-${++issued}`; renderOpts.callback(solved); });
       },
       /** For assertions about how the widget was configured. */
       _opts: () => renderOpts
@@ -140,7 +144,7 @@ test('it mirrors a comparison to POST /submissions', async () => {
   assert.equal(post.method, 'POST');
   assert.equal(post.body.baseSalary, 62000);
   assert.equal(post.body.city, 'Porto');
-  assert.equal(post.body.turnstileToken, 'turnstile-token-abc');
+  assert.equal(post.body.turnstileToken, 'turnstile-token-1');
 });
 
 test('the survey reaches the row the comparison created', async () => {
@@ -334,6 +338,28 @@ test('two mirrors get two fresh tokens', async () => {
 
   const tokens = calls.fetch.map((c) => c.body && c.body.turnstileToken).filter(Boolean);
   assert.equal(tokens.length, 2, 'both writes carried a token');
+  // Production 2026-09-23: the gate email after a comparison was sent with the
+  // comparison's token, read back from getResponse(), and refused as a
+  // duplicate. Counting tokens did not catch it; comparing them does.
+  assert.notEqual(tokens[0], tokens[1], 'a spent token must never be sent again');
+});
+
+test('writes fired back to back each get their own token', async () => {
+  // The survey step posts the inline email and the survey without waiting in
+  // between, and both mirrors ask for a token at once. With one pendingToken
+  // slot the second request overwrote the first, which then hung until the
+  // 15-second timeout.
+  const { api, calls } = await load();
+  const results = await Promise.all([
+    api.mirror(CREATE),
+    api.mirror({ action: 'email_only', email: 'a@example.com', source: 'email_gate' }),
+    api.mirror({ action: 'email_only', email: 'b@example.com', source: 'survey_inline' })
+  ]);
+
+  assert.ok(results.every((r) => r !== null), `every write succeeds: ${JSON.stringify(results)}`);
+  const tokens = calls.fetch.map((c) => c.body && c.body.turnstileToken).filter(Boolean);
+  assert.equal(tokens.length, 3);
+  assert.equal(new Set(tokens).size, 3, `all distinct: ${tokens.join(', ')}`);
 });
 
 test('a token that arrives before anything waits for it is not lost', async () => {

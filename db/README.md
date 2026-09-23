@@ -340,6 +340,25 @@ One automation note: the form's step 5 perception slider will not validate from
 a script — it needs a real drag — so driving the whole form programmatically
 does not work. Call `mirror()` directly, or move the slider by hand.
 
+### A spent token was being sent again (found 2026-09-23)
+
+`getToken()` had a fast path through `turnstile.getResponse()`. After a token
+arrives through the callback, the widget still holds it, so the next write on
+the page was sent with the same, already spent token, and siteverify refused
+it as a duplicate. In production this lost the gate email that follows every
+comparison. One visitor's comparison was lost as well. Its cause is not known
+for certain: a browser blocking Turnstile would also explain it.
+
+The fast path is gone, and token requests are queued, because the survey's
+inline email and the survey itself asked for tokens at the same moment and
+overwrote each other in the single `pendingToken` slot. The Turnstile double
+now issues a new token on every solve. It used to issue one constant string,
+which is why the suite could not tell a reused token from a fresh one.
+
+What the mirror drops is recovered from a Sheet export with
+`scripts/reconcile-from-sheet.mjs`, which is a dry run by default. It was run
+on 2026-09-23 and restored 1 comparison, 1 survey and 1 contact.
+
 ### Surveys opened from a link (`legacy_id`)
 
 The result and reminder emails link to `?survey=1&sid=<Sheet id>&access=…&e=…`.

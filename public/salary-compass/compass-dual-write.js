@@ -172,24 +172,38 @@
    * One token per call. Turnstile tokens are single-use and expire after five
    * minutes, so reusing one across the comparison and the survey — which can be
    * many minutes apart — would fail the second time.
+   *
+   * Requests are queued, one at a time. There is a single widget and a single
+   * pendingToken slot, so two overlapping requests (the survey's inline email
+   * and the survey itself fire back to back) used to overwrite each other: the
+   * first reset the challenge the second was waiting on, and one of them hung
+   * until the timeout.
    */
+  var tokenQueue = Promise.resolve();
+
   function getToken() {
+    var next = tokenQueue.then(fetchToken, fetchToken);
+    tokenQueue = next.catch(function () {});
+    return next;
+  }
+
+  function fetchToken() {
     return ensureTurnstile()
       .then(function () {
-        // Fast path: a token that arrived during render, or one sitting in the
-        // widget because it solved itself. Single-use, so it is taken, not read.
+        // A token that arrived during render, before anything was waiting for
+        // it. Single-use, so it is taken, not read.
+        //
+        // There is deliberately NO getResponse() fast path. After a token is
+        // delivered through the callback, the widget still holds it, and
+        // getResponse() hands back that SAME, already spent token. Using it
+        // made every second write on a page (usually the gate email after the
+        // comparison) fail siteverify as a duplicate. Found in production on
+        // 2026-09-23. Every other token comes from a fresh challenge below.
         if (spareToken) {
           var token = spareToken;
           spareToken = null;
           return token;
         }
-        try {
-          var existing = window.turnstile.getResponse(widgetId);
-          if (existing) {
-            window.turnstile.reset(widgetId);
-            return existing;
-          }
-        } catch (e) { /* no response yet; fall through to a fresh challenge */ }
 
         return new Promise(function (resolve, reject) {
           var settled = false;
