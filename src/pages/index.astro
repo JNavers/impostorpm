@@ -130,20 +130,16 @@ import { organisation, webSite } from '../lib/schema';
 
   <!-- ════════════ SALARY COMPASS ════════════ -->
   {/* Replaced the Mental Health block, and absorbs the golden "State of Product
-      Compensation" strip that used to sit further down. The card on the
-      right is a trimmed copy of the /compensation hero mockup. */}
+      Compensation" strip that used to sit further down. The card is a trimmed
+      copy of the /compensation hero mockup. On mobile it sits between the copy
+      and the CTAs, hence the grid instead of two Bootstrap columns. */}
   <section class="sc-section" aria-labelledby="sc-heading">
-      <div class="container">
-  <div class="row align-items-center">
-      <div class="col-lg-6 mb-5 mb-lg-0">
+      <div class="container sc-grid">
+      <div class="sc-copy">
           <h2 id="sc-heading">How does your Product Manager salary compare?</h2>
           <p>The Product Salary Compass tells you if your pay is below, at, or above market, against real Product Managers rather than job-board ranges. It&rsquo;s free, anonymous and built from PM-only data shared by our community.</p>
-          <div class="sc-cta-row">
-              <a href="/salary-compass/" class="btn-cta">Compare my PM salary</a>
-              <a href="/compensation" class="sc-link">How it works</a>
-          </div>
       </div>
-      <div class="col-lg-6">
+      <div class="sc-art">
           <div class="sc-card" aria-hidden="true">
               <div class="sc-card-head">
                   <span>Your result</span>
@@ -169,7 +165,10 @@ import { organisation, webSite } from '../lib/schema';
               </svg>
           </div>
       </div>
-  </div>
+      <div class="sc-cta-row">
+          <a href="/salary-compass/" class="btn-cta">Compare my PM salary</a>
+          <a href="/compensation" class="sc-link">How it works</a>
+      </div>
       </div>
   </section>
 
@@ -489,7 +488,18 @@ import { organisation, webSite } from '../lib/schema';
   }
   .sc-section h2 { color: var(--white); font-size: 2.25rem; margin-bottom: 1.25rem; font-weight: 700; white-space: normal; }
   .sc-section p { color: #d4d4d4; font-size: 1rem; line-height: 1.5; margin-bottom: 1.75rem; white-space: normal; }
-  .sc-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+  /* Desktop: copy and CTAs stacked on the left, card spanning the right.
+     Mobile (below): one column, card between the copy and the CTAs. */
+  .sc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas: "copy art" "cta art";
+      column-gap: 4rem;
+      align-items: center;
+  }
+  .sc-copy { grid-area: copy; align-self: end; }
+  .sc-art { grid-area: art; }
+  .sc-cta-row { grid-area: cta; align-self: start; display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
   .sc-link {
       color: var(--white);
       font-weight: 500;
@@ -499,9 +509,12 @@ import { organisation, webSite } from '../lib/schema';
   }
   .sc-link:hover { color: var(--golden); text-decoration: none; }
 
-  /* No card surface: the illustration sits straight on the dark band. */
+  /* No card surface: the illustration sits straight on the dark band, framed
+     by a hairline border. */
   .sc-card {
       color: var(--white);
+      border: 1px solid #3a3a3a;
+      border-radius: .75rem;
       padding: 1.75rem;
       max-width: 26rem;
       margin: 0 auto;
@@ -528,6 +541,22 @@ import { organisation, webSite } from '../lib/schema';
   .sc-amount { font-size: 2.25rem; font-weight: 700; margin-top: .75rem; line-height: 1.2; }
   .sc-cohort { font-size: .875rem; color: #a3a3a3; margin-bottom: 1rem; }
   .sc-gauge { display: block; width: 100%; max-width: 280px; margin: 0 auto; }
+
+  @media (max-width: 991px) {
+      .sc-section { padding: 3.5rem 0; }
+      .sc-grid {
+          grid-template-columns: 1fr;
+          grid-template-areas: "copy" "art" "cta";
+          text-align: center;
+      }
+      .sc-section p { margin-bottom: 2rem; }
+      .sc-card { padding: 1.25rem; text-align: left; }
+      .sc-amount { font-size: 1.875rem; }
+      .sc-cta-row { flex-direction: column; gap: 1.25rem; margin-top: 2rem; }
+  }
+  @media (max-width: 575px) {
+      .sc-cta-row .btn-cta { width: 100%; }
+  }
 
   /* ─── Gallery marquee ─── */
   .gallery-marquee {
