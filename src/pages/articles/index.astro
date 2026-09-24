@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const articles = (await getCollection('articles', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<Base
+  title="Articles | The Impostor PM"
+  description="Long-form notes from The Impostor PM community: what Product Managers are actually doing with AI, from our meetups and talks."
+>
+  <header class="section-cream art-index-hero">
+    <div class="container art-index-narrow">
+      <p class="tipm-eyebrow">Articles</p>
+      <h1>What PMs in our community are actually doing</h1>
+      <p class="art-index-lead">Write-ups from our meetups and talks, with the detail that doesn't fit in the newsletter.</p>
+    </div>
+  </header>
+
+  <section class="section-white section-pad">
+    <div class="container art-index-narrow">
+      <ul class="art-index-list">
+        {articles.map((a) => (
+          <li>
+            <a href={`/articles/${a.id}`}>
+              <p class="art-index-meta">{a.data.eyebrow} · {fmt(a.data.date)}</p>
+              <h2>{a.data.title}</h2>
+              <p class="art-index-dek">{a.data.dek}</p>
+              <span class="art-index-more">Read the article →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .container.art-index-narrow { max-width: 44rem; }
+  .art-index-hero { padding: 4rem 0 3rem; }
+  .art-index-hero h1 { font-size: var(--fs-5xl); line-height: 1.2; letter-spacing: var(--tracking-tight); margin: 0.75rem 0 1rem; }
+  .art-index-lead { font-size: var(--fs-l); color: var(--tipm-text-muted); margin: 0; }
+
+  .art-index-list { list-style: none; padding: 0; margin: 0; }
+  .art-index-list li + li { border-top: 1px solid var(--tipm-outline); }
+  .art-index-list a { display: block; padding: 1.75rem 0; color: inherit; text-decoration: none; }
+  .art-index-list h2 { font-size: var(--fs-3xl); line-height: 1.3; margin: 0.35rem 0 0.5rem; }
+  .art-index-meta { font-size: var(--fs-sm); color: var(--tipm-text-muted); margin: 0; }
+  .art-index-dek { color: var(--tipm-text-muted); margin: 0 0 0.75rem; }
+  .art-index-more {
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: var(--tipm-golden);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+  }
+  .art-index-list a:hover h2 { text-decoration: underline; text-decoration-color: var(--tipm-golden); text-underline-offset: 6px; }
+
+  @media (max-width: 767.98px) {
+    .art-index-hero, .art-index-narrow { text-align: left; }
+    .art-index-hero h1 { font-size: 2.25rem; }
+  }
+</style>

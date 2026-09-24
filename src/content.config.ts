@@ -152,4 +152,43 @@ const talks = defineCollection({
   }),
 });
 
-export const collections = { clubs, partners, talks };
+/**
+ * Articles: long-form write-ups, starting with the AI PM Meetup recaps.
+ *
+ * The weekly newsletter carries a short version and links here, so the body is
+ * the detail that does not fit in an email. Structure borrowed from Lenny's
+ * Newsletter: title, dek, byline, an editor's note, then the piece, then the
+ * people behind it.
+ */
+const articles = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/articles' }),
+  schema: z.object({
+    title: z.string(),
+    /** The one-line subtitle under the title. */
+    dek: z.string(),
+    date: z.coerce.date(),
+    eyebrow: z.string().default('Article'),
+    author: z.object({
+      name: z.string(),
+      role: z.string(),
+      avatar: z.string().optional(),
+    }),
+    /** Italic note at the top, in the editor's voice. */
+    editorNote: z.string().optional(),
+    speakers: z
+      .array(z.object({ name: z.string(), role: z.string(), bio: z.string(), url: z.string().url().optional() }))
+      .default([]),
+    /**
+     * Slides and other files. A file is only listed once it exists in public/:
+     * speaker decks need the speaker's permission before they go up, and a
+     * link to a missing file would 404. Drop the file in and it appears.
+     */
+    downloads: z
+      .array(z.object({ label: z.string(), speaker: z.string(), format: z.string(), file: z.string().startsWith('/') }))
+      .default([]),
+    draft: z.boolean().default(false),
+    seo: seoSchema,
+  }),
+});
+
+export const collections = { clubs, partners, talks, articles };
