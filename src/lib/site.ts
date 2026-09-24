@@ -38,7 +38,6 @@ export const NAV: NavItem[] = [
       { label: 'Boost', href: '/boost' },
     ],
   },
-  { label: 'Articles', href: '/articles' },
   { label: 'Benefits', href: '/benefits' },
 ];
 

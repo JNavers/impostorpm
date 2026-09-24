@@ -69,7 +69,17 @@ const jsonLd = {
   <section id="slides" class="section-warm section-pad">
     <div class="container art-narrow">
       <h2>Download the slides</h2>
-      {downloads.length > 0 ? (
+      {data.slidesUrl ? (
+        <ul class="art-downloads">
+          <li>
+            <div>
+              <p class="art-download-title">All the decks from this edition</p>
+              <p class="art-download-meta">{data.speakers.map((s) => s.name).join(', ')} · Google Drive folder</p>
+            </div>
+            <a href={data.slidesUrl} class="btn-outline-custom" target="_blank" rel="noreferrer">Open the slides</a>
+          </li>
+        </ul>
+      ) : downloads.length > 0 ? (
         <ul class="art-downloads">
           {downloads.map((d) => (
             <li>
@@ -94,9 +104,17 @@ const jsonLd = {
         <ul class="art-speakers">
           {data.speakers.map((s) => (
             <li>
-              <p class="art-speaker-name">{s.url ? <a href={s.url} target="_blank" rel="noreferrer">{s.name}</a> : s.name}</p>
-              <p class="art-speaker-role">{s.role}</p>
-              <p>{s.bio}</p>
+              {s.avatar && <img src={s.avatar} alt={s.name} width="72" height="72" loading="lazy" />}
+              <div>
+                <p class="art-speaker-name">{s.name}</p>
+                <p class="art-speaker-role">{s.role}</p>
+                <p>{s.bio}</p>
+                {s.url && (
+                  <a class="art-speaker-link" href={s.url} target="_blank" rel="noreferrer">
+                    {s.url.includes('linkedin.com') ? 'LinkedIn' : 'Website'} ↗
+                  </a>
+                )}
+              </div>
             </li>
           ))}
         </ul>
@@ -110,7 +128,7 @@ const jsonLd = {
       <p>The AI PM Meetup happens in Porto every few months. Come to listen, or bring something you've built.</p>
       <div class="art-cta-buttons">
         <a href="/events" class="btn-cta">See upcoming events</a>
-        <a href="/group" class="btn-outline-custom">Join the Slack group</a>
+        <a href="https://theimpostorpm.fillout.com/t/dT7U9NSoghus" class="btn-outline-custom" target="_blank" rel="noreferrer">Join the community</a>
       </div>
     </div>
   </section>
@@ -195,7 +213,21 @@ const jsonLd = {
   .art-download-title { font-weight: 700; color: var(--tipm-black); }
   .art-download-meta, .art-muted { color: var(--tipm-text-muted); font-size: var(--fs-s); }
 
-  .art-speakers { list-style: none; padding: 0; margin: 1.5rem 0 0; display: grid; gap: 1.5rem; }
+  .art-speakers { list-style: none; padding: 0; margin: 1.5rem 0 0; }
+  .art-speakers li { display: flex; align-items: flex-start; gap: 1.25rem; padding: 1.5rem 0; }
+  .art-speakers li + li { border-top: 1px solid var(--tipm-outline); }
+  .art-speakers img { flex: none; width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
+  .art-speakers .art-speaker-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: var(--fs-s);
+    font-weight: 700;
+    color: var(--tipm-black);
+    text-decoration: underline;
+    text-decoration-color: var(--tipm-golden);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+  }
   .art-speakers p { margin: 0; color: var(--tipm-text-muted); }
   .art-speakers .art-speaker-name { font-weight: 700; color: var(--tipm-black); font-size: var(--fs-l); }
   .art-speakers .art-speaker-role { font-size: var(--fs-s); margin-bottom: 0.35rem; }
@@ -207,5 +239,7 @@ const jsonLd = {
     .art-hero, .art-body-wrap, .art-narrow { text-align: left; }
     .art-hero h1 { font-size: 2.25rem; }
     .art-downloads li { flex-direction: column; align-items: flex-start; }
+    .art-speakers li { gap: 1rem; }
+    .art-speakers img { width: 56px; height: 56px; }
   }
 </style>

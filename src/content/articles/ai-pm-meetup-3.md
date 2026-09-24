@@ -1,48 +1,46 @@
 ---
 title: "Four agents, one that writes, and five ways to test them"
-dek: "How Gabriel Lima keeps AI agents out of Jira until he says go, and how Diana Ferreira's team tests an AI agent before customers see it. Notes and slides from our third AI PM Meetup."
+dek: "How Gabriel Lima keeps AI agents out of Jira until he says go, how Diana Ferreira's team tests an AI agent before customers see it, and how Rezonant helps whole teams work with agents. Notes and slides from our third AI PM Meetup."
 date: 2026-09-24
 eyebrow: "AI PM Meetup #3 · Porto"
 author:
   name: Javier Navero
   role: Co-founder, The Impostor PM
   avatar: /articles/authors/javier-navero.jpg
-editorNote: "The AI PM Meetup has one rule: PMs on stage show what they're actually doing with AI at work, whether that's building AI into their product or using it to do their own job better. What we're really after is seeing how companies in different industries are adapting. This is the write-up of the third edition, held in Porto on September 17, 2026."
+editorNote: "We started the AI PM Meetup with one rule: whoever is on stage shows what they're actually doing with AI at work, whether that's building it into their product or using it to do their own job. We wanted to see how companies in different industries are adapting. The third edition was in Porto on September 17, 2026, and I've written it up for anyone who couldn't make it, with the slides at the end."
 speakers:
   - name: Gabriel Lima
     role: Product Visionary at CTW, founding partner at Arvore
-    bio: "Gabriel spent nine years as the informal PM at Arvore, the company he co-founded, before joining CTW in 2024 to work on BMW. He built Odyssey, the crew of agents in this article."
+    bio: "Gabriel co-founded Arvore and joined CTW in 2024 to work on BMW. He built Odyssey, the crew of agents in this article."
+    url: https://www.linkedin.com/in/sougablima/
+    avatar: /articles/speakers/gabriel-lima.jpg
   - name: Diana Ferreira
     role: Staff PM at Overstory
     bio: "Diana is a Staff PM at Overstory, which builds risk intelligence for electric utilities. Her team ships an AI agent on top of their own MCP server."
+    url: https://www.linkedin.com/in/dianaguedesferreira/
+    avatar: /articles/speakers/diana-ferreira.jpg
   - name: Sam Walker
     role: Founding designer at Rezonant
-    bio: "Sam is a founding designer at Rezonant, a partner of The Impostor PM."
-downloads:
-  - label: "Odyssey: a crew of AI agents"
-    speaker: Gabriel Lima
-    format: "HTML slides, open in your browser"
-    file: /downloads/ai-pm-meetup-3/gabriel-lima-odyssey.html
-  - label: "AI for Product Managers"
-    speaker: Diana Ferreira
-    format: "PDF"
-    file: /downloads/ai-pm-meetup-3/diana-ferreira-ai-for-pms.pdf
+    bio: "Sam is a founding designer at Rezonant, which helps PMs and their teams work with AI agents. Rezonant is a partner of The Impostor PM."
+    url: https://www.linkedin.com/in/sam-walker-44633311b/
+    avatar: /articles/speakers/sam-walker.jpg
+slidesUrl: https://drive.google.com/drive/folders/1cVd1jK1XjeNwqiWNqwOb_iykkXc2Tbhx?usp=sharing
 seo:
   title: "How PMs test and trust AI agents: AI PM Meetup #3"
   description: "How Gabriel Lima keeps AI agents out of Jira until he says go, and how Diana Ferreira's team evaluates an AI agent. Notes and slides from our AI PM Meetup."
 ---
 
-This third edition had two talks that came at AI from opposite ends. Gabriel Lima uses AI agents to do PM work in a domain he was still learning. Diana Ferreira's team ships an AI agent inside their product and has to prove it works. They ended up at the same question: how do you know the AI got it right before it matters?
+This third edition had three talks. Gabriel Lima uses AI agents to do PM work in a domain he was still learning. Diana Ferreira's team ships an AI agent inside their product and has to prove it works. Those two came at AI from opposite ends and ended up at the same question: how do you know the AI got it right before it matters? And Sam Walker, from Rezonant, showed how PMs and their teams can work with AI agents together.
 
-Both slide decks are [at the end of this article](#slides).
+All the slides are [at the end of this article](#slides).
 
 ## Gabriel Lima: a crew of agents you can actually trust
 
 For nine years Gabriel was the informal PM at Arvore, a company he co-founded. He knew those products inside out. In 2024 he left and joined CTW to work on BMW, which he calls the most complex thing he's worked on: huge old systems, tons of jargon, real stakes, and a domain he barely knew.
 
-He had to get up to speed fast and get things right. That changes how you look at AI. When you can't yet check an answer yourself, a confident mistake is worse than no answer at all.
+He had to get up to speed fast without getting things wrong, and that made him look at AI differently: when you can't yet check an answer yourself, a confident mistake is worse than no answer at all.
 
-He opened with a question for the room: would you paste your real backlog into ChatGPT? Most people wouldn't. Gabriel's point was that the capability is already there. What's missing is trust.
+He opened with a question for the room: would you paste your real backlog into ChatGPT? Most people wouldn't. Gabriel's point was that the models can already do a lot of this work, and what holds people back is trust.
 
 ### Three problems with a normal chatbot
 
@@ -52,7 +50,7 @@ He named three things that stop PMs from using AI on real work:
 2. **It acts without asking.** Give it write access and "tidy up my board" can turn into changes you never approved. There's no undo on a shared Jira.
 3. **It forgets your project.** Every new chat, you explain the project, the team and the rules again.
 
-So he stopped looking for a smarter answer and started building for one he could trust and control.
+So he built a setup he could check and control.
 
 ### The crew
 
@@ -81,21 +79,21 @@ His setup, which he calls Odyssey, runs in VS Code with GitHub Copilot, connecte
   </div>
 </div>
 
-The names come from Bowie's "Space Oddity" and Apollo 13. The design choice underneath is serious: one agent reads and writes, and the others can only read, advise or challenge. Splitting the powers is what makes it safe.
+The names come from Bowie's "Space Oddity" and Apollo 13, but the important part is how the work is split. Only Major Tom can write; the other three can read, advise or challenge. That split is what lets Gabriel connect the crew to real systems at all.
 
 Under the hood there are four layers: rules every agent obeys, 24 skills (playbooks for things like writing backlog items, splitting stories, prioritization or Monte Carlo simulations), examples of what good output looks like, and the agents themselves. On top sits a memory and an audit log. When two rules clash, the stricter one wins. Gabriel never calls a skill by name. He asks in plain language and the right agent picks it up.
 
-### Three rules it can't break
+### The rules it can't break
 
 - **It looks things up.** It learns each project live, so nothing about a company is hardcoded.
 - **It writes nothing until he says a specific word.** Everything starts as a draft, and only Major Tom writes.
 - **It cites every claim, or admits it can't.** Each claim is tagged high confidence (read from a documented source), medium (from an issue or an inference) or low (an assumption, always declared).
 
-The rules map onto the three problems. Guessing becomes looking things up, acting becomes asking, and inventing becomes citing.
+Each rule is there to fix one of the three problems he opened with.
 
 ### The gate
 
-The write step is deliberately small and explicit.
+Anything that touches a real system goes through the same four steps.
 
 <ol class="art-steps">
   <li><strong>You ask</strong> for anything that would change a real system.</li>
@@ -119,7 +117,7 @@ He asked Ground Control for a story: when a part comes from the new data source,
 - Gabriel agreed: leave it blank and editable, and never invent a default. Major Tom added that as a third criterion.
 - The preview said, in capitals, that nothing was in Jira yet. Gabriel typed "create in jira", and only then was the story created and the write logged, including what was written, when, and his authorization.
 
-A sourced, ready-to-refine story, reviewed by a second agent, and created only because he said so.
+By the end he had a story ready for refinement, with a source for every claim, and it only reached Jira because he typed the keyword.
 
 ### What he measured
 
@@ -132,19 +130,19 @@ Gabriel was careful to show only numbers he could back up, taken from Jira, Conf
   <div><p class="art-stat">66</p><p>backlog items and 8 pages in 8 weeks, every write approved by him</p></div>
 </div>
 
-He didn't show an "hours saved" number. His slide said it plainly: he wasn't going to make one up, and the demo was the honest proof of speed. In a talk about not letting AI invent things, that felt right.
+He didn't show an "hours saved" number. His slide said he wasn't going to make one up, and that the demo was the honest proof of speed. It fit a talk about not letting AI invent things.
 
 ### The same crew, pointed earlier
 
 The same rules work on incoming requests too. Gabriel's example: "Add an Export-to-Excel button to the dashboard. Finance asked for it." That's a solution with the problem assumed.
 
-Houston hands back what the request implies (someone needs the numbers somewhere else), the evidence (one stakeholder asked, no usage data, medium confidence), the questions to answer first (what do they do with the data, how often, is there already a report?) and a verdict: needs discovery first. The crew never invents the problem, so "no evidence" is itself the finding.
+Houston hands back what the request implies (someone needs the numbers somewhere else), the evidence (one stakeholder asked, no usage data, medium confidence), the questions to answer first (what do they do with the data, how often, is there already a report?) and a verdict: needs discovery first. Because the crew isn't allowed to invent the problem, "we don't have evidence yet" is a useful answer on its own.
 
 ### Even the skeptic gets it wrong
 
 Once, Houston "corrected" Gabriel using a file that didn't exist. So now he checks the skeptic too. The system assumes any part of it can be wrong, including the AI that checks the other AI.
 
-His conclusion was that trust doesn't come from the AI being reliable. It comes from a system that stays safe when the AI isn't: sources, his explicit go-ahead, and a skeptic in the loop.
+His conclusion was that he trusts the system around the AI more than the AI itself. Sources, his explicit go-ahead and a skeptic in the loop keep things safe even when the model gets something wrong.
 
 <div class="art-callout">
   <p class="art-callout-label">Try this tomorrow</p>
@@ -190,7 +188,7 @@ She separated two kinds:
 
 ### Two levels: the agent and the server
 
-This was the part I found most useful. Overstory doesn't only test the agent. They also test how well their MCP server lets any agent do the job, because the server is the piece they ship and control.
+This was the part I found most useful. Overstory tests the agent, and it also tests how well their MCP server lets any agent do the job, because the server is the piece they ship and control.
 
 | | The agent | The MCP server's role inside the agent |
 |---|---|---|
@@ -216,7 +214,7 @@ Two of the five rows check whether the agent knows when to hold back: when a que
 
 ### How they grade
 
-Overstory uses two kinds of grader, and the order matters.
+Overstory uses two kinds of grader, one after the other.
 
 **Deterministic checks, no LLM involved**, come first:
 
@@ -237,14 +235,16 @@ Grading criteria one at a time as true or false is much easier to audit than ask
   </ul>
 </div>
 
-## Sam Walker, Rezonant
+## Sam Walker: how Rezonant helps teams work with agents
 
 Sam Walker, founding designer at Rezonant, showed how Rezonant helps PMs and their teams work with AI agents. Rezonant is a partner of The Impostor PM, and community members get 3,000 free credits.
 
 [Claim 3,000 Rezonant credits](/rezonant/)
 
-## What the two talks had in common
+## What I took home
 
-Gabriel checks the AI while it works: sources on every claim, a skeptic in the loop, and nothing written without his word. Diana's team checks it before customers ever see it, with test cases for each way it can fail. Neither of them spent any time on which model is smartest. They spent it on how to find out when the model is wrong.
+Looking back at the evening, what stands out to me is how little anyone talked about models. Gabriel checks the AI while it works, with a source for every claim and nothing written until he says so. Diana's team checks it before customers see it, with a test case for each way it could fail. Sam's talk was about the team side: how PMs and the people around them work with agents together.
+
+Nobody spent time on which model is smartest. They spent it on how to work with agents day to day, and how to catch them when they're wrong.
 
 Thanks to Gabriel, Diana and Sam for sharing their work so openly.

@@ -176,8 +176,19 @@ const articles = defineCollection({
     /** Italic note at the top, in the editor's voice. */
     editorNote: z.string().optional(),
     speakers: z
-      .array(z.object({ name: z.string(), role: z.string(), bio: z.string(), url: z.string().url().optional() }))
+      .array(
+        z.object({
+          name: z.string(),
+          role: z.string(),
+          bio: z.string(),
+          /** LinkedIn or personal site. */
+          url: z.string().url().optional(),
+          avatar: z.string().startsWith('/').optional(),
+        }),
+      )
       .default([]),
+    /** A shared folder with every deck, when the slides live outside the site. */
+    slidesUrl: z.string().url().optional(),
     /**
      * Slides and other files. A file is only listed once it exists in public/:
      * speaker decks need the speaker's permission before they go up, and a
