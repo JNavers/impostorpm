@@ -61,7 +61,8 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
   .art-index-list a:hover h2 { text-decoration: underline; text-decoration-color: var(--tipm-golden); text-underline-offset: 6px; }
 
   @media (max-width: 767.98px) {
-    .art-index-hero, .art-index-narrow { text-align: left; }
+    /* base.css centres every .container on mobile; the list reads better left-aligned. */
+    .container.art-index-narrow { text-align: left; }
     .art-index-hero h1 { font-size: 2.25rem; }
   }
 </style>
