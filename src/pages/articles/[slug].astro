@@ -239,6 +239,9 @@ const jsonLd = {
     /* base.css centres every .container on mobile; long-form reads better left-aligned. */
     .container.art-narrow { text-align: left; }
     .container.art-narrow img { margin-left: 0; margin-right: 0; }
+    /* The closing CTA is a site block, not article copy: centred like the rest of the site. */
+    .container.art-narrow.art-cta { text-align: center; }
+    .art-cta-buttons { justify-content: center; }
     .art-hero h1 { font-size: 2.25rem; }
     .art-downloads li { flex-direction: column; align-items: flex-start; }
     .art-speakers li { gap: 1rem; }
