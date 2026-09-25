@@ -194,7 +194,7 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
 
 <script>
   const MAILTO = 'general@impostor.pm';
-  // Same checks as functions/api/referral.js, so the page never promises
+  // Same checks as functions/api/talent.js, so the page never promises
   // something the endpoint then rejects.
   const EMAIL_RE = /^[^@\s]+@[^@\s.]+\.[^@\s]+$/;
   const LINKEDIN_RE = /^(https?:\/\/)?([a-z]{2,3}\.)?linkedin\.com\/in\/[^\s/?#]+/i;
@@ -315,7 +315,7 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
       status.textContent = 'Sending…';
 
       try {
-        const response = await fetch('/api/referral', {
+        const response = await fetch('/api/talent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

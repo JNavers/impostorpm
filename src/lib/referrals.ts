@@ -2,7 +2,7 @@
  * Roles the community is helping to fill through referrals.
  *
  * Each entry becomes /talent/<slug>. The slug must also be listed in ROLES in
- * functions/api/referral.js, which is the whitelist the endpoint checks: the
+ * functions/api/talent.js, which is the whitelist the endpoint checks: the
  * Function is bundled separately and cannot import from src/, and a role the
  * endpoint does not know about is rejected rather than emailed blind.
  */
