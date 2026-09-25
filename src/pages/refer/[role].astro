@@ -16,22 +16,21 @@ export function getStaticPaths() {
 
 const { role } = Astro.props as { role: ReferralRole };
 
-// "Who is the *technical PM* …" → the starred words get the golden scribble.
-const askParts = role.ask.split('*').map((text, i) => ({ text, mark: i % 2 === 1 }));
-const askPlain = role.ask.replaceAll('*', '');
+// Same headline for every role, so a new role is just a new entry in referrals.ts.
+const headline = `Who should ${role.company} meet?`;
 const place = role.location.replace(/^Available to be at the /, '');
 const shareText = `${role.company} is hiring: ${role.seniority} Product, ${place}. Know someone who fits? It takes 10 seconds to refer them:`;
 const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^www\./, '') : '';
 ---
 
-<Base title={`${askPlain} | The Impostor PM`} description={role.lede} noindex>
+<Base title={`${headline} | The Impostor PM`} description={role.lede} noindex>
   <div class="refer-page" data-role={role.slug} data-share-text={shareText} data-share-title={`${role.title} | The Impostor PM`}>
     <div class="refer-top">
       <div class="container">
         <div class="refer-grid">
           <header class="refer-intro">
             <p class="tipm-eyebrow">Referral · We're helping {role.company} hire</p>
-            <h1>{askParts.map((p) => (p.mark ? <span class="scribble-underline">{p.text}</span> : p.text))}</h1>
+            <h1>{headline}</h1>
             <p class="refer-lede">{role.lede}</p>
             <div class="refer-facts" role="list">
               <span role="listitem" class="refer-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" /></svg>{role.company}</span>
@@ -392,7 +391,6 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
 
   /* ── Hero ── */
   .refer-intro h1 { font-size: var(--fs-6xl); margin: 0.75rem 0 1.25rem; }
-  .refer-intro h1 .scribble-underline { white-space: nowrap; }
   .refer-lede { font-size: var(--fs-l); color: var(--fg-2); margin: 0 0 1.5rem; max-width: 36rem; }
   .refer-facts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
   .refer-chip {
@@ -550,7 +548,6 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
   @media (max-width: 767.98px) {
     .refer-intro { padding: 3rem 0 3.5rem; }
     .refer-intro h1 { font-size: 2.25rem; }
-    .refer-intro h1 .scribble-underline { white-space: normal; }
     .refer-facts, .refer-hero-cta { justify-content: center; }
     .refer-lede { margin-left: auto; margin-right: auto; }
     .refer-hero-cta > * { flex: 1 1 100%; text-align: center; }

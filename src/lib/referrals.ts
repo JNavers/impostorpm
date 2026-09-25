@@ -12,8 +12,6 @@ export type ReferralRole = {
   companyBlurb: string;
   companyUrl?: string;
   title: string;
-  /** The hero question, specific enough that a name comes to mind. Wrap the words to underline in *asterisks*. */
-  ask: string;
   lede: string;
   requirements: { title: string; body: string }[];
   seniority: string;
@@ -33,7 +31,6 @@ export const REFERRAL_ROLES: ReferralRole[] = [
       'Condukt uses real-time data and AI to automate business compliance checks for financial institutions, with teams in London and Porto.',
     companyUrl: 'https://condukt.ai',
     title: 'Product role at Condukt',
-    ask: 'Who is the *technical PM* Condukt should meet?',
     lede: "Condukt is looking for a fairly specific Product person, and we think someone in the community already knows them.",
     requirements: [
       { title: 'Product experience', body: '3+ years in Product, working as PO or PM.' },
