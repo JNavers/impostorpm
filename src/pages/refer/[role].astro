@@ -1,0 +1,231 @@
+---
+import Base from '../../layouts/Base.astro';
+import { REFERRAL_ROLES, type ReferralRole } from '../../lib/referrals';
+
+// One page per role, linked from the newsletter's "Who should we know?"
+// section. noindex: these are for people we send here, not for search, and the
+// sitemap filter in astro.config.mjs excludes /refer to match.
+export function getStaticPaths() {
+  return REFERRAL_ROLES.map((role) => ({ params: { role: role.slug }, props: { role } }));
+}
+
+const { role } = Astro.props as { role: ReferralRole };
+---
+
+<Base title={`Who should we know? ${role.title} | The Impostor PM`} description={role.lede} noindex>
+  <header class="section-warm refer-hero">
+    <div class="container refer-narrow">
+      <p class="tipm-eyebrow">Referral · {role.company}</p>
+      <h1>Who should we know?</h1>
+      <p class="refer-lede">{role.lede}</p>
+    </div>
+  </header>
+
+  <section class="section-white section-pad">
+    <div class="container refer-narrow refer-body">
+      <div class="refer-role">
+        <p class="refer-label">What they need</p>
+        <ol>
+          {role.requirements.map((r) => (
+            <li><strong>{r.title}.</strong> {r.body}</li>
+          ))}
+        </ol>
+        <dl>
+          <div><dt>Seniority</dt><dd>{role.seniority}</dd></div>
+          <div><dt>Location</dt><dd>{role.location}</dd></div>
+        </dl>
+        <p class="refer-company">{role.companyBlurb}</p>
+      </div>
+
+      <p class="refer-note">
+        They don't need to be actively looking for a job. If you think they would be exceptional for this profile, we would still like to meet them. Self-referrals are welcome too.
+      </p>
+
+      <form id="refer-form" data-role={role.slug} novalidate>
+        <fieldset class="refer-who">
+          <legend>Who are you referring?</legend>
+          <label><input type="radio" name="who" value="other" checked /> Someone else</label>
+          <label><input type="radio" name="who" value="self" /> Myself</label>
+        </fieldset>
+
+        <label>
+          <span><span data-other="Their LinkedIn or email" data-self="Your LinkedIn or email">Their LinkedIn or email</span> <abbr title="required">*</abbr></span>
+          <input type="text" name="contact" required autocomplete="off" placeholder="linkedin.com/in/… or name@company.com" />
+        </label>
+
+        <label class="refer-other-only">
+          <span>Their name <em>(optional)</em></span>
+          <input type="text" name="candidateName" autocomplete="off" />
+        </label>
+
+        <label>
+          <span><span data-other="Why them?" data-self="Why you?">Why them?</span> <em>(optional)</em></span>
+          <textarea name="why" rows="2" placeholder="One line is enough."></textarea>
+        </label>
+
+        <div class="refer-other-only refer-you">
+          <p class="refer-label">About you <em>(optional)</em></p>
+          <p class="refer-help">So we can thank you and let you know how it goes.</p>
+          <div class="refer-pair">
+            <label><span>Your name</span><input type="text" name="referrerName" autocomplete="name" /></label>
+            <label><span>Your email</span><input type="email" name="referrerEmail" autocomplete="email" /></label>
+          </div>
+        </div>
+
+        {/* Honeypot. Hidden from people and screen readers; bots fill it. */}
+        <label class="refer-hp" aria-hidden="true">
+          Website <input type="text" name="website" tabindex="-1" autocomplete="off" />
+        </label>
+
+        <button type="submit" class="btn-cta">Send referral</button>
+        <p class="refer-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="refer-done" hidden>
+        <h2>Thanks, we've got it.</h2>
+        <p>We'll take it from here.</p>
+        <button type="button" class="btn-outline-custom refer-again">Refer someone else</button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const MAILTO = 'general@impostor.pm';
+  const form = document.getElementById('refer-form') as HTMLFormElement | null;
+  const done = document.querySelector('.refer-done') as HTMLElement | null;
+
+  if (form && done) {
+    const status = form.querySelector('.refer-status') as HTMLElement;
+    const button = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    const isSelf = () => (form.querySelector('input[name=who]:checked') as HTMLInputElement).value === 'self';
+
+    const syncWho = () => {
+      const self = isSelf();
+      form.querySelectorAll<HTMLElement>('.refer-other-only').forEach((el) => (el.hidden = self));
+      form.querySelectorAll<HTMLElement>('[data-other]').forEach((el) => {
+        el.textContent = (self ? el.dataset.self : el.dataset.other) ?? el.textContent;
+      });
+    };
+    form.querySelectorAll('input[name=who]').forEach((el) => el.addEventListener('change', syncWho));
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const raw = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+      const self = isSelf();
+
+      if (!raw.contact?.trim()) {
+        status.dataset.state = 'error';
+        status.textContent = 'Add a LinkedIn profile or an email address.';
+        return;
+      }
+
+      button.disabled = true;
+      status.dataset.state = 'pending';
+      status.textContent = 'Sending…';
+
+      try {
+        const response = await fetch('/api/referral', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            role: form.dataset.role,
+            self,
+            contact: raw.contact,
+            candidateName: self ? '' : raw.candidateName,
+            why: raw.why,
+            referrerName: raw.referrerName,
+            referrerEmail: raw.referrerEmail,
+            website: raw.website,
+          }),
+        });
+        const body = await response.json().catch(() => ({}));
+        if (!(response.ok && body.status === 'ok')) throw new Error(body.message ?? `HTTP ${response.status}`);
+
+        const ph = (window as any).posthog;
+        if (ph && typeof ph.capture === 'function') ph.capture('referral_submitted', { role: form.dataset.role, self });
+
+        form.reset();
+        syncWho();
+        status.textContent = '';
+        form.hidden = true;
+        done.hidden = false;
+      } catch (error) {
+        // Say so, and give a way that still works, rather than losing the referral.
+        status.dataset.state = 'error';
+        status.innerHTML =
+          `That didn't go through (${String((error as Error).message).slice(0, 80)}). ` +
+          `Please email us at <a href="mailto:${MAILTO}">${MAILTO}</a>.`;
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    done.querySelector('.refer-again')?.addEventListener('click', () => {
+      done.hidden = true;
+      form.hidden = false;
+      (form.querySelector('input[name=contact]') as HTMLInputElement).focus();
+    });
+  }
+</script>
+
+<style is:global>
+  .container.refer-narrow { max-width: 38rem; }
+  .refer-hero { padding: 4rem 0 3rem; }
+  .refer-hero h1 { font-size: var(--fs-5xl); line-height: 1.2; letter-spacing: var(--tracking-tight); margin: 0.75rem 0 1rem; }
+  .refer-lede { font-size: var(--fs-l); color: var(--tipm-text-muted); margin: 0; }
+
+  .refer-role { border: 1px solid var(--tipm-outline); border-radius: var(--radius-xl); padding: 1.5rem 1.75rem; margin-bottom: 1.5rem; }
+  .refer-label { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: var(--tipm-text-muted); margin: 0 0 0.75rem; }
+  .refer-label em, .refer-who em, form em { font-style: normal; font-weight: 400; color: var(--tipm-text-muted); text-transform: none; letter-spacing: 0; }
+  .refer-role ol { padding-left: 1.25rem; margin: 0 0 1.25rem; }
+  .refer-role li { margin-bottom: 0.4rem; }
+  .refer-role dl { display: grid; gap: 0.75rem; margin: 0 0 1rem; padding-top: 1rem; border-top: 1px solid var(--tipm-outline); }
+  @media (min-width: 560px) { .refer-role dl { grid-template-columns: 1fr 2fr; } }
+  .refer-role dt { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--tipm-text-muted); }
+  .refer-role dd { margin: 0.2rem 0 0; font-weight: 600; }
+  .refer-company { font-size: var(--fs-s); color: var(--tipm-text-muted); margin: 0; }
+  .refer-note { color: var(--tipm-text-muted); margin: 0 0 2rem; }
+
+  #refer-form { display: grid; gap: 1.25rem; }
+  #refer-form[hidden], .refer-done[hidden], #refer-form [hidden] { display: none; }
+  #refer-form label { display: grid; gap: 0.4rem; }
+  #refer-form label > span { font-weight: 600; font-size: 0.9375rem; }
+  #refer-form abbr { color: var(--tipm-golden); text-decoration: none; }
+  #refer-form input[type='text'], #refer-form input[type='email'], #refer-form textarea {
+    font: inherit; font-weight: 400; padding: 0.65rem 0.85rem; width: 100%;
+    border: 1px solid var(--tipm-outline); border-radius: var(--radius-md);
+    background: var(--tipm-white); color: var(--tipm-black);
+  }
+  #refer-form input:focus, #refer-form textarea:focus { outline: 2px solid var(--tipm-golden); outline-offset: 1px; border-color: transparent; }
+  #refer-form textarea { resize: vertical; }
+
+  .refer-who { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+  .refer-who legend { font-weight: 600; font-size: 0.9375rem; margin-bottom: 0.5rem; width: 100%; }
+  #refer-form .refer-who label { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 400; }
+
+  .refer-you { display: grid; gap: 0.75rem; padding-top: 1.25rem; border-top: 1px solid var(--tipm-outline); }
+  .refer-you .refer-label { margin: 0; }
+  .refer-help { margin: -0.4rem 0 0; font-size: var(--fs-s); color: var(--tipm-text-muted); }
+  .refer-pair { display: grid; gap: 1rem; }
+  @media (min-width: 560px) { .refer-pair { grid-template-columns: 1fr 1fr; } }
+
+  .refer-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  #refer-form button[type='submit'] { justify-self: start; }
+  #refer-form button[disabled] { opacity: 0.6; cursor: progress; }
+  .refer-status { margin: 0; font-size: 0.9375rem; min-height: 1.4em; }
+  .refer-status[data-state='error'] { color: #a4262c; }
+  .refer-status[data-state='pending'] { color: var(--tipm-text-muted); }
+
+  .refer-done h2 { font-size: var(--fs-4xl); margin: 0 0 0.5rem; }
+  .refer-done p { color: var(--tipm-text-muted); }
+
+  @media (max-width: 767.98px) {
+    /* The site centres .container on mobile; a form reads better left-aligned. */
+    .container.refer-body { text-align: left; }
+    .container.refer-body ol { display: block; }
+    .container.refer-body p { text-align: left; }
+    .refer-hero h1 { font-size: 2.25rem; }
+  }
+</style>
