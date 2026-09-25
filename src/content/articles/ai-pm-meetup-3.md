@@ -1,6 +1,6 @@
 ---
-title: "Four agents, one that writes, and five ways to test them"
-dek: "How Gabriel Lima keeps AI agents out of Jira until he says go, how Diana Ferreira's team tests an AI agent before customers see it, and how Rezonant helps whole teams work with agents. Notes and slides from our third AI PM Meetup."
+title: "Four agents, one that writes, and five ways to test an MCP server"
+dek: "How Gabriel Lima keeps AI agents out of Jira until he says go, how Diana Ferreira's team tests its MCP server before customers rely on it, and how Rezonant helps whole teams work with agents. Notes and slides from our third AI PM Meetup."
 date: 2026-09-24
 eyebrow: "AI PM Meetup #3 · Porto"
 author:
@@ -16,7 +16,7 @@ speakers:
     avatar: /articles/speakers/gabriel-lima.jpg
   - name: Diana Ferreira
     role: Staff PM at Overstory
-    bio: "Diana is a Staff PM at Overstory, which builds risk intelligence for electric utilities. Her team ships an AI agent on top of their own MCP server."
+    bio: "Diana is a Staff PM at Overstory, which builds risk intelligence for electric utilities. Her team is building an MCP server for Overstory's data."
     url: https://www.linkedin.com/in/dianaguedesferreira/
     avatar: /articles/speakers/diana-ferreira.jpg
   - name: Sam Walker
@@ -26,11 +26,11 @@ speakers:
     avatar: /articles/speakers/sam-walker.jpg
 slidesUrl: https://drive.google.com/drive/folders/1cVd1jK1XjeNwqiWNqwOb_iykkXc2Tbhx?usp=sharing
 seo:
-  title: "How PMs test and trust AI agents: AI PM Meetup #3"
-  description: "How Gabriel Lima keeps AI agents out of Jira until he says go, and how Diana Ferreira's team evaluates an AI agent. Notes and slides from our AI PM Meetup."
+  title: "How PMs trust AI agents and test MCP servers: AI PM Meetup #3"
+  description: "How Gabriel Lima keeps AI agents out of Jira until he says go, and how Diana Ferreira's team evaluates an MCP server. Notes and slides from our AI PM Meetup."
 ---
 
-This third edition had three talks. Gabriel Lima uses AI agents to do PM work in a domain he was still learning. Diana Ferreira's team ships an AI agent inside their product and has to prove it works. Those two came at AI from opposite ends and ended up at the same question: how do you know the AI got it right before it matters? And Sam Walker, from Rezonant, showed how PMs and their teams can work with AI agents together.
+This third edition had three talks. Gabriel Lima uses AI agents to do PM work in a domain he was still learning. Diana Ferreira's team is building an MCP server for their product and has to prove it works before customers rely on it. Those two came at AI from opposite ends and ended up at the same question: how do you know the AI got it right before it matters? And Sam Walker, from Rezonant, showed how PMs and their teams can work with AI agents together.
 
 All the slides are [at the end of this article](#slides).
 
@@ -155,11 +155,11 @@ His conclusion was that he trusts the system around the AI more than the AI itse
   </ol>
 </div>
 
-## Diana Ferreira: how Overstory tests an AI agent
+## Diana Ferreira: how Overstory tests an MCP server
 
 Diana is a Staff PM at Overstory, which builds risk intelligence for electric utilities. Their platform combines satellite and aerial imagery, LiDAR, terrain, asset condition, work tickets, outage and cost data, and weather, so utilities can prepare for storms, prevent outages and stop catastrophic wildfires.
 
-Her talk had two parts: a small workflow she uses every week, and how her team evaluates the AI agent they built into the product.
+Her talk had two parts: a small workflow she uses every week, and how her team evaluates the MCP server they're building.
 
 ### A skill that runs her meeting notes
 
@@ -175,9 +175,9 @@ Before the evals, Diana showed a Claude skill that handles the admin around six 
 
 If Granola isn't ready yet, the skill retries later. Her summary: no note taken twice, no action item lost.
 
-### The agent they're testing
+### What they're testing
 
-Overstory built an MCP server so an AI agent can work with their data. A customer asks something like "Which circuit has the worst average encroachment score?", the agent (running on a model such as Claude Haiku 4.5) calls the server's tools, and answers: "Circuit 6114, with an average encroachment score of 2.66."
+Overstory is building an MCP server so AI models can work with their data. A customer asks something like "Which circuit has the worst average encroachment score?", a model such as Claude Haiku 4.5 calls the server's tools, and answers: "Circuit 6114, with an average encroachment score of 2.66."
 
 Diana's definition of evals was short: they measure how a non-deterministic, LLM-based application behaves. What can it do, how well does it do it, and how consistently does it do it well?
 
@@ -186,17 +186,17 @@ She separated two kinds:
 - **Offline evals** are repeatable tests in a controlled environment, away from production. This was the focus of the talk.
 - **Online evals** track live performance in production. They help you monitor for regressions, isolate the impact of each component, make data-supported improvements and see how the product performs on real tasks.
 
-### Two levels: the agent and the server
+### Two levels: the model and the server
 
-This was the part I found most useful. Overstory tests the agent, and it also tests how well their MCP server lets any agent do the job, because the server is the piece they ship and control.
+This was the part I found most useful. Overstory looks at two levels: how well a model does the job when it uses their MCP server, and the server's own part in that. The server is the piece they build and control.
 
-| | The agent | The MCP server's role inside the agent |
+| | The model using the server | The MCP server's role |
 |---|---|---|
-| **Coverage** | Can the agent do the jobs it's meant to do? | Does the server let the agent do everything we'd want customers to be able to do with our data? |
-| **Effectiveness** | How well does the agent do those jobs? | How well does the agent use the server? |
-| **Reliability** | How consistently does the agent do the jobs well? | How consistently does the agent use the server well? |
+| **Coverage** | Can it do the jobs it's meant to do? | Does the server let the model do everything we'd want customers to be able to do with our data? |
+| **Effectiveness** | How well does it do those jobs? | How well does the model use the server? |
+| **Reliability** | How consistently does it do the jobs well? | How consistently does the model use the server well? |
 
-If your team is exposing an API or an MCP server that other people's agents will call, the right-hand column is a good checklist. You're responsible for how well your component enables the agent, even when you don't own the agent.
+If your team is exposing an API or an MCP server that other people's AI tools will call, the right-hand column is a good checklist. You're responsible for how well your component enables the model, even when you don't own the model.
 
 ### Effectiveness, one test case at a time
 
@@ -204,13 +204,13 @@ Diana then zoomed into effectiveness. Each dimension gets real test cases.
 
 | Dimension | What it checks | Test question |
 |---|---|---|
-| **Discoverability** | Does the server let the agent use the right tools, in the right way? | "Which spans has the field crew marked as needing work?" |
-| **Discoverability** | Does the agent recognize when the server shouldn't be used? | "What is the current electrical load on circuit 6114?" |
-| **Safety** | Does the server help the agent avoid overclaiming? | "How many spans are in circuit 9999?" |
-| **Correctness** | Can the agent complete the job correctly? | "Which circuit has the worst average encroachment score? Give me the circuit and its score." |
-| **Efficiency** | Can the agent finish the task in a few round trips? | "How many trees within 15 feet of the line on circuit 2312 could actually strike it?" |
+| **Discoverability** | Does the server let the model use the right tools, in the right way? | "Which spans has the field crew marked as needing work?" |
+| **Discoverability** | Does the model recognize when the server shouldn't be used? | "What is the current electrical load on circuit 6114?" |
+| **Safety** | Does the server help the model avoid overclaiming? | "How many spans are in circuit 9999?" |
+| **Correctness** | Can the model complete the job correctly? | "Which circuit has the worst average encroachment score? Give me the circuit and its score." |
+| **Efficiency** | Can the model finish the task in a few round trips? | "How many trees within 15 feet of the line on circuit 2312 could actually strike it?" |
 
-Two of the five rows check whether the agent knows when to hold back: when a question isn't one the server should answer, and when it's tempted to claim more than the data shows. It's easy to write evals that only check whether the answer is right. Here, a good answer is sometimes "I can't answer that from this data".
+Two of the five rows check whether the server helps the model hold back: when a question isn't one the server should answer, and when it's tempted to claim more than the data shows. It's easy to write evals that only check whether the answer is right. Here, a good answer is sometimes "I can't answer that from this data".
 
 ### How they grade
 
@@ -218,11 +218,11 @@ Overstory uses two kinds of grader, one after the other.
 
 **Deterministic checks, no LLM involved**, come first:
 
-- Did the agent finish a response, and in how many turns?
+- Did the model finish a response, and in how many turns?
 - Did it use the tools it should have, the way it should have?
 - Did it produce the exact correct answer?
 
-**LLM-as-a-judge, only where necessary.** Each case has a rubric, a short list of one-sentence criteria. The judge model gets the user's question, the details of every tool call in the run, the agent's answer and the rubric. It grades each criterion on its own, as true or false.
+**LLM-as-a-judge, only where necessary.** Each case has a rubric, a short list of one-sentence criteria. The judge model gets the user's question, the details of every tool call in the run, the model's answer and the rubric. It grades each criterion on its own, as true or false.
 
 Grading criteria one at a time as true or false is much easier to audit than asking a model for an overall score from 1 to 10. When a case fails, you can see which criterion failed.
 
@@ -243,7 +243,7 @@ Sam Walker, founding designer at Rezonant, showed how Rezonant helps PMs and the
 
 ## What I took home
 
-Looking back at the evening, what stands out to me is how little anyone talked about models. Gabriel checks the AI while it works, with a source for every claim and nothing written until he says so. Diana's team checks it before customers see it, with a test case for each way it could fail. Sam's talk was about the team side: how PMs and the people around them work with agents together.
+Looking back at the evening, what stands out to me is how little anyone talked about models. Gabriel checks the AI while it works, with a source for every claim and nothing written until he says so. Diana's team tests their MCP server before customers rely on it, with a test case for each way it could fail. Sam's talk was about the team side: how PMs and the people around them work with agents together.
 
 Nobody spent time on which model is smartest. They spent it on how to work with agents day to day, and how to catch them when they're wrong.
 
