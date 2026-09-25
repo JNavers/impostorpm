@@ -33,6 +33,11 @@
 /club/tipm-upcoming-clubs       /events           301
 /tipm-upcoming-learning-events  /events           301
 
+# Role pages moved from /refer/<role> to /talent/<role>: they now lead with
+# applying, and referring is the fallback. Newsletters already sent link to
+# /refer/, so every old URL keeps working, hash included (#refer-someone).
+/refer/*                        /talent/:splat    301
+
 # Google has /sitemap.xml on file from the Softr era; @astrojs/sitemap emits
 # /sitemap-index.xml. A 301 rather than a duplicate file, so there is one source.
 /sitemap.xml                    /sitemap-index.xml  301

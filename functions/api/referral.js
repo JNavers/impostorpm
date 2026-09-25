@@ -1,5 +1,5 @@
 /**
- * Referrals from /refer/<role>.
+ * Applications and referrals from /talent/<role>.
  *
  * Same shape as partner-enquiry.js: Resend, a fixed recipient, and an explicit
  * error when something fails so the page can fall back to a mailto instead of
@@ -44,6 +44,7 @@ export async function onRequestPost(context) {
   const why = clean(data.why);
   const referrerName = self ? '' : clean(data.referrerName);
   const referrerEmail = self ? '' : clean(data.referrerEmail);
+  const source = clean(data.source).slice(0, 120);
 
   if (!contact) {
     return json({ status: 'error', message: 'Add a LinkedIn profile or an email address' }, 400);
@@ -61,7 +62,7 @@ export async function onRequestPost(context) {
   }
 
   const who = candidateName || contact;
-  const subject = self ? `Self-referral: ${roleLabel} (${who})` : `Referral: ${roleLabel} (${who})`;
+  const subject = self ? `Application: ${roleLabel} (${who})` : `Referral: ${roleLabel} (${who})`;
   const replyTo = EMAIL_RE.test(contact) && self ? contact : referrerEmail;
 
   const response = await fetch('https://api.resend.com/emails', {
@@ -74,13 +75,14 @@ export async function onRequestPost(context) {
       subject,
       text: [
         `Role:        ${roleLabel}`,
-        `Type:        ${self ? 'Self-referral' : 'Referral'}`,
+        `Type:        ${self ? 'Application (applied themselves)' : 'Referral'}`,
         '',
         `Candidate:   ${candidateName || '(no name given)'}`,
         `Contact:     ${contact}`,
         `Why them:    ${why || '(not given)'}`,
         '',
         ...(self ? [] : [`Referred by: ${referrerName || '(anonymous)'}${referrerEmail ? ` <${referrerEmail}>` : ''}`]),
+        ...(source ? [`Came from:   ${source}`] : []),
       ].join('\n'),
     }),
   });
