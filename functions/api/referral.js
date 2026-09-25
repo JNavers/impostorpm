@@ -1,5 +1,5 @@
 /**
- * Referrals from /refer/<role>.
+ * Applications and referrals from /talent/<role>.
  *
  * Same shape as partner-enquiry.js: Resend, a fixed recipient, and an explicit
  * error when something fails so the page can fall back to a mailto instead of

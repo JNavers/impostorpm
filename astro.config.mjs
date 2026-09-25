@@ -15,7 +15,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       filter: (page) =>
-        !page.includes('/product-talks-link-to-the-talk') && !page.includes('/404') && !page.includes('/refer/'),
+        !page.includes('/product-talks-link-to-the-talk') && !page.includes('/404') && !page.includes('/talent/'),
 
       // Both live in public/ as self-contained apps, so they are not Astro routes
       // and the integration cannot see them — but they are real indexable pages,

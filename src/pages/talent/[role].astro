@@ -4,12 +4,13 @@ import { REFERRAL_ROLES, type ReferralRole } from '../../lib/referrals';
 
 // One page per role, linked from the newsletter's "Who should we know?"
 // section. noindex: these are for people we send here, not for search, and the
-// sitemap filter in astro.config.mjs excludes /refer to match.
+// sitemap filter in astro.config.mjs excludes /talent to match. The page used
+// to live at /refer/<role>; public/_redirects keeps those links working.
 //
 // The page walks one decision: here is the role, does it fit you? Then apply.
 // If not, do you know someone? Then refer them. If not, pass it on. The form
 // sits beside the role on desktop and stays in view while people read, only
-// the contact field is required, and /refer/<role>#refer-someone opens it
+// the contact field is required, and /talent/<role>#refer-someone opens it
 // straight in referral mode (for links from "Who should we know?").
 export function getStaticPaths() {
   return REFERRAL_ROLES.map((role) => ({ params: { role: role.slug }, props: { role } }));
