@@ -6,31 +6,30 @@ import { REFERRAL_ROLES, type ReferralRole } from '../../lib/referrals';
 // section. noindex: these are for people we send here, not for search, and the
 // sitemap filter in astro.config.mjs excludes /refer to match.
 //
-// The page has one job: turn "I might know someone" into a name. So the form
+// The page walks one decision: here is the role, does it fit you? Then apply.
+// If not, do you know someone? Then refer them. If not, pass it on. The form
 // sits beside the role on desktop and stays in view while people read, only
-// the contact field is required, and anyone who cannot think of a name is
-// asked to pass the role on instead of leaving empty-handed.
+// the contact field is required, and /refer/<role>#refer-someone opens it
+// straight in referral mode (for links from "Who should we know?").
 export function getStaticPaths() {
   return REFERRAL_ROLES.map((role) => ({ params: { role: role.slug }, props: { role } }));
 }
 
 const { role } = Astro.props as { role: ReferralRole };
 
-// Same headline for every role, so a new role is just a new entry in referrals.ts.
-const headline = `Who should ${role.company} meet?`;
 const place = role.location.replace(/^Available to be at the /, '');
-const shareText = `${role.company} is hiring: ${role.seniority} Product, ${place}. Know someone who fits? It takes 10 seconds to refer them:`;
+const shareText = `${role.company} is hiring: ${role.seniority} Product, ${place}. Is it you, or someone you know? Apply or refer in 10 seconds:`;
 const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^www\./, '') : '';
 ---
 
-<Base title={`${headline} | The Impostor PM`} description={role.lede} noindex>
+<Base title={`${role.title} | The Impostor PM`} description={role.lede} noindex>
   <div class="refer-page" data-role={role.slug} data-share-text={shareText} data-share-title={`${role.title} | The Impostor PM`}>
     <div class="refer-top">
       <div class="container">
         <div class="refer-grid">
           <header class="refer-intro">
-            <p class="tipm-eyebrow">Referral · We're helping {role.company} hire</p>
-            <h1>{headline}</h1>
+            <p class="tipm-eyebrow">Open role · We're helping {role.company} hire</p>
+            <h1>{role.title}</h1>
             <p class="refer-lede">{role.lede}</p>
             <div class="refer-facts" role="list">
               <span role="listitem" class="refer-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" /></svg>{role.company}</span>
@@ -38,41 +37,41 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
               <span role="listitem" class="refer-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" /><circle cx="12" cy="9.5" r="2.5" /></svg>{place}</span>
             </div>
             <div class="refer-hero-cta">
-              <a href="#refer" class="btn-cta btn-lg-custom refer-jump">Refer someone</a>
-              <button type="button" class="btn-outline-custom refer-share-open">Share this role</button>
+              <a href="#refer" class="btn-cta btn-lg-custom" data-mode="self">I'm interested</a>
+              <a href="#refer" class="btn-outline-custom" data-mode="other">I know someone</a>
             </div>
-            <p class="refer-reassure">10 seconds · no account · self-referrals welcome</p>
+            <p class="refer-reassure">Apply or refer in 10 seconds · no CV · no account</p>
           </header>
 
           <aside class="refer-aside" id="refer">
             <div class="refer-card">
               <form id="refer-form" novalidate>
-                <p class="tipm-eyebrow refer-card-eyebrow">Refer in 10 seconds</p>
-                <h2 class="refer-card-title">Who comes to mind?</h2>
+                <p class="tipm-eyebrow refer-card-eyebrow">10 seconds · no CV needed</p>
+                <h2 class="refer-card-title" data-self="Sounds like you?" data-other="Who comes to mind?">Sounds like you?</h2>
 
                 <fieldset class="refer-toggle">
-                  <legend class="sr-only">Who are you referring?</legend>
-                  <label><input type="radio" name="who" value="other" checked /><span>Someone else</span></label>
-                  <label><input type="radio" name="who" value="self" /><span>Myself</span></label>
+                  <legend class="sr-only">Is this role for you, or for someone you know?</legend>
+                  <label><input type="radio" name="who" value="self" checked /><span>Yes, I'm interested</span></label>
+                  <label><input type="radio" name="who" value="other" /><span>I know someone</span></label>
                 </fieldset>
 
                 <label class="refer-field">
-                  <span class="refer-field-label"><span data-other="Their LinkedIn or email" data-self="Your LinkedIn or email">Their LinkedIn or email</span> <abbr title="required">*</abbr></span>
+                  <span class="refer-field-label"><span data-self="Your LinkedIn or email" data-other="Their LinkedIn or email">Your LinkedIn or email</span> <abbr title="required">*</abbr></span>
                   <input type="text" name="contact" required autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="linkedin.com/in/… or email" aria-describedby="contact-hint" />
                   <span class="refer-hint" id="contact-hint" data-default="That's all we need. The rest is optional.">That's all we need. The rest is optional.</span>
                 </label>
 
-                <label class="refer-field refer-other-only">
+                <label class="refer-field refer-other-only" hidden>
                   <span class="refer-field-label">Their name <em>optional</em></span>
                   <input type="text" name="candidateName" autocomplete="off" />
                 </label>
 
                 <label class="refer-field">
-                  <span class="refer-field-label"><span data-other="Why them?" data-self="Why you?">Why them?</span> <em>optional</em></span>
+                  <span class="refer-field-label"><span data-self="Anything we should know?" data-other="Why them?">Anything we should know?</span> <em>optional</em></span>
                   <textarea name="why" rows="2" placeholder="One line is enough."></textarea>
                 </label>
 
-                <div class="refer-other-only refer-you">
+                <div class="refer-other-only refer-you" hidden>
                   <p class="refer-field-label">About you <em>optional</em></p>
                   <p class="refer-help">So we can thank you and tell you how it goes.</p>
                   <div class="refer-pair">
@@ -86,16 +85,16 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
                   Website <input type="text" name="website" tabindex="-1" autocomplete="off" />
                 </label>
 
-                <button type="submit" class="btn-cta btn-lg-custom refer-submit">Send referral <span aria-hidden="true">→</span></button>
+                <button type="submit" class="btn-cta btn-lg-custom refer-submit"><span data-self="I'm interested" data-other="Send referral">I'm interested</span> <span aria-hidden="true">→</span></button>
                 <p class="refer-status" role="status" aria-live="polite"></p>
-                <p class="refer-fine">It goes straight to the TIPM team. We reach out to them personally.</p>
+                <p class="refer-fine" data-self="It goes straight to the TIPM team, and we get back to you personally." data-other="It goes straight to the TIPM team. We reach out to them personally.">It goes straight to the TIPM team, and we get back to you personally.</p>
               </form>
 
               <div class="refer-done" hidden>
                 <span class="refer-done-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg></span>
-                <h2 class="refer-card-title" tabindex="-1">Thanks, we've got it.</h2>
-                <p>We'll take it from here. Does anyone else come to mind?</p>
-                <button type="button" class="btn-cta-dark refer-again">Refer someone else</button>
+                <h2 class="refer-card-title" tabindex="-1" data-self="Thanks, we'll be in touch." data-other="Thanks, we've got it.">Thanks, we'll be in touch.</h2>
+                <p data-self="We'll get back to you personally. Do you know someone else who'd fit too?" data-other="We'll take it from here. Does anyone else come to mind?">We'll get back to you personally. Do you know someone else who'd fit too?</p>
+                <button type="button" class="btn-cta-dark refer-again" data-self="Refer someone" data-other="Refer someone else">Refer someone</button>
                 <p class="refer-done-share">Or pass the role on to someone who might know them:</p>
                 <div class="refer-share-buttons"></div>
               </div>
@@ -119,14 +118,15 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
               <div><dt>Location</dt><dd>{role.location}</dd></div>
             </dl>
 
+            <p class="refer-note"><strong>No need to be actively looking.</strong> If this sounds like you, we'd still like to meet you. The same goes for anyone you refer.</p>
+
             <div class="refer-prompts">
-              <p class="refer-prompts-title">Stuck? Think of…</p>
+              <p class="refer-prompts-title">Not you? Think of…</p>
               <div role="list">
                 {role.prompts.map((p) => <p role="listitem">{p}</p>)}
               </div>
+              <a href="#refer" class="refer-prompts-cta" data-mode="other">Refer them <span aria-hidden="true">→</span></a>
             </div>
-
-            <p class="refer-note"><strong>They don't need to be looking.</strong> If you think they'd be exceptional for this profile, we'd still like to meet them. You can refer yourself too.</p>
 
             <div class="refer-company">
               <p class="tipm-eyebrow">About {role.company}</p>
@@ -141,22 +141,22 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
     <section class="section-light section-pad refer-how">
       <div class="container">
         <p class="tipm-eyebrow">How it works</p>
-        <h2>You know someone. We do the rest.</h2>
+        <h2>Apply or refer. We do the rest.</h2>
         <div class="refer-steps" role="list">
           <div class="refer-step" role="listitem">
             <span class="refer-step-n">1</span>
             <h3>You tell us who</h3>
-            <p>A LinkedIn profile or an email address. No account, no CV, nothing to chase.</p>
+            <p>Your LinkedIn or email if it's you, theirs if it's someone you know. No CV, no account.</p>
           </div>
           <div class="refer-step" role="listitem">
             <span class="refer-step-n">2</span>
             <h3>We reach out personally</h3>
-            <p>We introduce them to the role. It's a conversation, not an application, so it's fine if they're not looking.</p>
+            <p>A first conversation to see if there's a fit, before anything goes to {role.company}. Fine if you're not actively looking.</p>
           </div>
           <div class="refer-step" role="listitem">
             <span class="refer-step-n">3</span>
-            <h3>You hear how it goes</h3>
-            <p>Leave your email and we'll let you know. That's the whole thing.</p>
+            <h3>You hear back</h3>
+            <p>Whether you applied or referred someone, we'll let you know how it goes.</p>
           </div>
         </div>
 
@@ -176,7 +176,7 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
 
     <section class="section-golden section-pad refer-pass" id="share">
       <div class="container">
-        <h2>No one comes to mind? <span class="refer-nowrap">Someone you know will.</span></h2>
+        <h2>Not you, and no one comes to mind? <span class="refer-nowrap">Someone you know will.</span></h2>
         <p>Pass this role on to one person with a good Product network. It takes less time than reading this sentence.</p>
         <div class="refer-share-buttons"></div>
       </div>
@@ -244,19 +244,6 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
       });
     });
 
-    // On phones, hand off to the OS share sheet; elsewhere, go to the share band.
-    document.querySelector('.refer-share-open')?.addEventListener('click', async () => {
-      if (navigator.share && matchMedia('(pointer: coarse)').matches) {
-        try {
-          await navigator.share({ title: page.dataset.shareTitle, text, url: shareUrl('native') });
-          track('referral_shared', { role, channel: 'native' });
-          return;
-        } catch {
-          /* dismissed: fall through to the band */
-        }
-      }
-      document.getElementById('share')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
   }
 
   if (page && form && done) {
@@ -266,14 +253,28 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
     const hint = form.querySelector('#contact-hint') as HTMLElement;
     const isSelf = () => (form.querySelector('input[name=who]:checked') as HTMLInputElement).value === 'self';
 
+    // "self" = applying, "other" = referring someone. Every [data-self]/[data-other]
+    // text on the page follows the mode.
     const syncWho = () => {
       const self = isSelf();
       form.querySelectorAll<HTMLElement>('.refer-other-only').forEach((el) => (el.hidden = self));
-      form.querySelectorAll<HTMLElement>('[data-other]').forEach((el) => {
+      page.querySelectorAll<HTMLElement>('[data-other]').forEach((el) => {
         el.textContent = (self ? el.dataset.self : el.dataset.other) ?? el.textContent;
       });
     };
+    const setMode = (mode: string) => {
+      (form.querySelector(`input[name=who][value=${mode}]`) as HTMLInputElement).checked = true;
+      syncWho();
+    };
     form.querySelectorAll('input[name=who]').forEach((el) => el.addEventListener('change', syncWho));
+    page.querySelectorAll<HTMLElement>('a[data-mode]').forEach((a) =>
+      a.addEventListener('click', () => {
+        setMode(a.dataset.mode ?? 'self');
+        done.hidden = true;
+        form.hidden = false;
+      }),
+    );
+    if (location.hash === '#refer-someone') setMode('other');
 
     // Confirm what we recognised as they type; only complain once they leave the field.
     const kindOf = (v: string) => (LINKEDIN_RE.test(v) ? 'LinkedIn profile' : EMAIL_RE.test(v) ? 'Email address' : '');
@@ -292,7 +293,7 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
     form.addEventListener('focusin', () => {
       if (started) return;
       started = true;
-      track('referral_started', { role: page.dataset.role });
+      track('referral_started', { role: page.dataset.role, self: isSelf() });
     });
 
     form.addEventListener('submit', async (event) => {
@@ -331,13 +332,15 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
         const body = await response.json().catch(() => ({}));
         if (!(response.ok && body.status === 'ok')) throw new Error(body.message ?? `HTTP ${response.status}`);
 
-        track('referral_submitted', { role: page.dataset.role, self, source });
+        track(self ? 'application_submitted' : 'referral_submitted', { role: page.dataset.role, source });
 
-        // Keep who they are, so a second referral is one field again.
+        // Keep who they are, so a second referral is one field again. After an
+        // application, that is the contact they just gave us.
         form.reset();
-        (form.elements.namedItem('referrerName') as HTMLInputElement).value = raw.referrerName ?? '';
-        (form.elements.namedItem('referrerEmail') as HTMLInputElement).value = raw.referrerEmail ?? '';
-        syncWho();
+        const me = self ? { name: '', email: EMAIL_RE.test(raw.contact.trim()) ? raw.contact.trim() : '' } : { name: raw.referrerName, email: raw.referrerEmail };
+        (form.elements.namedItem('referrerName') as HTMLInputElement).value = me.name ?? '';
+        (form.elements.namedItem('referrerEmail') as HTMLInputElement).value = me.email ?? '';
+        setMode(self ? 'self' : 'other');
         syncHint(false);
         status.textContent = '';
         form.hidden = true;
@@ -354,7 +357,9 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
       }
     });
 
+    // After either path, the next step is always a referral.
     done.querySelector('.refer-again')?.addEventListener('click', () => {
+      setMode('other');
       done.hidden = true;
       form.hidden = false;
       contact.focus();
@@ -386,7 +391,7 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
     .refer-brief { grid-column: 1; grid-row: 2; }
     .refer-aside { grid-column: 2; grid-row: 1 / span 2; padding: 3.5rem 0 5rem; }
     .refer-card { position: sticky; top: 4.5rem; }
-    .refer-jump { display: none !important; }
+    .refer-hero-cta { display: none !important; }
   }
 
   /* ── Hero ── */
@@ -423,13 +428,18 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
   .refer-dl dt { font-size: var(--fs-xs); font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-3); }
   .refer-dl dd { margin: 0.25rem 0 0; font-weight: 600; }
 
-  .refer-prompts { background: var(--tipm-warm-yellow); border-radius: var(--radius-xl); padding: 1.5rem 1.75rem; margin-bottom: 1.75rem; }
+  .refer-prompts { background: var(--tipm-warm-yellow); border-radius: var(--radius-xl); padding: 1.5rem 1.75rem; margin-bottom: 2rem; }
   .refer-prompts-title { font-weight: var(--fw-bold); font-size: var(--fs-l); margin: 0 0 0.75rem; }
   .refer-prompts [role='listitem'] { position: relative; padding-left: 1.5rem; margin: 0 0 0.5rem; }
   .refer-prompts [role='listitem']:last-child { margin-bottom: 0; }
   .refer-prompts [role='listitem']::before { content: '→'; position: absolute; left: 0; font-weight: var(--fw-bold); }
+  .refer-prompts-cta {
+    display: inline-block; margin-top: 1.1rem; padding: 0.5rem 1.1rem; border-radius: var(--radius-xs);
+    background: var(--tipm-near-black); color: var(--tipm-white); font-weight: var(--fw-medium); text-decoration: none;
+  }
+  .refer-prompts-cta:hover { color: var(--tipm-white); text-decoration: none; background: var(--tipm-black); }
 
-  .refer-note { color: var(--fg-3); margin: 0 0 2rem; }
+  .refer-note { color: var(--fg-3); margin: 0 0 1.75rem; }
   .refer-note strong { color: var(--fg-1); }
   .refer-company p:not(.tipm-eyebrow) { margin: 0.5rem 0; color: var(--fg-3); }
   .refer-link { color: var(--fg-1); font-weight: var(--fw-medium); text-decoration: none; border-bottom: 2px solid var(--tipm-golden); }

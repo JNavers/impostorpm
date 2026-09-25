@@ -62,7 +62,7 @@ export async function onRequestPost(context) {
   }
 
   const who = candidateName || contact;
-  const subject = self ? `Self-referral: ${roleLabel} (${who})` : `Referral: ${roleLabel} (${who})`;
+  const subject = self ? `Application: ${roleLabel} (${who})` : `Referral: ${roleLabel} (${who})`;
   const replyTo = EMAIL_RE.test(contact) && self ? contact : referrerEmail;
 
   const response = await fetch('https://api.resend.com/emails', {
@@ -75,7 +75,7 @@ export async function onRequestPost(context) {
       subject,
       text: [
         `Role:        ${roleLabel}`,
-        `Type:        ${self ? 'Self-referral' : 'Referral'}`,
+        `Type:        ${self ? 'Application (applied themselves)' : 'Referral'}`,
         '',
         `Candidate:   ${candidateName || '(no name given)'}`,
         `Contact:     ${contact}`,

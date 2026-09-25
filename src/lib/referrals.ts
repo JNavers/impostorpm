@@ -31,7 +31,7 @@ export const REFERRAL_ROLES: ReferralRole[] = [
       'Condukt uses real-time data and AI to automate business compliance checks for financial institutions, with teams in London and Porto.',
     companyUrl: 'https://condukt.ai',
     title: 'Product role at Condukt',
-    lede: "Condukt is looking for a fairly specific Product person, and we think someone in the community already knows them.",
+    lede: "Condukt is looking for a fairly specific, technical Product person for its Porto team. Could it be you, or someone you know?",
     requirements: [
       { title: 'Product experience', body: '3+ years in Product, working as PO or PM.' },
       { title: 'A strong technical background', body: 'Ideally with a degree in Engineering or IT.' },
