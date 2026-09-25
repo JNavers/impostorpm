@@ -69,7 +69,7 @@ function jsonResponse(obj) {
 
 // ════════════ SHEET WRITES ════════════
 function appendSignup(data) {
-  const sheet = getOrCreateSheet('Signups', SHEET_HEADERS_SIGNUPS);
+  const sheet = getOrCreateSheet('Rezonant Signups', SHEET_HEADERS_SIGNUPS);
   sheet.appendRow([
     new Date(),
     data.firstname || '',
@@ -88,7 +88,7 @@ function appendSignup(data) {
 }
 
 function appendMember(data) {
-  const sheet = getOrCreateSheet('Members', SHEET_HEADERS_MEMBERS);
+  const sheet = getOrCreateSheet('Rezonant (Members)', SHEET_HEADERS_MEMBERS);
   sheet.appendRow([new Date(), data.email || '']);
 }
 

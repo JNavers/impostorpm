@@ -28,8 +28,8 @@ Backend para `rezonant/index.html`. Recibe el POST del formulario, guarda en Goo
    - Script Properties (leer la API key)
    Acepta todos.
 5. Revisa tu inbox — deberías recibir el email "Your 3,000 Rezonant credits".
-6. Revisa la Google Sheet — deberías ver una fila nueva en la pestaña `Members`.
-7. Repite con `_testSignup` para validar la rama B (welcome + credits, dos emails, fila en `Signups`).
+6. Revisa la Google Sheet — deberías ver una fila nueva en la pestaña `Rezonant (Members)`.
+7. Repite con `_testSignup` para validar la rama B (welcome + credits, dos emails, fila en `Rezonant Signups`).
 8. **Importante**: revierte el `YOUR_OWN_EMAIL@example.com` cuando termines de testear.
 
 ## 4. Deploy como Web App
@@ -64,10 +64,10 @@ const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycb.../exec';
 3. Verifica:
    - Llega email "You just got a seat" con botón Join Slack.
    - Llega email "Your 3,000 Rezonant credits are ready" con botón Claim my credits.
-   - Aparece una fila en la pestaña `Signups` de la Google Sheet con todos los campos.
+   - Aparece una fila en la pestaña `Rezonant Signups` de la Google Sheet con todos los campos.
 4. Repite con la rama "Yes, I'm a member" con un email distinto.
    - Llega solo el email de Rezonant credits.
-   - Aparece fila en la pestaña `Members`.
+   - Aparece fila en la pestaña `Rezonant (Members)`.
 
 ## Cómo actualizar el script en el futuro
 
@@ -87,5 +87,5 @@ Cuando edites `Code.gs`:
 
 El script crea automáticamente dos pestañas si no existen:
 
-- **Signups** (rama B): `timestamp, firstname, lastname, email, country, city, linkedin, company, experience, role, motivation, source, consent`
-- **Members** (rama A): `timestamp, email`
+- **Rezonant Signups** (rama B): `timestamp, firstname, lastname, email, country, city, linkedin, company, experience, role, motivation, source, consent`
+- **Rezonant (Members)** (rama A): `timestamp, email`
