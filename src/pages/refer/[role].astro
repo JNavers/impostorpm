@@ -417,10 +417,35 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
   }
   .refer-need strong { display: block; font-weight: var(--fw-bold); }
   .refer-need span { color: var(--fg-3); }
-  .refer-tick {
-    width: 1.75rem; height: 1.75rem; border-radius: 50%; background: var(--tipm-golden);
-    display: inline-flex; align-items: center; justify-content: center; margin-top: 0.1rem;
+  /* Hand-drawn marks (step numbers, checks): a slightly wobbly ink outline over
+     a golden fill knocked off-register, the same offset language as the event
+     cards. Fill (::before) and outline (::after) are both pseudo-elements, so
+     the ink always sits on top of the golden. Each mark varies the offset and
+     tilt through the --ink-* variables so no two look stamped. */
+  .refer-step-n, .refer-tick, .refer-done-mark {
+    --ink-dx: 5px; --ink-dy: 4px; --ink-fill-rot: 8deg; --ink-rot: -4deg; --ink-w: 2px;
+    position: relative; isolation: isolate;
+    display: inline-flex; align-items: center; justify-content: center;
   }
+  .refer-step-n::before, .refer-tick::before, .refer-done-mark::before,
+  .refer-step-n::after, .refer-tick::after, .refer-done-mark::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+  }
+  .refer-step-n::before, .refer-tick::before, .refer-done-mark::before {
+    z-index: -1; background: var(--tipm-golden);
+    border-radius: 45% 55% 48% 52% / 55% 45% 55% 45%;
+    transform: translate(var(--ink-dx), var(--ink-dy)) rotate(var(--ink-fill-rot));
+  }
+  .refer-step-n::after, .refer-tick::after, .refer-done-mark::after {
+    z-index: 1; border: var(--ink-w) solid var(--tipm-black);
+    border-radius: 52% 48% 55% 45% / 47% 55% 45% 53%;
+    transform: rotate(var(--ink-rot));
+  }
+
+  .refer-tick { width: 1.85rem; height: 1.85rem; margin-top: 0.05rem; --ink-dx: 3px; --ink-dy: 3px; --ink-w: 1.75px; }
+  .refer-need:nth-child(2) .refer-tick { --ink-dx: 2px; --ink-dy: 3.5px; --ink-fill-rot: -10deg; --ink-rot: 6deg; }
+  .refer-need:nth-child(3) .refer-tick { --ink-dx: 3.5px; --ink-dy: 2px; --ink-fill-rot: 14deg; --ink-rot: -8deg; }
+  .refer-need:nth-child(4) .refer-tick { --ink-dx: 2.5px; --ink-dy: 3px; --ink-fill-rot: -4deg; --ink-rot: 3deg; }
   .refer-tick svg, .refer-done-mark svg { width: 1rem; height: 1rem; fill: none; stroke: var(--tipm-near-black); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
 
   .refer-dl { display: grid; gap: 1rem; margin: 0 0 2rem; padding: 1.25rem 0; border-top: 1px solid var(--tipm-outline); border-bottom: 1px solid var(--tipm-outline); }
@@ -498,7 +523,7 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
   .refer-fine { font-size: var(--fs-sm); color: var(--fg-3); margin: -0.4rem 0 0; text-align: center; }
 
   .refer-done { text-align: center; padding: 0.5rem 0; }
-  .refer-done-mark { width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--tipm-golden); display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid var(--tipm-black); }
+  .refer-done-mark { width: 3.5rem; height: 3.5rem; --ink-dx: 7px; --ink-dy: 5px; --ink-fill-rot: 10deg; --ink-rot: -6deg; --ink-w: 2.25px; }
   .refer-done-mark svg { width: 1.6rem; height: 1.6rem; }
   .refer-done .refer-card-title { margin: 1rem 0 0.5rem; outline: none; }
   .refer-done p { color: var(--fg-3); }
@@ -526,32 +551,12 @@ const companyHost = role.companyUrl ? new URL(role.companyUrl).host.replace(/^ww
   .refer-step { background: var(--tipm-white); border-radius: var(--radius-xl); padding: 1.75rem; }
   .refer-step h3 { font-size: var(--fs-xl); margin: 1rem 0 0.5rem; }
   .refer-step p { color: var(--fg-3); margin: 0; }
-  /* Hand-drawn number: a slightly wobbly ink outline over a golden fill that
-     is knocked off-register, the same offset language as the event cards.
-     Fill (::before) and outline (::after) are both pseudo-elements, so the
-     ink always sits on top of the golden. */
   .refer-step-n {
-    position: relative; isolation: isolate;
-    display: inline-flex; width: 2.6rem; height: 2.6rem;
-    align-items: center; justify-content: center;
+    width: 2.6rem; height: 2.6rem;
     font-weight: var(--fw-bold); font-size: var(--fs-l); line-height: 1;
   }
-  .refer-step-n::before,
-  .refer-step-n::after { content: ''; position: absolute; inset: 0; pointer-events: none; }
-  .refer-step-n::before {
-    z-index: -1; background: var(--tipm-golden);
-    border-radius: 45% 55% 48% 52% / 55% 45% 55% 45%;
-    transform: translate(5px, 4px) rotate(8deg);
-  }
-  .refer-step-n::after {
-    z-index: 1; border: 2px solid var(--tipm-black);
-    border-radius: 52% 48% 55% 45% / 47% 55% 45% 53%;
-    transform: rotate(-4deg);
-  }
-  .refer-step:nth-child(2) .refer-step-n::before { transform: translate(4px, 5px) rotate(-6deg); }
-  .refer-step:nth-child(2) .refer-step-n::after { transform: rotate(5deg); }
-  .refer-step:nth-child(3) .refer-step-n::before { transform: translate(6px, 3px) rotate(12deg); }
-  .refer-step:nth-child(3) .refer-step-n::after { transform: rotate(-9deg); }
+  .refer-step:nth-child(2) .refer-step-n { --ink-dx: 4px; --ink-dy: 5px; --ink-fill-rot: -6deg; --ink-rot: 5deg; }
+  .refer-step:nth-child(3) .refer-step-n { --ink-dx: 6px; --ink-dy: 3px; --ink-fill-rot: 12deg; --ink-rot: -9deg; }
   .refer-why { display: grid; gap: 2rem; align-items: center; margin-top: 3.5rem; }
   @media (min-width: 768px) { .refer-why { grid-template-columns: 20rem 1fr; } }
   .refer-why h3 { font-size: var(--fs-2xl); margin: 0 0 0.5rem; }
