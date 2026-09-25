@@ -55,6 +55,7 @@ export const FOOTER_GROUPS: { title: string; links: { label: string; href: strin
       { label: 'Product Talks', href: '/product-talks' },
       { label: 'Slack Group', href: '/group' },
       { label: 'Salary Compass', href: '/compensation' },
+      { label: 'Articles', href: '/articles' },
       { label: 'Huddle', href: '/huddle' },
       { label: 'About us', href: '/about' },
     ],

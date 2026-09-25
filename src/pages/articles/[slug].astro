@@ -1,0 +1,250 @@
+---
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import JsonLd from '../../components/JsonLd.astro';
+import { SITE } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', ({ data }) => !data.draft);
+  return articles.map((article) => ({ params: { slug: article.id }, props: { article } }));
+}
+
+const { article } = Astro.props;
+const { data } = article;
+const { Content } = await render(article);
+
+// 230 words a minute, rounded up. Counted on the raw Markdown, so the HTML in
+// the diagrams adds a few words; close enough for a byline.
+const words = (article.body ?? '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.ceil(words / 230));
+
+const published = data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+// Only list files that are actually in public/. Speaker decks go up once the
+// speaker has said yes, so an entry can sit here before its file does.
+const downloads = data.downloads.filter((d) => existsSync(join(process.cwd(), 'public', d.file)));
+
+const url = new URL(`/articles/${article.id}`, SITE.url).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: data.title,
+  description: data.seo.description,
+  datePublished: data.date.toISOString(),
+  author: { '@type': 'Person', name: data.author.name },
+  publisher: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+  mainEntityOfPage: url,
+};
+---
+
+<Base title={data.seo.title} description={data.seo.description} image={data.seo.ogImage}>
+  <JsonLd slot="head" data={jsonLd} />
+
+  <header class="section-cream art-hero">
+    <div class="container art-narrow">
+      <p class="tipm-eyebrow"><a href="/articles">Articles</a> · {data.eyebrow}</p>
+      <h1>{data.title}</h1>
+      <p class="art-dek">{data.dek}</p>
+      <div class="art-byline">
+        {data.author.avatar && <img src={data.author.avatar} alt="" width="44" height="44" />}
+        <div>
+          <p class="art-byline-name">{data.author.name}</p>
+          <p class="art-byline-meta">{data.author.role} · {published} · {minutes} min read</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <article class="section-white art-body-wrap">
+    <div class="container art-narrow">
+      {data.editorNote && <p class="art-editor-note">{data.editorNote}</p>}
+      <div class="art-body">
+        <Content />
+      </div>
+    </div>
+  </article>
+
+  <section id="slides" class="section-warm section-pad">
+    <div class="container art-narrow">
+      <h2>Download the slides</h2>
+      {data.slidesUrl ? (
+        <ul class="art-downloads">
+          <li>
+            <div>
+              <p class="art-download-title">All the decks from this edition</p>
+              <p class="art-download-meta">{data.speakers.map((s) => s.name).join(', ')} · Google Drive folder</p>
+            </div>
+            <a href={data.slidesUrl} class="btn-outline-custom" target="_blank" rel="noreferrer">Open the slides</a>
+          </li>
+        </ul>
+      ) : downloads.length > 0 ? (
+        <ul class="art-downloads">
+          {downloads.map((d) => (
+            <li>
+              <div>
+                <p class="art-download-title">{d.label}</p>
+                <p class="art-download-meta">{d.speaker} · {d.format}</p>
+              </div>
+              <a href={d.file} class="btn-outline-custom" download>Download</a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="art-muted">The speakers' slides will be available here soon.</p>
+      )}
+    </div>
+  </section>
+
+  {data.speakers.length > 0 && (
+    <section class="section-white section-pad">
+      <div class="container art-narrow">
+        <h2>About the speakers</h2>
+        <ul class="art-speakers">
+          {data.speakers.map((s) => (
+            <li>
+              {s.avatar && <img src={s.avatar} alt={s.name} width="72" height="72" loading="lazy" />}
+              <div>
+                <p class="art-speaker-name">{s.name}</p>
+                <p class="art-speaker-role">{s.role}</p>
+                <p>{s.bio}</p>
+                {s.url && (
+                  <a class="art-speaker-link" href={s.url} target="_blank" rel="noreferrer">
+                    {s.url.includes('linkedin.com') ? 'LinkedIn' : 'Website'} ↗
+                  </a>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section-dark section-pad">
+    <div class="container art-narrow art-cta">
+      <h2>Want to be in the room next time?</h2>
+      <p>The AI PM Meetup happens in Porto every few months. Come to listen, or bring something you've built.</p>
+      <div class="art-cta-buttons">
+        <a href="/events" class="btn-cta">See upcoming events</a>
+        <a href="https://theimpostorpm.fillout.com/t/dT7U9NSoghus" class="btn-outline-custom" target="_blank" rel="noreferrer">Join the community</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .container.art-narrow { max-width: 44rem; }
+
+  .art-hero { padding: 4rem 0 3rem; }
+  .art-hero .tipm-eyebrow a { color: inherit; text-decoration: none; }
+  .art-hero h1 { font-size: var(--fs-5xl); line-height: 1.2; letter-spacing: var(--tracking-tight); margin: 0.75rem 0 1rem; }
+  .art-dek { font-size: var(--fs-l); color: var(--tipm-text-muted); margin: 0 0 2rem; }
+  .art-byline { display: flex; align-items: center; gap: 0.85rem; }
+  .art-byline img { border-radius: 50%; }
+  .art-byline p { margin: 0; }
+  .art-byline-name { font-weight: 700; font-size: var(--fs-s); color: var(--tipm-black); }
+  .art-byline-meta { font-size: var(--fs-sm); color: var(--tipm-text-muted); }
+
+  .art-body-wrap { padding: 3rem 0 4rem; }
+  .art-editor-note {
+    font-style: italic;
+    color: var(--tipm-text-muted);
+    border-left: 3px solid var(--tipm-golden);
+    padding: 0.25rem 0 0.25rem 1.25rem;
+    margin: 0 0 2.5rem;
+  }
+
+  .art-body { font-size: var(--fs-m); color: var(--tipm-near-black); }
+  .art-body p, .art-body li { font-size: var(--fs-m); }
+  .art-body h2 { font-size: var(--fs-4xl); line-height: 1.2; letter-spacing: var(--tracking-tight); margin: 3.5rem 0 1rem; }
+  .art-body h3 { font-size: var(--fs-2xl); margin: 2.25rem 0 0.75rem; }
+  .art-body ul, .art-body ol { padding-left: 1.25rem; margin-bottom: 1.25rem; }
+  .art-body li { margin-bottom: 0.5rem; }
+  .art-body strong { font-weight: 700; }
+  .art-body a {
+    color: var(--tipm-black);
+    text-decoration: underline;
+    text-decoration-color: var(--tipm-golden);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+  }
+
+  .art-body table { width: 100%; border-collapse: collapse; margin: 1.5rem 0 1.75rem; font-size: var(--fs-s); display: block; overflow-x: auto; }
+  .art-body th, .art-body td { border-bottom: 1px solid var(--tipm-outline); padding: 0.75rem 0.75rem 0.75rem 0; vertical-align: top; text-align: left; }
+  .art-body th { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--tipm-text-muted); }
+
+  .art-crew { display: grid; gap: 0.75rem; margin: 1.5rem 0 1.75rem; }
+  @media (min-width: 640px) { .art-crew { grid-template-columns: 1fr 1fr; } }
+  .art-agent { background: var(--bg-dark); color: var(--fg-inverse); border: 1px solid #2d2d2d; border-radius: var(--radius-xl); padding: 1.1rem 1.25rem; }
+  .art-agent p { color: #d8d2c6; font-size: var(--fs-s); margin: 0 0 0.75rem; }
+  .art-agent .art-agent-name { color: var(--fg-inverse); font-weight: 700; font-size: var(--fs-m); margin-bottom: 0.25rem; }
+  .art-agent--writes { border-color: var(--tipm-golden); }
+  .art-pill { display: inline-block; border: 1px solid #4a4a4a; color: #d8d2c6; border-radius: var(--radius-pill); padding: 0.2rem 0.65rem; font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+  .art-pill--gold { background: var(--tipm-golden); border-color: var(--tipm-golden); color: var(--tipm-near-black); }
+
+  .art-body ol.art-steps { list-style: none; counter-reset: step; padding: 0; margin: 1.5rem 0 1.75rem; }
+  .art-steps li { counter-increment: step; position: relative; padding: 0.1rem 0 0 3rem; margin-bottom: 1rem; min-height: 2rem; }
+  .art-steps li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 0;
+    width: 2rem; height: 2rem; border-radius: 50%;
+    background: var(--tipm-surface); color: var(--tipm-black);
+    font-weight: 700; font-size: var(--fs-s);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .art-steps li.art-steps-key::before { background: var(--tipm-golden); }
+
+  .art-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 1.5rem 0 1.75rem; }
+  @media (min-width: 640px) { .art-stats { grid-template-columns: repeat(4, 1fr); } }
+  .art-stats div { border-top: 3px solid var(--tipm-golden); padding-top: 0.75rem; }
+  .art-body .art-stats p { font-size: var(--fs-s); color: var(--tipm-text-muted); margin: 0; }
+  .art-body .art-stats .art-stat { font-size: var(--fs-4xl); font-weight: 700; color: var(--tipm-black); line-height: 1.2; margin-bottom: 0.25rem; }
+
+  .art-callout { background: var(--tipm-warm-yellow); border-radius: var(--radius-xl); padding: 1.5rem 1.75rem; margin: 2rem 0; }
+  .art-body .art-callout p, .art-body .art-callout li { font-size: var(--fs-base); }
+  .art-body .art-callout ol, .art-body .art-callout ul { margin-bottom: 0; }
+  .art-body .art-callout .art-callout-label { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; }
+
+  .art-downloads { list-style: none; padding: 0; margin: 1.5rem 0 0; }
+  .art-downloads li { display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: var(--tipm-white); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+  .art-downloads p { margin: 0; }
+  .art-download-title { font-weight: 700; color: var(--tipm-black); }
+  .art-download-meta, .art-muted { color: var(--tipm-text-muted); font-size: var(--fs-s); }
+
+  .art-speakers { list-style: none; padding: 0; margin: 1.5rem 0 0; }
+  .art-speakers li { display: flex; align-items: flex-start; gap: 1.25rem; padding: 1.5rem 0; }
+  .art-speakers li + li { border-top: 1px solid var(--tipm-outline); }
+  .art-speakers img { flex: none; width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
+  .art-speakers .art-speaker-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: var(--fs-s);
+    font-weight: 700;
+    color: var(--tipm-black);
+    text-decoration: underline;
+    text-decoration-color: var(--tipm-golden);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+  }
+  .art-speakers p { margin: 0; color: var(--tipm-text-muted); }
+  .art-speakers .art-speaker-name { font-weight: 700; color: var(--tipm-black); font-size: var(--fs-l); }
+  .art-speakers .art-speaker-role { font-size: var(--fs-s); margin-bottom: 0.35rem; }
+
+  .art-cta p { color: #d8d2c6; font-size: var(--fs-m); }
+  .art-cta-buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+
+  @media (max-width: 767.98px) {
+    /* base.css centres every .container on mobile; long-form reads better left-aligned. */
+    .container.art-narrow { text-align: left; }
+    .container.art-narrow img { margin-left: 0; margin-right: 0; }
+    /* The closing CTA is a site block, not article copy: centred like the rest of the site. */
+    .container.art-narrow.art-cta { text-align: center; }
+    .art-cta-buttons { justify-content: center; }
+    .art-hero h1 { font-size: 2.25rem; }
+    .art-downloads li { flex-direction: column; align-items: flex-start; }
+    .art-speakers li { gap: 1rem; }
+    .art-speakers img { width: 56px; height: 56px; }
+  }
+</style>
