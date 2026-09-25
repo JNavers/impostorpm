@@ -44,6 +44,7 @@ export async function onRequestPost(context) {
   const why = clean(data.why);
   const referrerName = self ? '' : clean(data.referrerName);
   const referrerEmail = self ? '' : clean(data.referrerEmail);
+  const source = clean(data.source).slice(0, 120);
 
   if (!contact) {
     return json({ status: 'error', message: 'Add a LinkedIn profile or an email address' }, 400);
@@ -81,6 +82,7 @@ export async function onRequestPost(context) {
         `Why them:    ${why || '(not given)'}`,
         '',
         ...(self ? [] : [`Referred by: ${referrerName || '(anonymous)'}${referrerEmail ? ` <${referrerEmail}>` : ''}`]),
+        ...(source ? [`Came from:   ${source}`] : []),
       ].join('\n'),
     }),
   });
